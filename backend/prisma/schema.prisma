@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============= Enums =============
+enum JobStatus {
+  DRAFT
+  APPLIED
+  INTERVIEW
+  REJECTED
+  OFFER
+}
+
+enum ApplyStatus {
+  NOT_APPLIED
+  APPLIED
+}
+
+enum ResponseStatus {
+  NO_RESPONSE
+  REPLIED
+  REJECTED
+  ACCEPTED
+}
+
+enum EmailSendStatus {
+  NOT_SENT
+  SENT
+  FAILED
+}
+
+enum EmailType {
+  APPLICATION
+  REPLY
+}
+
+enum TaskStatus {
+  PENDING
+  SUBMITTED
+  OVERDUE
+}
+
+// ============= Models =============
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  profileBio    String?
+  resumeLink    String?
+  linkedinLink  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  sessions      Session[]
+  accounts      Account[]
+  jobs          Job[]
+  tasks         Task[]
+  emails        Email[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Job {
+  id                String           @id @default(uuid())
+  userId            String
+  companyName       String
+  companyEmail      String
+  jobTitle          String
+  jobDescription    String           @db.Text
+  companyWebsite    String?
+  companyLinkedin   String?
+  companyNumber     String?
+  location          String?
+  salary            String?
+  notes             String?          @db.Text
+
+  status            JobStatus        @default(DRAFT)
+  applyStatus       ApplyStatus      @default(NOT_APPLIED)
+  responseStatus    ResponseStatus   @default(NO_RESPONSE)
+  emailSendStatus   EmailSendStatus  @default(NOT_SENT)
+
+  applyDate         DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks             Task[]
+  emails            Email[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([applyStatus])
+  @@map("job")
+}
+
+model Email {
+  id          String          @id @default(uuid())
+  userId      String
+  jobId       String
+  subject     String
+  content     String          @db.Text
+  emailType   EmailType
+  status      EmailSendStatus @default(NOT_SENT)
+  sentAt      DateTime?
+  createdAt   DateTime        @default(now())
+
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job         Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([jobId])
+  @@index([emailType])
+  @@map("email")
+}
+
+model Task {
+  id              String      @id @default(uuid())
+  userId          String
+  jobId           String
+  title           String
+  taskLink        String?
+  deadline        DateTime
+  submitStatus    TaskStatus  @default(PENDING)
+  description     String?     @db.Text
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  job             Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([jobId])
+  @@index([deadline])
+  @@map("task")
+}

@@ -1,0 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
+export const openaiConfig = {
+  apiKey: process.env.OPENAI_API_KEY || "",
+  model: "gpt-4o-mini",
+  maxTokens: 1000,
+};
+
+if (!openaiConfig.apiKey) {
+  console.warn("⚠️  OPENAI_API_KEY not found in environment variables");
+}

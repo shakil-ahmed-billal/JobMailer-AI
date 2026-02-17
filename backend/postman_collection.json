@@ -1,0 +1,356 @@
+{
+  "info": {
+    "_postman_id": "jobmailer-ai-backend",
+    "name": "JobMailer AI Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"name\": \"Test User\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/sign-up/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "sign-up", "email"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign In",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/sign-in/email",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "sign-in", "email"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/sign-out",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "sign-out"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/get-session",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "get-session"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Jobs",
+      "item": [
+        {
+          "name": "Get Job Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/jobs/stats",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "jobs", "stats"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Job",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"companyName\": \"Tech Corp\",\n    \"jobTitle\": \"Frontend Developer\",\n    \"jobDescription\": \"We are looking for a React developer...\",\n    \"jobLink\": \"https://example.com/job/123\",\n    \"status\": \"APPLIED\",\n    \"notes\": \"Applied via LinkedIn\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "jobs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/jobs",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "jobs"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Job By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/jobs/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "jobs", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "job_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Job",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"INTERVIEWING\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/jobs/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "jobs", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "job_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/jobs/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "jobs", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "job_id_here"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Emails",
+      "item": [
+        {
+          "name": "Generate Application Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"jobDescription\": \"We need a React dev...\",\n    \"companyName\": \"Tech Corp\",\n    \"context\": \"I have 5 years experience\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/emails/generate-application",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "emails", "generate-application"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Reply Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"previousThread\": \"Hello, can we schedule a call?\",\n    \"userContext\": \"I am available on Tuesday\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/emails/generate-reply",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "emails", "generate-reply"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Send Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"to\": \"recruiter@example.com\",\n    \"subject\": \"Application for Frontend Developer\",\n    \"content\": \"Dear Hiring Manager...\",\n    \"jobId\": \"optional_job_id\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/emails/send",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "emails", "send"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Emails",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/emails",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "emails"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Get Upcoming Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks/upcoming",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks", "upcoming"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"Follow up\",\n    \"deadline\": \"2024-12-31T23:59:59Z\",\n    \"jobId\": \"job_id_here\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/v1/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["v1", "tasks"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    }
+  ]
+}
