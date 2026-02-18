@@ -32,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { jobsApi } from "@/lib/api/jobs";
 import { Job } from "@/types";
 
@@ -43,6 +44,16 @@ const jobSchema = z.object({
   jobDescription: z
     .string()
     .min(10, "Description must be at least 10 characters"),
+  jobRole: z.enum([
+    "FRONTEND_DEVELOPER",
+    "FRONTEND_ENGINEER",
+    "BACKEND_DEVELOPER",
+    "BACKEND_ENGINEER",
+    "MERN_STACK_DEVELOPER",
+    "FULL_STACK_DEVELOPER",
+    "SOFTWARE_ENGINEER",
+    "CMS_DEVELOPER",
+  ]),
   status: z.enum(["DRAFT", "APPLIED", "INTERVIEW", "REJECTED", "OFFER"]),
   salary: z.string().optional(),
   location: z.string().optional(),
@@ -68,6 +79,7 @@ export function JobForm({ open, onOpenChange, onSuccess, job }: JobFormProps) {
       jobTitle: job?.jobTitle || "",
       companyEmail: job?.companyEmail || "",
       jobDescription: job?.jobDescription || "",
+      jobRole: job?.jobRole || "SOFTWARE_ENGINEER",
       status: (job?.status as any) || "DRAFT",
       salary: job?.salary || "",
       location: job?.location || "",
@@ -139,6 +151,34 @@ export function JobForm({ open, onOpenChange, onSuccess, job }: JobFormProps) {
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="jobRole"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select job role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {JOB_ROLE_OPTIONS.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}

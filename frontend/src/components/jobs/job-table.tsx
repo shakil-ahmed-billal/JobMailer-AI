@@ -22,6 +22,7 @@ import { Job } from "@/types";
 import { format } from "date-fns";
 import { Edit, Eye, MoreHorizontal, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { formatJobRole } from "@/lib/job-roles";
 
 interface JobTableProps {
   jobs: Job[];
@@ -30,7 +31,9 @@ interface JobTableProps {
 }
 
 export function JobTable({ jobs, onDelete, onApply }: JobTableProps) {
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (
+    status: string,
+  ): "default" | "outline" | "secondary" | "destructive" => {
     switch (status) {
       case "APPLIED":
         return "default"; // Primary color
@@ -51,7 +54,8 @@ export function JobTable({ jobs, onDelete, onApply }: JobTableProps) {
         <TableHeader>
           <TableRow>
             <TableHead>Company</TableHead>
-            <TableHead>Role</TableHead>
+            <TableHead>Job Title</TableHead>
+            <TableHead>Job Role</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Applied</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -60,7 +64,7 @@ export function JobTable({ jobs, onDelete, onApply }: JobTableProps) {
         <TableBody>
           {jobs.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={5} className="h-24 text-center">
+              <TableCell colSpan={6} className="h-24 text-center">
                 No jobs found.
               </TableCell>
             </TableRow>
@@ -69,8 +73,9 @@ export function JobTable({ jobs, onDelete, onApply }: JobTableProps) {
               <TableRow key={job.id}>
                 <TableCell className="font-medium">{job.companyName}</TableCell>
                 <TableCell>{job.jobTitle}</TableCell>
+                <TableCell>{formatJobRole(job.jobRole)}</TableCell>
                 <TableCell>
-                  <Badge variant={getStatusColor(job.status) as any}>
+                  <Badge variant={getStatusColor(job.status)}>
                     {job.status}
                   </Badge>
                 </TableCell>

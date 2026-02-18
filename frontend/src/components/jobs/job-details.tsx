@@ -17,6 +17,7 @@ import {
   MapPin,
 } from "lucide-react";
 import Link from "next/link";
+import { formatJobRole } from "@/lib/job-roles";
 
 interface JobDetailsProps {
   job: Job;
@@ -97,6 +98,14 @@ export function JobDetails({
               <CardTitle>Details</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div>
+                <span className="text-sm font-medium text-muted-foreground">
+                  Job Role
+                </span>
+                <div className="mt-1">
+                  <Badge variant="secondary">{formatJobRole(job.jobRole)}</Badge>
+                </div>
+              </div>
               <div>
                 <span className="text-sm font-medium text-muted-foreground">
                   Status

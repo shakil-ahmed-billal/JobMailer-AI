@@ -20,6 +20,20 @@ export const JobStatus = {
 export type JobStatus = (typeof JobStatus)[keyof typeof JobStatus]
 
 
+export const JobRole = {
+  FRONTEND_DEVELOPER: 'FRONTEND_DEVELOPER',
+  FRONTEND_ENGINEER: 'FRONTEND_ENGINEER',
+  BACKEND_DEVELOPER: 'BACKEND_DEVELOPER',
+  BACKEND_ENGINEER: 'BACKEND_ENGINEER',
+  MERN_STACK_DEVELOPER: 'MERN_STACK_DEVELOPER',
+  FULL_STACK_DEVELOPER: 'FULL_STACK_DEVELOPER',
+  SOFTWARE_ENGINEER: 'SOFTWARE_ENGINEER',
+  CMS_DEVELOPER: 'CMS_DEVELOPER'
+} as const
+
+export type JobRole = (typeof JobRole)[keyof typeof JobRole]
+
+
 export const ApplyStatus = {
   NOT_APPLIED: 'NOT_APPLIED',
   APPLIED: 'APPLIED'
@@ -62,3 +76,11 @@ export const TaskStatus = {
 } as const
 
 export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
+
+
+export const AIProvider = {
+  OPENAI: 'OPENAI',
+  GEMINI: 'GEMINI'
+} as const
+
+export type AIProvider = (typeof AIProvider)[keyof typeof AIProvider]

@@ -56,6 +56,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Job: 'Job',
+  Resume: 'Resume',
   Email: 'Email',
   Task: 'Task'
 } as const
@@ -85,6 +86,12 @@ export const UserScalarFieldEnum = {
   profileBio: 'profileBio',
   resumeLink: 'resumeLink',
   linkedinLink: 'linkedinLink',
+  portfolioLink: 'portfolioLink',
+  resumeContent: 'resumeContent',
+  skills: 'skills',
+  experience: 'experience',
+  education: 'education',
+  certifications: 'certifications',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -150,6 +157,7 @@ export const JobScalarFieldEnum = {
   location: 'location',
   salary: 'salary',
   notes: 'notes',
+  jobRole: 'jobRole',
   status: 'status',
   applyStatus: 'applyStatus',
   responseStatus: 'responseStatus',
@@ -162,12 +170,26 @@ export const JobScalarFieldEnum = {
 export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
 
 
+export const ResumeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobRole: 'jobRole',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
 export const EmailScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   jobId: 'jobId',
   subject: 'subject',
   content: 'content',
+  aiProvider: 'aiProvider',
   emailType: 'emailType',
   status: 'status',
   sentAt: 'sentAt',

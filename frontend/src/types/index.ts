@@ -13,6 +13,16 @@ export type ResponseStatus =
 export type EmailSendStatus = "NOT_SENT" | "SENT" | "FAILED";
 export type EmailType = "APPLICATION" | "REPLY";
 export type TaskStatus = "PENDING" | "SUBMITTED" | "OVERDUE";
+export type AIProvider = "OPENAI" | "GEMINI";
+export type JobRole =
+  | "FRONTEND_DEVELOPER"
+  | "FRONTEND_ENGINEER"
+  | "BACKEND_DEVELOPER"
+  | "BACKEND_ENGINEER"
+  | "MERN_STACK_DEVELOPER"
+  | "FULL_STACK_DEVELOPER"
+  | "SOFTWARE_ENGINEER"
+  | "CMS_DEVELOPER";
 
 export interface User {
   id: string;
@@ -21,6 +31,12 @@ export interface User {
   profileBio?: string | null;
   resumeLink?: string | null;
   linkedinLink?: string | null;
+  portfolioLink?: string | null;
+  resumeContent?: string | null;
+  skills?: string | null;
+  experience?: string | null;
+  education?: string | null;
+  certifications?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,6 +48,7 @@ export interface Job {
   companyEmail: string;
   jobTitle: string;
   jobDescription: string;
+  jobRole: JobRole;
   companyWebsite?: string | null;
   companyLinkedin?: string | null;
   companyNumber?: string | null;
@@ -47,12 +64,23 @@ export interface Job {
   updatedAt: string;
 }
 
+export interface Resume {
+  id: string;
+  userId: string;
+  jobRole: JobRole;
+  fileUrl: string;
+  fileName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Email {
   id: string;
   userId: string;
   jobId: string;
   subject: string;
   content: string;
+  aiProvider: AIProvider;
   emailType: EmailType;
   status: EmailSendStatus;
   sentAt?: string | null;
@@ -88,10 +116,10 @@ export interface AuthResponse {
   token: string;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   statusCode: number;
   success: boolean;
   message: string;
   data: T;
-  error?: any;
+  error?: unknown;
 }

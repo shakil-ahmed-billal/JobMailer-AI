@@ -5,6 +5,7 @@ export interface JobFilters {
   status?: string;
   applyStatus?: string;
   responseStatus?: string;
+  jobRole?: string; // comma-separated enum values for multi-select
   search?: string;
   startDate?: string;
   endDate?: string;

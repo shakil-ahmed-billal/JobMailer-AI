@@ -63,6 +63,11 @@ export type Verification = Prisma.VerificationModel
  */
 export type Job = Prisma.JobModel
 /**
+ * Model Resume
+ * 
+ */
+export type Resume = Prisma.ResumeModel
+/**
  * Model Email
  * 
  */

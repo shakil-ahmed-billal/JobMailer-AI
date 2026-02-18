@@ -1,5 +1,6 @@
 import {
   ApplyStatus,
+  JobRole,
   JobStatus,
   ResponseStatus,
 } from "../../../generated/prisma/client";
@@ -10,6 +11,7 @@ interface CreateJobData {
   companyEmail: string;
   jobTitle: string;
   jobDescription: string;
+  jobRole: JobRole;
   companyWebsite?: string;
   companyLinkedin?: string;
   companyNumber?: string;
@@ -28,6 +30,7 @@ interface JobFilters {
   status?: JobStatus;
   applyStatus?: ApplyStatus;
   responseStatus?: ResponseStatus;
+  jobRole?: string;
   search?: string;
   startDate?: string;
   endDate?: string;
@@ -52,7 +55,7 @@ const createJob = async (userId: string, data: CreateJobData) => {
 };
 
 const getJobs = async (userId: string, filters: JobFilters = {}) => {
-  const { status, applyStatus, responseStatus, search, startDate, endDate } =
+  const { status, applyStatus, responseStatus, jobRole, search, startDate, endDate } =
     filters;
 
   const where: any = { userId };
@@ -60,6 +63,13 @@ const getJobs = async (userId: string, filters: JobFilters = {}) => {
   if (status) where.status = status;
   if (applyStatus) where.applyStatus = applyStatus;
   if (responseStatus) where.responseStatus = responseStatus;
+  if (jobRole) {
+    const roles = jobRole
+      .split(",")
+      .map((r) => r.trim())
+      .filter(Boolean);
+    if (roles.length > 0) where.jobRole = { in: roles };
+  }
 
   if (search) {
     where.OR = [

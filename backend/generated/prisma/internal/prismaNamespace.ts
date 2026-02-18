@@ -389,6 +389,7 @@ export const ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Job: 'Job',
+  Resume: 'Resume',
   Email: 'Email',
   Task: 'Task'
 } as const
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "job" | "email" | "task"
+    modelProps: "user" | "session" | "account" | "verification" | "job" | "resume" | "email" | "task"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -780,6 +781,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Resume: {
+      payload: Prisma.$ResumePayload<ExtArgs>
+      fields: Prisma.ResumeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.ResumeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.ResumeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>
+        }
+        findFirst: {
+          args: Prisma.ResumeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.ResumeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>
+        }
+        findMany: {
+          args: Prisma.ResumeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>[]
+        }
+        create: {
+          args: Prisma.ResumeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>
+        }
+        createMany: {
+          args: Prisma.ResumeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.ResumeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>[]
+        }
+        delete: {
+          args: Prisma.ResumeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>
+        }
+        update: {
+          args: Prisma.ResumeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>
+        }
+        deleteMany: {
+          args: Prisma.ResumeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.ResumeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.ResumeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>[]
+        }
+        upsert: {
+          args: Prisma.ResumeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$ResumePayload>
+        }
+        aggregate: {
+          args: Prisma.ResumeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateResume>
+        }
+        groupBy: {
+          args: Prisma.ResumeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.ResumeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.ResumeCountAggregateOutputType> | number
+        }
+      }
+    }
     Email: {
       payload: Prisma.$EmailPayload<ExtArgs>
       fields: Prisma.EmailFieldRefs
@@ -976,6 +1051,12 @@ export const UserScalarFieldEnum = {
   profileBio: 'profileBio',
   resumeLink: 'resumeLink',
   linkedinLink: 'linkedinLink',
+  portfolioLink: 'portfolioLink',
+  resumeContent: 'resumeContent',
+  skills: 'skills',
+  experience: 'experience',
+  education: 'education',
+  certifications: 'certifications',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1041,6 +1122,7 @@ export const JobScalarFieldEnum = {
   location: 'location',
   salary: 'salary',
   notes: 'notes',
+  jobRole: 'jobRole',
   status: 'status',
   applyStatus: 'applyStatus',
   responseStatus: 'responseStatus',
@@ -1053,12 +1135,26 @@ export const JobScalarFieldEnum = {
 export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
 
 
+export const ResumeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  jobRole: 'jobRole',
+  fileUrl: 'fileUrl',
+  fileName: 'fileName',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ResumeScalarFieldEnum = (typeof ResumeScalarFieldEnum)[keyof typeof ResumeScalarFieldEnum]
+
+
 export const EmailScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   jobId: 'jobId',
   subject: 'subject',
   content: 'content',
+  aiProvider: 'aiProvider',
   emailType: 'emailType',
   status: 'status',
   sentAt: 'sentAt',
@@ -1150,6 +1246,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'JobRole'
+ */
+export type EnumJobRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobRole'>
+    
+
+
+/**
+ * Reference to a field of type 'JobRole[]'
+ */
+export type ListEnumJobRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobRole[]'>
+    
+
+
+/**
  * Reference to a field of type 'JobStatus'
  */
 export type EnumJobStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobStatus'>
@@ -1202,6 +1312,20 @@ export type EnumEmailSendStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$
  * Reference to a field of type 'EmailSendStatus[]'
  */
 export type ListEnumEmailSendStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmailSendStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AIProvider'
+ */
+export type EnumAIProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AIProvider'>
+    
+
+
+/**
+ * Reference to a field of type 'AIProvider[]'
+ */
+export type ListEnumAIProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AIProvider[]'>
     
 
 
@@ -1346,6 +1470,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   verification?: Prisma.VerificationOmit
   job?: Prisma.JobOmit
+  resume?: Prisma.ResumeOmit
   email?: Prisma.EmailOmit
   task?: Prisma.TaskOmit
 }

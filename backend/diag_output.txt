@@ -1,0 +1,13 @@
+[dotenv@17.3.1] injecting env (23) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+--- Testing model: gemini-1.5-flash ---
+❌ Failed with gemini-1.5-flash: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+--- Testing model: gemini-1.5-flash-latest ---
+❌ Failed with gemini-1.5-flash-latest: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent: [404 Not Found] models/gemini-1.5-flash-latest is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+--- Testing model: gemini-1.5-flash-001 ---
+❌ Failed with gemini-1.5-flash-001: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent: [404 Not Found] models/gemini-1.5-flash-001 is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+--- Testing model: gemini-1.5-flash-002 ---
+❌ Failed with gemini-1.5-flash-002: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent: [404 Not Found] models/gemini-1.5-flash-002 is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+--- Testing model: gemini-2.0-flash-exp ---
+❌ Failed with gemini-2.0-flash-exp: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent: [404 Not Found] models/gemini-2.0-flash-exp is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
+--- Testing model: gemini-pro ---
+❌ Failed with gemini-pro: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent: [404 Not Found] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.

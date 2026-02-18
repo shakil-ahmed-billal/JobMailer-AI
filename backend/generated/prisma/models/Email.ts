@@ -30,6 +30,7 @@ export type EmailMinAggregateOutputType = {
   jobId: string | null
   subject: string | null
   content: string | null
+  aiProvider: $Enums.AIProvider | null
   emailType: $Enums.EmailType | null
   status: $Enums.EmailSendStatus | null
   sentAt: Date | null
@@ -42,6 +43,7 @@ export type EmailMaxAggregateOutputType = {
   jobId: string | null
   subject: string | null
   content: string | null
+  aiProvider: $Enums.AIProvider | null
   emailType: $Enums.EmailType | null
   status: $Enums.EmailSendStatus | null
   sentAt: Date | null
@@ -54,6 +56,7 @@ export type EmailCountAggregateOutputType = {
   jobId: number
   subject: number
   content: number
+  aiProvider: number
   emailType: number
   status: number
   sentAt: number
@@ -68,6 +71,7 @@ export type EmailMinAggregateInputType = {
   jobId?: true
   subject?: true
   content?: true
+  aiProvider?: true
   emailType?: true
   status?: true
   sentAt?: true
@@ -80,6 +84,7 @@ export type EmailMaxAggregateInputType = {
   jobId?: true
   subject?: true
   content?: true
+  aiProvider?: true
   emailType?: true
   status?: true
   sentAt?: true
@@ -92,6 +97,7 @@ export type EmailCountAggregateInputType = {
   jobId?: true
   subject?: true
   content?: true
+  aiProvider?: true
   emailType?: true
   status?: true
   sentAt?: true
@@ -177,6 +183,7 @@ export type EmailGroupByOutputType = {
   jobId: string
   subject: string
   content: string
+  aiProvider: $Enums.AIProvider
   emailType: $Enums.EmailType
   status: $Enums.EmailSendStatus
   sentAt: Date | null
@@ -210,6 +217,7 @@ export type EmailWhereInput = {
   jobId?: Prisma.StringFilter<"Email"> | string
   subject?: Prisma.StringFilter<"Email"> | string
   content?: Prisma.StringFilter<"Email"> | string
+  aiProvider?: Prisma.EnumAIProviderFilter<"Email"> | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFilter<"Email"> | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFilter<"Email"> | $Enums.EmailSendStatus
   sentAt?: Prisma.DateTimeNullableFilter<"Email"> | Date | string | null
@@ -224,6 +232,7 @@ export type EmailOrderByWithRelationInput = {
   jobId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  aiProvider?: Prisma.SortOrder
   emailType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -241,6 +250,7 @@ export type EmailWhereUniqueInput = Prisma.AtLeast<{
   jobId?: Prisma.StringFilter<"Email"> | string
   subject?: Prisma.StringFilter<"Email"> | string
   content?: Prisma.StringFilter<"Email"> | string
+  aiProvider?: Prisma.EnumAIProviderFilter<"Email"> | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFilter<"Email"> | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFilter<"Email"> | $Enums.EmailSendStatus
   sentAt?: Prisma.DateTimeNullableFilter<"Email"> | Date | string | null
@@ -255,6 +265,7 @@ export type EmailOrderByWithAggregationInput = {
   jobId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  aiProvider?: Prisma.SortOrder
   emailType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -273,6 +284,7 @@ export type EmailScalarWhereWithAggregatesInput = {
   jobId?: Prisma.StringWithAggregatesFilter<"Email"> | string
   subject?: Prisma.StringWithAggregatesFilter<"Email"> | string
   content?: Prisma.StringWithAggregatesFilter<"Email"> | string
+  aiProvider?: Prisma.EnumAIProviderWithAggregatesFilter<"Email"> | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeWithAggregatesFilter<"Email"> | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusWithAggregatesFilter<"Email"> | $Enums.EmailSendStatus
   sentAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Email"> | Date | string | null
@@ -283,6 +295,7 @@ export type EmailCreateInput = {
   id?: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -297,6 +310,7 @@ export type EmailUncheckedCreateInput = {
   jobId: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -307,6 +321,7 @@ export type EmailUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -321,6 +336,7 @@ export type EmailUncheckedUpdateInput = {
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -333,6 +349,7 @@ export type EmailCreateManyInput = {
   jobId: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -343,6 +360,7 @@ export type EmailUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -355,6 +373,7 @@ export type EmailUncheckedUpdateManyInput = {
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -377,6 +396,7 @@ export type EmailCountOrderByAggregateInput = {
   jobId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  aiProvider?: Prisma.SortOrder
   emailType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
@@ -389,6 +409,7 @@ export type EmailMaxOrderByAggregateInput = {
   jobId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  aiProvider?: Prisma.SortOrder
   emailType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
@@ -401,6 +422,7 @@ export type EmailMinOrderByAggregateInput = {
   jobId?: Prisma.SortOrder
   subject?: Prisma.SortOrder
   content?: Prisma.SortOrder
+  aiProvider?: Prisma.SortOrder
   emailType?: Prisma.SortOrder
   status?: Prisma.SortOrder
   sentAt?: Prisma.SortOrder
@@ -491,6 +513,10 @@ export type EmailUncheckedUpdateManyWithoutJobNestedInput = {
   deleteMany?: Prisma.EmailScalarWhereInput | Prisma.EmailScalarWhereInput[]
 }
 
+export type EnumAIProviderFieldUpdateOperationsInput = {
+  set?: $Enums.AIProvider
+}
+
 export type EnumEmailTypeFieldUpdateOperationsInput = {
   set?: $Enums.EmailType
 }
@@ -499,6 +525,7 @@ export type EmailCreateWithoutUserInput = {
   id?: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -511,6 +538,7 @@ export type EmailUncheckedCreateWithoutUserInput = {
   jobId: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -552,6 +580,7 @@ export type EmailScalarWhereInput = {
   jobId?: Prisma.StringFilter<"Email"> | string
   subject?: Prisma.StringFilter<"Email"> | string
   content?: Prisma.StringFilter<"Email"> | string
+  aiProvider?: Prisma.EnumAIProviderFilter<"Email"> | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFilter<"Email"> | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFilter<"Email"> | $Enums.EmailSendStatus
   sentAt?: Prisma.DateTimeNullableFilter<"Email"> | Date | string | null
@@ -562,6 +591,7 @@ export type EmailCreateWithoutJobInput = {
   id?: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -574,6 +604,7 @@ export type EmailUncheckedCreateWithoutJobInput = {
   userId: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -611,6 +642,7 @@ export type EmailCreateManyUserInput = {
   jobId: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -621,6 +653,7 @@ export type EmailUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -633,6 +666,7 @@ export type EmailUncheckedUpdateWithoutUserInput = {
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -644,6 +678,7 @@ export type EmailUncheckedUpdateManyWithoutUserInput = {
   jobId?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -655,6 +690,7 @@ export type EmailCreateManyJobInput = {
   userId: string
   subject: string
   content: string
+  aiProvider?: $Enums.AIProvider
   emailType: $Enums.EmailType
   status?: $Enums.EmailSendStatus
   sentAt?: Date | string | null
@@ -665,6 +701,7 @@ export type EmailUpdateWithoutJobInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -677,6 +714,7 @@ export type EmailUncheckedUpdateWithoutJobInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -688,6 +726,7 @@ export type EmailUncheckedUpdateManyWithoutJobInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   subject?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
+  aiProvider?: Prisma.EnumAIProviderFieldUpdateOperationsInput | $Enums.AIProvider
   emailType?: Prisma.EnumEmailTypeFieldUpdateOperationsInput | $Enums.EmailType
   status?: Prisma.EnumEmailSendStatusFieldUpdateOperationsInput | $Enums.EmailSendStatus
   sentAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -702,6 +741,7 @@ export type EmailSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   jobId?: boolean
   subject?: boolean
   content?: boolean
+  aiProvider?: boolean
   emailType?: boolean
   status?: boolean
   sentAt?: boolean
@@ -716,6 +756,7 @@ export type EmailSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   jobId?: boolean
   subject?: boolean
   content?: boolean
+  aiProvider?: boolean
   emailType?: boolean
   status?: boolean
   sentAt?: boolean
@@ -730,6 +771,7 @@ export type EmailSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   jobId?: boolean
   subject?: boolean
   content?: boolean
+  aiProvider?: boolean
   emailType?: boolean
   status?: boolean
   sentAt?: boolean
@@ -744,13 +786,14 @@ export type EmailSelectScalar = {
   jobId?: boolean
   subject?: boolean
   content?: boolean
+  aiProvider?: boolean
   emailType?: boolean
   status?: boolean
   sentAt?: boolean
   createdAt?: boolean
 }
 
-export type EmailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "jobId" | "subject" | "content" | "emailType" | "status" | "sentAt" | "createdAt", ExtArgs["result"]["email"]>
+export type EmailOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "jobId" | "subject" | "content" | "aiProvider" | "emailType" | "status" | "sentAt" | "createdAt", ExtArgs["result"]["email"]>
 export type EmailInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   job?: boolean | Prisma.JobDefaultArgs<ExtArgs>
@@ -776,6 +819,7 @@ export type $EmailPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     jobId: string
     subject: string
     content: string
+    aiProvider: $Enums.AIProvider
     emailType: $Enums.EmailType
     status: $Enums.EmailSendStatus
     sentAt: Date | null
@@ -1210,6 +1254,7 @@ export interface EmailFieldRefs {
   readonly jobId: Prisma.FieldRef<"Email", 'String'>
   readonly subject: Prisma.FieldRef<"Email", 'String'>
   readonly content: Prisma.FieldRef<"Email", 'String'>
+  readonly aiProvider: Prisma.FieldRef<"Email", 'AIProvider'>
   readonly emailType: Prisma.FieldRef<"Email", 'EmailType'>
   readonly status: Prisma.FieldRef<"Email", 'EmailSendStatus'>
   readonly sentAt: Prisma.FieldRef<"Email", 'DateTime'>

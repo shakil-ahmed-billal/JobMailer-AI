@@ -10,10 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { jobsApi } from "@/lib/api/jobs";
+import { resumesApi } from "@/lib/api/resumes";
+import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { useAuthContext } from "@/lib/auth/auth-context";
 import { Briefcase, CheckCircle, Clock, Send } from "lucide-react";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
@@ -22,6 +26,11 @@ export default function DashboardPage() {
     appliedJobs: 0,
     responseRate: 0,
     interviewCount: 0,
+  });
+  const [resumeStats, setResumeStats] = useState({
+    total: 0,
+    missingCount: JOB_ROLE_OPTIONS.length,
+    missingLabels: JOB_ROLE_OPTIONS.map((o) => o.label),
   });
 
   useEffect(() => {
@@ -35,7 +44,23 @@ export default function DashboardPage() {
       }
     };
 
+    const fetchResumes = async () => {
+      try {
+        const resumes = (await resumesApi.getAll()) || [];
+        const have = new Set(resumes.map((r) => r.jobRole));
+        const missing = JOB_ROLE_OPTIONS.filter((o) => !have.has(o.value));
+        setResumeStats({
+          total: resumes.length,
+          missingCount: missing.length,
+          missingLabels: missing.map((m) => m.label),
+        });
+      } catch (error) {
+        // Keep silent; dashboard should still load
+      }
+    };
+
     fetchStats();
+    fetchResumes();
   }, []);
 
   return (
@@ -69,6 +94,28 @@ export default function DashboardPage() {
           description="Jobs to apply for"
         />
       </div>
+
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Resumes</CardTitle>
+            <CardDescription>
+              {resumeStats.total} uploaded • {resumeStats.missingCount} roles missing
+            </CardDescription>
+          </div>
+          <Button asChild>
+            <Link href="/resumes">Quick upload</Link>
+          </Button>
+        </CardHeader>
+        {resumeStats.missingCount > 0 && (
+          <CardContent className="pt-0">
+            <div className="text-sm text-muted-foreground">
+              Missing: {resumeStats.missingLabels.join(", ")}
+            </div>
+          </CardContent>
+        )}
+      </Card>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>

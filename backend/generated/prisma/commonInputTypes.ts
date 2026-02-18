@@ -148,6 +148,13 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type EnumJobRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobRole | Prisma.EnumJobRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobRoleFilter<$PrismaModel> | $Enums.JobRole
+}
+
 export type EnumJobStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.JobStatus | Prisma.EnumJobStatusFieldRefInput<$PrismaModel>
   in?: $Enums.JobStatus[] | Prisma.ListEnumJobStatusFieldRefInput<$PrismaModel>
@@ -174,6 +181,16 @@ export type EnumEmailSendStatusFilter<$PrismaModel = never> = {
   in?: $Enums.EmailSendStatus[] | Prisma.ListEnumEmailSendStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.EmailSendStatus[] | Prisma.ListEnumEmailSendStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumEmailSendStatusFilter<$PrismaModel> | $Enums.EmailSendStatus
+}
+
+export type EnumJobRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobRole | Prisma.EnumJobRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobRoleWithAggregatesFilter<$PrismaModel> | $Enums.JobRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobRoleFilter<$PrismaModel>
 }
 
 export type EnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -216,11 +233,28 @@ export type EnumEmailSendStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumEmailSendStatusFilter<$PrismaModel>
 }
 
+export type EnumAIProviderFilter<$PrismaModel = never> = {
+  equals?: $Enums.AIProvider | Prisma.EnumAIProviderFieldRefInput<$PrismaModel>
+  in?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAIProviderFilter<$PrismaModel> | $Enums.AIProvider
+}
+
 export type EnumEmailTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.EmailType | Prisma.EnumEmailTypeFieldRefInput<$PrismaModel>
   in?: $Enums.EmailType[] | Prisma.ListEnumEmailTypeFieldRefInput<$PrismaModel>
   notIn?: $Enums.EmailType[] | Prisma.ListEnumEmailTypeFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumEmailTypeFilter<$PrismaModel> | $Enums.EmailType
+}
+
+export type EnumAIProviderWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AIProvider | Prisma.EnumAIProviderFieldRefInput<$PrismaModel>
+  in?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAIProviderWithAggregatesFilter<$PrismaModel> | $Enums.AIProvider
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAIProviderFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAIProviderFilter<$PrismaModel>
 }
 
 export type EnumEmailTypeWithAggregatesFilter<$PrismaModel = never> = {
@@ -397,6 +431,13 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>
 }
 
+export type NestedEnumJobRoleFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobRole | Prisma.EnumJobRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobRoleFilter<$PrismaModel> | $Enums.JobRole
+}
+
 export type NestedEnumJobStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.JobStatus | Prisma.EnumJobStatusFieldRefInput<$PrismaModel>
   in?: $Enums.JobStatus[] | Prisma.ListEnumJobStatusFieldRefInput<$PrismaModel>
@@ -423,6 +464,16 @@ export type NestedEnumEmailSendStatusFilter<$PrismaModel = never> = {
   in?: $Enums.EmailSendStatus[] | Prisma.ListEnumEmailSendStatusFieldRefInput<$PrismaModel>
   notIn?: $Enums.EmailSendStatus[] | Prisma.ListEnumEmailSendStatusFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumEmailSendStatusFilter<$PrismaModel> | $Enums.EmailSendStatus
+}
+
+export type NestedEnumJobRoleWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.JobRole | Prisma.EnumJobRoleFieldRefInput<$PrismaModel>
+  in?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  notIn?: $Enums.JobRole[] | Prisma.ListEnumJobRoleFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumJobRoleWithAggregatesFilter<$PrismaModel> | $Enums.JobRole
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumJobRoleFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumJobRoleFilter<$PrismaModel>
 }
 
 export type NestedEnumJobStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -465,11 +516,28 @@ export type NestedEnumEmailSendStatusWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumEmailSendStatusFilter<$PrismaModel>
 }
 
+export type NestedEnumAIProviderFilter<$PrismaModel = never> = {
+  equals?: $Enums.AIProvider | Prisma.EnumAIProviderFieldRefInput<$PrismaModel>
+  in?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAIProviderFilter<$PrismaModel> | $Enums.AIProvider
+}
+
 export type NestedEnumEmailTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.EmailType | Prisma.EnumEmailTypeFieldRefInput<$PrismaModel>
   in?: $Enums.EmailType[] | Prisma.ListEnumEmailTypeFieldRefInput<$PrismaModel>
   notIn?: $Enums.EmailType[] | Prisma.ListEnumEmailTypeFieldRefInput<$PrismaModel>
   not?: Prisma.NestedEnumEmailTypeFilter<$PrismaModel> | $Enums.EmailType
+}
+
+export type NestedEnumAIProviderWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AIProvider | Prisma.EnumAIProviderFieldRefInput<$PrismaModel>
+  in?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AIProvider[] | Prisma.ListEnumAIProviderFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAIProviderWithAggregatesFilter<$PrismaModel> | $Enums.AIProvider
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAIProviderFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAIProviderFilter<$PrismaModel>
 }
 
 export type NestedEnumEmailTypeWithAggregatesFilter<$PrismaModel = never> = {

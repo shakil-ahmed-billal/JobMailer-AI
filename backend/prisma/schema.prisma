@@ -16,6 +16,17 @@ enum JobStatus {
   OFFER
 }
 
+enum JobRole {
+  FRONTEND_DEVELOPER
+  FRONTEND_ENGINEER
+  BACKEND_DEVELOPER
+  BACKEND_ENGINEER
+  MERN_STACK_DEVELOPER
+  FULL_STACK_DEVELOPER
+  SOFTWARE_ENGINEER
+  CMS_DEVELOPER
+}
+
 enum ApplyStatus {
   NOT_APPLIED
   APPLIED
@@ -45,24 +56,36 @@ enum TaskStatus {
   OVERDUE
 }
 
+enum AIProvider {
+  OPENAI
+  GEMINI
+}
+
 // ============= Models =============
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  profileBio    String?
-  resumeLink    String?
-  linkedinLink  String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String    @id
+  name            String
+  email           String
+  emailVerified   Boolean   @default(false)
+  image           String?
+  profileBio      String?
+  resumeLink      String?
+  linkedinLink    String?
+  portfolioLink   String?
+  resumeContent   String?   @db.Text
+  skills          String?   @db.Text
+  experience      String?   @db.Text
+  education       String?   @db.Text
+  certifications  String?   @db.Text
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   
-  sessions      Session[]
-  accounts      Account[]
-  jobs          Job[]
-  tasks         Task[]
-  emails        Email[]
+  sessions        Session[]
+  accounts        Account[]
+  jobs            Job[]
+  tasks           Task[]
+  emails          Email[]
+  resumes         Resume[]
 
   @@unique([email])
   @@map("user")
@@ -129,6 +152,7 @@ model Job {
   location          String?
   salary            String?
   notes             String?          @db.Text
+  jobRole           JobRole          @default(SOFTWARE_ENGINEER)
 
   status            JobStatus        @default(DRAFT)
   applyStatus       ApplyStatus      @default(NOT_APPLIED)
@@ -149,12 +173,30 @@ model Job {
   @@map("job")
 }
 
+model Resume {
+  id        String   @id @default(uuid())
+  userId    String
+  jobRole   JobRole
+  fileUrl   String
+  fileName  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobRole])
+  @@index([userId])
+  @@index([jobRole])
+  @@map("resume")
+}
+
 model Email {
   id          String          @id @default(uuid())
   userId      String
   jobId       String
   subject     String
   content     String          @db.Text
+  aiProvider  AIProvider      @default(OPENAI)
   emailType   EmailType
   status      EmailSendStatus @default(NOT_SENT)
   sentAt      DateTime?
@@ -166,6 +208,7 @@ model Email {
   @@index([userId])
   @@index([jobId])
   @@index([emailType])
+  @@index([aiProvider])
   @@map("email")
 }
 

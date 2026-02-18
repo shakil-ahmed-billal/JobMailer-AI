@@ -1,4 +1,4 @@
-import { ApiResponse, Email, EmailType } from "@/types";
+import { ApiResponse, AIProvider, Email, EmailType } from "@/types";
 import { apiClient } from "./client";
 
 export const emailsApi = {
@@ -7,22 +7,27 @@ export const emailsApi = {
     return response.data.data;
   },
 
-  generate: async (jobId: string, userProfile: any) => {
+  generate: async (jobId: string, aiProvider: AIProvider = "OPENAI") => {
     const response = await apiClient.post<
       ApiResponse<{ subject: string; content: string }>
-    >("/emails/generate", {
+    >("/emails/generate-application", {
       jobId,
-      userProfile,
+      aiProvider,
     });
     return response.data.data;
   },
 
-  generateReply: async (emailId: string, instruction: string) => {
+  generateReply: async (
+    emailId: string,
+    instruction: string,
+    aiProvider: AIProvider = "OPENAI",
+  ) => {
     const response = await apiClient.post<
       ApiResponse<{ subject: string; content: string }>
-    >("/emails/reply-generate", {
+    >("/emails/generate-reply", {
       emailId,
-      instruction,
+      userPrompt: instruction,
+      aiProvider,
     });
     return response.data.data;
   },
@@ -32,7 +37,7 @@ export const emailsApi = {
     subject: string;
     content: string;
     emailType: EmailType;
-    to: string;
+    aiProvider?: AIProvider;
   }) => {
     const response = await apiClient.post<ApiResponse<Email>>(
       "/emails/send",

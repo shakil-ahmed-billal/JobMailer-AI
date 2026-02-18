@@ -15,8 +15,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { emailsApi } from "@/lib/api/emails";
+import { AIProvider } from "@/types";
 
 interface ReplyModalProps {
   open: boolean;
@@ -40,6 +48,7 @@ export function ReplyModal({
 }: ReplyModalProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [aiProvider, setAiProvider] = useState<AIProvider>("OPENAI");
 
   const [instruction, setInstruction] = useState("");
   const [subject, setSubject] = useState(`Re: Application for ${companyName}`);
@@ -50,21 +59,24 @@ export function ReplyModal({
       toast.error("Please enter instructions for the AI");
       return;
     }
+    if (!emailId) {
+      toast.error("Email ID is required");
+      return;
+    }
     setIsGenerating(true);
     try {
-      // Mock call or real API
       const response = await emailsApi.generateReply(
-        "mock-email-id",
+        emailId,
         instruction,
+        aiProvider,
       );
       if (response.subject) setSubject(response.subject);
       setContent(response.content);
-      toast.success("Reply generated successfully!");
-    } catch (error) {
-      toast.error("Failed to generate reply");
-      setContent(
-        `Dear Hiring Manager,\n\nThank you for your response. regarding "${instruction}"...\n\nSincerely,\n[Your Name]`,
-      );
+      toast.success(`Reply generated successfully using ${aiProvider === "OPENAI" ? "ChatGPT" : "Gemini"}!`);
+    } catch (error: unknown) {
+      const msg = (error as { response?: { data?: { message?: string } } })
+        ?.response?.data?.message;
+      toast.error(msg || "Failed to generate reply");
     } finally {
       setIsGenerating(false);
     }
@@ -78,13 +90,15 @@ export function ReplyModal({
         subject,
         content,
         emailType: "REPLY",
-        to: companyEmail,
+        aiProvider,
       });
       toast.success("Reply sent successfully!");
       onSuccess();
       onOpenChange(false);
-    } catch (error) {
-      toast.error("Failed to send reply");
+    } catch (error: unknown) {
+      const msg = (error as { response?: { data?: { message?: string } } })
+        ?.response?.data?.message;
+      toast.error(msg || "Failed to send reply");
     } finally {
       setIsSending(false);
     }
@@ -110,6 +124,19 @@ export function ReplyModal({
                 value={instruction}
                 onChange={(e) => setInstruction(e.target.value)}
               />
+              <Select
+                value={aiProvider}
+                onValueChange={(value) => setAiProvider(value as AIProvider)}
+                disabled={isGenerating}
+              >
+                <SelectTrigger className="w-[140px] shrink-0">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="OPENAI">ChatGPT</SelectItem>
+                  <SelectItem value="GEMINI">Gemini</SelectItem>
+                </SelectContent>
+              </Select>
               <Button
                 onClick={handleGenerateReply}
                 disabled={isGenerating || !instruction}

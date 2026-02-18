@@ -1,20 +1,25 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
 import {
+  AIProvider,
   EmailSendStatus,
   EmailType,
-  PrismaClient,
 } from "../../../generated/prisma/client";
 import { emailTransporter } from "../../config/email.config";
+import { geminiConfig } from "../../config/gemini.config";
 import { openaiConfig } from "../../config/openai.config";
 import { prisma } from "../../lib/prisma";
 
-
 const openai = new OpenAI({ apiKey: openaiConfig.apiKey });
+const genAI = geminiConfig.apiKey
+  ? new GoogleGenerativeAI(geminiConfig.apiKey)
+  : null;
 
 interface GenerateApplicationEmailInput {
   jobData: {
     companyName: string;
     jobTitle: string;
+    jobRole: string;
     jobDescription: string;
     companyEmail: string;
   };
@@ -22,9 +27,15 @@ interface GenerateApplicationEmailInput {
     name: string;
     email: string;
     profileBio?: string;
-    resumeLink?: string;
+    resumeContent?: string;
+    skills?: string;
+    experience?: string;
+    education?: string;
+    certifications?: string;
     linkedinLink?: string;
+    portfolioLink?: string;
   };
+  aiProvider: AIProvider;
 }
 
 interface GenerateReplyEmailInput {
@@ -35,130 +46,199 @@ interface GenerateReplyEmailInput {
   userPrompt: string;
   userData: {
     name: string;
+    resumeContent?: string;
+    skills?: string;
   };
+  aiProvider: AIProvider;
+}
+
+function buildApplicationPrompt(input: GenerateApplicationEmailInput): string {
+  const { jobData, userData } = input;
+
+  return `You are a professional career assistant specializing in writing compelling job application emails.
+
+Write a professional job application email with the following information:
+
+CANDIDATE INFORMATION:
+Name: ${userData.name}
+Email: ${userData.email}
+${userData.profileBio ? `Bio: ${userData.profileBio}` : ""}
+${userData.skills ? `Skills: ${userData.skills}` : ""}
+${userData.experience ? `Experience Summary: ${userData.experience}` : ""}
+${userData.education ? `Education: ${userData.education}` : ""}
+${userData.certifications ? `Certifications: ${userData.certifications}` : ""}
+${userData.linkedinLink ? `LinkedIn: ${userData.linkedinLink}` : ""}
+${userData.portfolioLink ? `Portfolio: ${userData.portfolioLink}` : ""}
+
+FULL RESUME CONTENT:
+${userData.resumeContent || "Resume content not provided"}
+
+JOB INFORMATION:
+Company Name: ${jobData.companyName}
+Job Role: ${jobData.jobRole}
+Job Title: ${jobData.jobTitle}
+Job Description:
+${jobData.jobDescription}
+
+REQUIREMENTS:
+- Keep tone professional and confident
+- Length: 150-250 words
+- Show strong alignment with job requirements
+- Mention relevant skills from resume that match the job description
+- Highlight specific experience that relates to the role
+- Do not sound generic or templated
+- Do not mention AI or automation
+- Show genuine interest in the position and company
+- Include a professional closing
+
+FORMAT:
+Return the email in this exact format:
+SUBJECT: [Your subject line]
+
+[Email body]
+
+Generate the email now.`;
+}
+
+function buildReplyPrompt(input: GenerateReplyEmailInput): string {
+  const { originalEmail, userPrompt, userData } = input;
+
+  return `You are a professional career assistant. Generate a professional email reply based on the following:
+
+ORIGINAL EMAIL:
+Subject: ${originalEmail.subject}
+Content:
+${originalEmail.content}
+
+USER'S INSTRUCTIONS: ${userPrompt}
+
+SENDER INFORMATION:
+Name: ${userData.name}
+${userData.skills ? `Skills: ${userData.skills}` : ""}
+${userData.resumeContent ? `Resume Context:\n${userData.resumeContent}` : ""}
+
+REQUIREMENTS:
+- Has a clear subject line (return as "SUBJECT: [subject]")
+- Addresses the recipient professionally
+- Follows the user's instructions precisely
+- Maintains a professional and appropriate tone
+- Keep it concise and to the point (100-200 words)
+- Do not mention AI or automation
+
+FORMAT:
+SUBJECT: [Your subject line]
+
+[Email body]`;
+}
+
+async function generateWithOpenAI(prompt: string): Promise<string> {
+  const completion = await openai.chat.completions.create({
+    model: openaiConfig.model,
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are an expert at writing professional job application emails and replies.",
+      },
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+    max_tokens: openaiConfig.maxTokens,
+    temperature: 0.7,
+  });
+
+  return completion.choices[0].message.content || "";
+}
+
+async function generateWithGemini(prompt: string): Promise<string> {
+  if (!genAI) {
+    throw new Error("Gemini API key not configured");
+  }
+
+  const model = genAI.getGenerativeModel({ model: geminiConfig.model });
+
+  const result = await model.generateContent({
+    contents: [
+      {
+        role: "user",
+        parts: [{ text: prompt }],
+      },
+    ],
+    generationConfig: {
+      maxOutputTokens: geminiConfig.maxTokens,
+      temperature: 0.7,
+    },
+  });
+
+  const response = await result.response;
+  return response.text();
+}
+
+function parseEmailResponse(response: string): {
+  subject: string;
+  content: string;
+} {
+  const subjectMatch = response.match(/SUBJECT:\s*(.+)/i);
+  const subject = subjectMatch ? subjectMatch[1].trim() : "Application Email";
+
+  const content = response
+    .replace(/SUBJECT:\s*.+/i, "")
+    .trim()
+    .replace(/^[-\s]*/gm, ""); // Remove leading dashes/spaces
+
+  return { subject, content };
 }
 
 const generateApplicationEmail = async (
   input: GenerateApplicationEmailInput,
 ) => {
-  const { jobData, userData } = input;
-
-  const prompt = `You are a professional job application email writer. Generate a compelling job application email with the following information:
-
-Company: ${jobData.companyName}
-Job Title: ${jobData.jobTitle}
-Job Description: ${jobData.jobDescription}
-
-Applicant Information:
-Name: ${userData.name}
-Email: ${userData.email}
-${userData.profileBio ? `Bio: ${userData.profileBio}` : ""}
-${userData.resumeLink ? `Resume: ${userData.resumeLink}` : ""}
-${userData.linkedinLink ? `LinkedIn: ${userData.linkedinLink}` : ""}
-
-Generate a professional, concise email that:
-1. Has a clear subject line (return as "SUBJECT: [subject]")
-2. Addresses the hiring manager professionally
-3. Shows genuine interest in the position
-4. Highlights relevant qualifications from the bio
-5. Mentions attached resume/LinkedIn if provided
-6. Includes a professional closing
-7. Keep it under 250 words
-
-Format:
-SUBJECT: [Your subject line]
-
-[Email body]`;
+  const { aiProvider } = input;
+  const prompt = buildApplicationPrompt(input);
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: openaiConfig.model,
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are an expert at writing professional job application emails.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      max_tokens: openaiConfig.maxTokens,
-      temperature: 0.7,
-    });
+    let response: string;
 
-    const response = completion.choices[0].message.content || "";
+    if (aiProvider === AIProvider.OPENAI) {
+      response = await generateWithOpenAI(prompt);
+    } else if (aiProvider === AIProvider.GEMINI) {
+      response = await generateWithGemini(prompt);
+    } else {
+      throw new Error(`Unsupported AI provider: ${aiProvider}`);
+    }
 
-    // Parse subject and content
-    const subjectMatch = response.match(/SUBJECT:\s*(.+)/i);
-    const subject = subjectMatch
-      ? subjectMatch[1].trim()
-      : `Application for ${jobData.jobTitle}`;
-
-    const content = response.replace(/SUBJECT:\s*.+/i, "").trim();
+    const { subject, content } = parseEmailResponse(response);
 
     return { subject, content };
   } catch (error: any) {
-    throw new Error(`AI generation failed: ${error.message}`);
+    const providerName = aiProvider === AIProvider.OPENAI ? "OpenAI" : "Gemini";
+    console.error(`${providerName} generation error:`, error.message);
+    throw new Error(`${providerName} generation failed: ${error.message}`);
   }
 };
 
 const generateReplyEmail = async (input: GenerateReplyEmailInput) => {
-  const { originalEmail, userPrompt, userData } = input;
-
-  const prompt = `Generate a professional email reply based on the following:
-
-Original Email Subject: ${originalEmail.subject}
-Original Email Content:
-${originalEmail.content}
-
-User's Instructions: ${userPrompt}
-
-Sender Name: ${userData.name}
-
-Generate a professional reply that:
-1. Has a clear subject line (return as "SUBJECT: [subject]")
-2. Addresses the recipient professionally
-3. Follows the user's instructions
-4. Maintains a professional tone
-5. Keep it concise and to the point
-
-Format:
-SUBJECT: [Your subject line]
-
-[Email body]`;
+  const { aiProvider } = input;
+  const prompt = buildReplyPrompt(input);
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: openaiConfig.model,
-      messages: [
-        {
-          role: "system",
-          content: "You are an expert at writing professional email replies.",
-        },
-        {
-          role: "user",
-          content: prompt,
-        },
-      ],
-      max_tokens: openaiConfig.maxTokens,
-      temperature: 0.7,
-    });
+    let response: string;
 
-    const response = completion.choices[0].message.content || "";
+    if (aiProvider === AIProvider.OPENAI) {
+      response = await generateWithOpenAI(prompt);
+    } else if (aiProvider === AIProvider.GEMINI) {
+      response = await generateWithGemini(prompt);
+    } else {
+      throw new Error(`Unsupported AI provider: ${aiProvider}`);
+    }
 
-    // Parse subject and content
-    const subjectMatch = response.match(/SUBJECT:\s*(.+)/i);
-    const subject = subjectMatch
-      ? subjectMatch[1].trim()
-      : `Re: ${originalEmail.subject}`;
-
-    const content = response.replace(/SUBJECT:\s*.+/i, "").trim();
+    const { subject, content } = parseEmailResponse(response);
 
     return { subject, content };
   } catch (error: any) {
-    throw new Error(`AI generation failed: ${error.message}`);
+    const providerName = aiProvider === AIProvider.OPENAI ? "OpenAI" : "Gemini";
+    throw new Error(`${providerName} generation failed: ${error.message}`);
   }
 };
 
@@ -169,6 +249,12 @@ const sendEmail = async (
   userId: string,
   jobId: string,
   emailType: EmailType,
+  aiProvider: AIProvider,
+  attachment?: {
+    filename: string;
+    path: string;
+    contentType?: string;
+  },
 ) => {
   try {
     // Get user info for "from" field
@@ -188,15 +274,17 @@ const sendEmail = async (
       subject,
       text: content,
       html: content.replace(/\n/g, "<br>"),
+      ...(attachment && { attachments: [attachment] }),
     });
 
-    // Store email in database
+    // Store email in database with aiProvider
     const email = await prisma.email.create({
       data: {
         userId,
         jobId,
         subject,
         content,
+        aiProvider,
         emailType,
         status: EmailSendStatus.SENT,
         sentAt: new Date(),
@@ -218,13 +306,14 @@ const sendEmail = async (
 
     return email;
   } catch (error: any) {
-    // Store failed email
+    // Store failed email with aiProvider
     const email = await prisma.email.create({
       data: {
         userId,
         jobId,
         subject,
         content,
+        aiProvider,
         emailType,
         status: EmailSendStatus.FAILED,
       },

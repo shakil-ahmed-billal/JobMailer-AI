@@ -4,6 +4,7 @@ import {
   Briefcase,
   CheckSquare,
   FileText,
+  FileUp,
   LayoutDashboard,
   Mail,
   Settings,
@@ -36,6 +37,11 @@ const data = {
       title: "Jobs",
       url: "/jobs",
       icon: Briefcase,
+    },
+    {
+      title: "Resume Manager",
+      url: "/resumes",
+      icon: FileUp,
     },
     {
       title: "Tasks",

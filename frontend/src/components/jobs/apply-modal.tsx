@@ -15,10 +15,18 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { emailsApi } from "@/lib/api/emails";
 import { useAuthContext } from "@/lib/auth/auth-context";
-import { Job } from "@/types";
+import { formatJobRole } from "@/lib/job-roles";
+import { AIProvider, Job } from "@/types";
 
 interface ApplyModalProps {
   open: boolean;
@@ -36,6 +44,7 @@ export function ApplyModal({
   const { user } = useAuthContext();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [aiProvider, setAiProvider] = useState<AIProvider>("OPENAI");
 
   const [subject, setSubject] = useState(
     `Application for ${job.jobTitle} - ${user?.name}`,
@@ -45,18 +54,14 @@ export function ApplyModal({
   const handleGenerateEmail = async () => {
     setIsGenerating(true);
     try {
-      // In a real app, this calls the AI endpoint
-      // For now, we'll mock the response if backend isn't ready or just call it
-      const response = await emailsApi.generate(job.id, user);
+      const response = await emailsApi.generate(job.id, aiProvider);
       setSubject(response.subject);
       setContent(response.content);
-      toast.success("Email generated successfully!");
-    } catch (error) {
-      toast.error("Failed to generate email");
-      // Fallback for demo if API fails
-      setContent(
-        `Dear Hiring Manager at ${job.companyName},\n\nI am writing to express my strong interest in the ${job.jobTitle} position...`,
-      );
+      toast.success(`Email generated successfully using ${aiProvider === "OPENAI" ? "ChatGPT" : "Gemini"}!`);
+    } catch (error: unknown) {
+      const msg = (error as { response?: { data?: { message?: string } } })
+        ?.response?.data?.message;
+      toast.error(msg || "Failed to generate email");
     } finally {
       setIsGenerating(false);
     }
@@ -70,13 +75,15 @@ export function ApplyModal({
         subject,
         content,
         emailType: "APPLICATION",
-        to: job.companyEmail,
+        aiProvider,
       });
       toast.success("Application sent successfully!");
       onSuccess();
       onOpenChange(false);
-    } catch (error) {
-      toast.error("Failed to send email");
+    } catch (error: unknown) {
+      const msg = (error as { response?: { data?: { message?: string } } })
+        ?.response?.data?.message;
+      toast.error(msg || "Failed to send email");
     } finally {
       setIsSending(false);
     }
@@ -100,7 +107,8 @@ export function ApplyModal({
               {job.companyEmail}
             </div>
             <div>
-              <span className="font-semibold">Role:</span> {job.jobTitle}
+              <span className="font-semibold">Job Role:</span>{" "}
+              {formatJobRole(job.jobRole)}
             </div>
           </div>
 
@@ -114,22 +122,37 @@ export function ApplyModal({
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-2">
               <Label htmlFor="content">Email Content</Label>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleGenerateEmail}
-                disabled={isGenerating}
-                className="h-8"
-              >
-                {isGenerating ? (
-                  <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                ) : (
-                  <Sparkles className="mr-2 h-3 w-3" />
-                )}
-                Generate with AI
-              </Button>
+              <div className="flex items-center gap-2">
+                <Select
+                  value={aiProvider}
+                  onValueChange={(value) => setAiProvider(value as AIProvider)}
+                  disabled={isGenerating}
+                >
+                  <SelectTrigger className="w-[140px] h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="OPENAI">ChatGPT</SelectItem>
+                    <SelectItem value="GEMINI">Gemini</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGenerateEmail}
+                  disabled={isGenerating}
+                  className="h-8"
+                >
+                  {isGenerating ? (
+                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                  ) : (
+                    <Sparkles className="mr-2 h-3 w-3" />
+                  )}
+                  Generate
+                </Button>
+              </div>
             </div>
             <Textarea
               id="content"

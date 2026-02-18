@@ -37,6 +37,7 @@ export type JobMinAggregateOutputType = {
   location: string | null
   salary: string | null
   notes: string | null
+  jobRole: $Enums.JobRole | null
   status: $Enums.JobStatus | null
   applyStatus: $Enums.ApplyStatus | null
   responseStatus: $Enums.ResponseStatus | null
@@ -59,6 +60,7 @@ export type JobMaxAggregateOutputType = {
   location: string | null
   salary: string | null
   notes: string | null
+  jobRole: $Enums.JobRole | null
   status: $Enums.JobStatus | null
   applyStatus: $Enums.ApplyStatus | null
   responseStatus: $Enums.ResponseStatus | null
@@ -81,6 +83,7 @@ export type JobCountAggregateOutputType = {
   location: number
   salary: number
   notes: number
+  jobRole: number
   status: number
   applyStatus: number
   responseStatus: number
@@ -105,6 +108,7 @@ export type JobMinAggregateInputType = {
   location?: true
   salary?: true
   notes?: true
+  jobRole?: true
   status?: true
   applyStatus?: true
   responseStatus?: true
@@ -127,6 +131,7 @@ export type JobMaxAggregateInputType = {
   location?: true
   salary?: true
   notes?: true
+  jobRole?: true
   status?: true
   applyStatus?: true
   responseStatus?: true
@@ -149,6 +154,7 @@ export type JobCountAggregateInputType = {
   location?: true
   salary?: true
   notes?: true
+  jobRole?: true
   status?: true
   applyStatus?: true
   responseStatus?: true
@@ -244,6 +250,7 @@ export type JobGroupByOutputType = {
   location: string | null
   salary: string | null
   notes: string | null
+  jobRole: $Enums.JobRole
   status: $Enums.JobStatus
   applyStatus: $Enums.ApplyStatus
   responseStatus: $Enums.ResponseStatus
@@ -287,6 +294,7 @@ export type JobWhereInput = {
   location?: Prisma.StringNullableFilter<"Job"> | string | null
   salary?: Prisma.StringNullableFilter<"Job"> | string | null
   notes?: Prisma.StringNullableFilter<"Job"> | string | null
+  jobRole?: Prisma.EnumJobRoleFilter<"Job"> | $Enums.JobRole
   status?: Prisma.EnumJobStatusFilter<"Job"> | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFilter<"Job"> | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFilter<"Job"> | $Enums.ResponseStatus
@@ -312,6 +320,7 @@ export type JobOrderByWithRelationInput = {
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   salary?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobRole?: Prisma.SortOrder
   status?: Prisma.SortOrder
   applyStatus?: Prisma.SortOrder
   responseStatus?: Prisma.SortOrder
@@ -340,6 +349,7 @@ export type JobWhereUniqueInput = Prisma.AtLeast<{
   location?: Prisma.StringNullableFilter<"Job"> | string | null
   salary?: Prisma.StringNullableFilter<"Job"> | string | null
   notes?: Prisma.StringNullableFilter<"Job"> | string | null
+  jobRole?: Prisma.EnumJobRoleFilter<"Job"> | $Enums.JobRole
   status?: Prisma.EnumJobStatusFilter<"Job"> | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFilter<"Job"> | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFilter<"Job"> | $Enums.ResponseStatus
@@ -365,6 +375,7 @@ export type JobOrderByWithAggregationInput = {
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   salary?: Prisma.SortOrderInput | Prisma.SortOrder
   notes?: Prisma.SortOrderInput | Prisma.SortOrder
+  jobRole?: Prisma.SortOrder
   status?: Prisma.SortOrder
   applyStatus?: Prisma.SortOrder
   responseStatus?: Prisma.SortOrder
@@ -393,6 +404,7 @@ export type JobScalarWhereWithAggregatesInput = {
   location?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   salary?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
   notes?: Prisma.StringNullableWithAggregatesFilter<"Job"> | string | null
+  jobRole?: Prisma.EnumJobRoleWithAggregatesFilter<"Job"> | $Enums.JobRole
   status?: Prisma.EnumJobStatusWithAggregatesFilter<"Job"> | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusWithAggregatesFilter<"Job"> | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusWithAggregatesFilter<"Job"> | $Enums.ResponseStatus
@@ -414,6 +426,7 @@ export type JobCreateInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -439,6 +452,7 @@ export type JobUncheckedCreateInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -462,6 +476,7 @@ export type JobUpdateInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -487,6 +502,7 @@ export type JobUncheckedUpdateInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -511,6 +527,7 @@ export type JobCreateManyInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -532,6 +549,7 @@ export type JobUpdateManyMutationInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -554,6 +572,7 @@ export type JobUncheckedUpdateManyInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -586,6 +605,7 @@ export type JobCountOrderByAggregateInput = {
   location?: Prisma.SortOrder
   salary?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  jobRole?: Prisma.SortOrder
   status?: Prisma.SortOrder
   applyStatus?: Prisma.SortOrder
   responseStatus?: Prisma.SortOrder
@@ -608,6 +628,7 @@ export type JobMaxOrderByAggregateInput = {
   location?: Prisma.SortOrder
   salary?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  jobRole?: Prisma.SortOrder
   status?: Prisma.SortOrder
   applyStatus?: Prisma.SortOrder
   responseStatus?: Prisma.SortOrder
@@ -630,6 +651,7 @@ export type JobMinOrderByAggregateInput = {
   location?: Prisma.SortOrder
   salary?: Prisma.SortOrder
   notes?: Prisma.SortOrder
+  jobRole?: Prisma.SortOrder
   status?: Prisma.SortOrder
   applyStatus?: Prisma.SortOrder
   responseStatus?: Prisma.SortOrder
@@ -684,6 +706,10 @@ export type JobUncheckedUpdateManyWithoutUserNestedInput = {
   update?: Prisma.JobUpdateWithWhereUniqueWithoutUserInput | Prisma.JobUpdateWithWhereUniqueWithoutUserInput[]
   updateMany?: Prisma.JobUpdateManyWithWhereWithoutUserInput | Prisma.JobUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.JobScalarWhereInput | Prisma.JobScalarWhereInput[]
+}
+
+export type EnumJobRoleFieldUpdateOperationsInput = {
+  set?: $Enums.JobRole
 }
 
 export type EnumJobStatusFieldUpdateOperationsInput = {
@@ -742,6 +768,7 @@ export type JobCreateWithoutUserInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -765,6 +792,7 @@ export type JobUncheckedCreateWithoutUserInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -818,6 +846,7 @@ export type JobScalarWhereInput = {
   location?: Prisma.StringNullableFilter<"Job"> | string | null
   salary?: Prisma.StringNullableFilter<"Job"> | string | null
   notes?: Prisma.StringNullableFilter<"Job"> | string | null
+  jobRole?: Prisma.EnumJobRoleFilter<"Job"> | $Enums.JobRole
   status?: Prisma.EnumJobStatusFilter<"Job"> | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFilter<"Job"> | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFilter<"Job"> | $Enums.ResponseStatus
@@ -839,6 +868,7 @@ export type JobCreateWithoutEmailsInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -863,6 +893,7 @@ export type JobUncheckedCreateWithoutEmailsInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -901,6 +932,7 @@ export type JobUpdateWithoutEmailsInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -925,6 +957,7 @@ export type JobUncheckedUpdateWithoutEmailsInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -947,6 +980,7 @@ export type JobCreateWithoutTasksInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -971,6 +1005,7 @@ export type JobUncheckedCreateWithoutTasksInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -1009,6 +1044,7 @@ export type JobUpdateWithoutTasksInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -1033,6 +1069,7 @@ export type JobUncheckedUpdateWithoutTasksInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -1055,6 +1092,7 @@ export type JobCreateManyUserInput = {
   location?: string | null
   salary?: string | null
   notes?: string | null
+  jobRole?: $Enums.JobRole
   status?: $Enums.JobStatus
   applyStatus?: $Enums.ApplyStatus
   responseStatus?: $Enums.ResponseStatus
@@ -1076,6 +1114,7 @@ export type JobUpdateWithoutUserInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -1099,6 +1138,7 @@ export type JobUncheckedUpdateWithoutUserInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -1122,6 +1162,7 @@ export type JobUncheckedUpdateManyWithoutUserInput = {
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   salary?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   notes?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   status?: Prisma.EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
   applyStatus?: Prisma.EnumApplyStatusFieldUpdateOperationsInput | $Enums.ApplyStatus
   responseStatus?: Prisma.EnumResponseStatusFieldUpdateOperationsInput | $Enums.ResponseStatus
@@ -1184,6 +1225,7 @@ export type JobSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
   location?: boolean
   salary?: boolean
   notes?: boolean
+  jobRole?: boolean
   status?: boolean
   applyStatus?: boolean
   responseStatus?: boolean
@@ -1210,6 +1252,7 @@ export type JobSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extension
   location?: boolean
   salary?: boolean
   notes?: boolean
+  jobRole?: boolean
   status?: boolean
   applyStatus?: boolean
   responseStatus?: boolean
@@ -1233,6 +1276,7 @@ export type JobSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extension
   location?: boolean
   salary?: boolean
   notes?: boolean
+  jobRole?: boolean
   status?: boolean
   applyStatus?: boolean
   responseStatus?: boolean
@@ -1256,6 +1300,7 @@ export type JobSelectScalar = {
   location?: boolean
   salary?: boolean
   notes?: boolean
+  jobRole?: boolean
   status?: boolean
   applyStatus?: boolean
   responseStatus?: boolean
@@ -1265,7 +1310,7 @@ export type JobSelectScalar = {
   updatedAt?: boolean
 }
 
-export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companyName" | "companyEmail" | "jobTitle" | "jobDescription" | "companyWebsite" | "companyLinkedin" | "companyNumber" | "location" | "salary" | "notes" | "status" | "applyStatus" | "responseStatus" | "emailSendStatus" | "applyDate" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+export type JobOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "companyName" | "companyEmail" | "jobTitle" | "jobDescription" | "companyWebsite" | "companyLinkedin" | "companyNumber" | "location" | "salary" | "notes" | "jobRole" | "status" | "applyStatus" | "responseStatus" | "emailSendStatus" | "applyDate" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
 export type JobInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   tasks?: boolean | Prisma.Job$tasksArgs<ExtArgs>
@@ -1299,6 +1344,7 @@ export type $JobPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     location: string | null
     salary: string | null
     notes: string | null
+    jobRole: $Enums.JobRole
     status: $Enums.JobStatus
     applyStatus: $Enums.ApplyStatus
     responseStatus: $Enums.ResponseStatus
@@ -1744,6 +1790,7 @@ export interface JobFieldRefs {
   readonly location: Prisma.FieldRef<"Job", 'String'>
   readonly salary: Prisma.FieldRef<"Job", 'String'>
   readonly notes: Prisma.FieldRef<"Job", 'String'>
+  readonly jobRole: Prisma.FieldRef<"Job", 'JobRole'>
   readonly status: Prisma.FieldRef<"Job", 'JobStatus'>
   readonly applyStatus: Prisma.FieldRef<"Job", 'ApplyStatus'>
   readonly responseStatus: Prisma.FieldRef<"Job", 'ResponseStatus'>

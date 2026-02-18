@@ -33,6 +33,12 @@ export type UserMinAggregateOutputType = {
   profileBio: string | null
   resumeLink: string | null
   linkedinLink: string | null
+  portfolioLink: string | null
+  resumeContent: string | null
+  skills: string | null
+  experience: string | null
+  education: string | null
+  certifications: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -46,6 +52,12 @@ export type UserMaxAggregateOutputType = {
   profileBio: string | null
   resumeLink: string | null
   linkedinLink: string | null
+  portfolioLink: string | null
+  resumeContent: string | null
+  skills: string | null
+  experience: string | null
+  education: string | null
+  certifications: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -59,6 +71,12 @@ export type UserCountAggregateOutputType = {
   profileBio: number
   resumeLink: number
   linkedinLink: number
+  portfolioLink: number
+  resumeContent: number
+  skills: number
+  experience: number
+  education: number
+  certifications: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -74,6 +92,12 @@ export type UserMinAggregateInputType = {
   profileBio?: true
   resumeLink?: true
   linkedinLink?: true
+  portfolioLink?: true
+  resumeContent?: true
+  skills?: true
+  experience?: true
+  education?: true
+  certifications?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -87,6 +111,12 @@ export type UserMaxAggregateInputType = {
   profileBio?: true
   resumeLink?: true
   linkedinLink?: true
+  portfolioLink?: true
+  resumeContent?: true
+  skills?: true
+  experience?: true
+  education?: true
+  certifications?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +130,12 @@ export type UserCountAggregateInputType = {
   profileBio?: true
   resumeLink?: true
   linkedinLink?: true
+  portfolioLink?: true
+  resumeContent?: true
+  skills?: true
+  experience?: true
+  education?: true
+  certifications?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -186,6 +222,12 @@ export type UserGroupByOutputType = {
   profileBio: string | null
   resumeLink: string | null
   linkedinLink: string | null
+  portfolioLink: string | null
+  resumeContent: string | null
+  skills: string | null
+  experience: string | null
+  education: string | null
+  certifications: string | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -220,6 +262,12 @@ export type UserWhereInput = {
   profileBio?: Prisma.StringNullableFilter<"User"> | string | null
   resumeLink?: Prisma.StringNullableFilter<"User"> | string | null
   linkedinLink?: Prisma.StringNullableFilter<"User"> | string | null
+  portfolioLink?: Prisma.StringNullableFilter<"User"> | string | null
+  resumeContent?: Prisma.StringNullableFilter<"User"> | string | null
+  skills?: Prisma.StringNullableFilter<"User"> | string | null
+  experience?: Prisma.StringNullableFilter<"User"> | string | null
+  education?: Prisma.StringNullableFilter<"User"> | string | null
+  certifications?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -227,6 +275,7 @@ export type UserWhereInput = {
   jobs?: Prisma.JobListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   emails?: Prisma.EmailListRelationFilter
+  resumes?: Prisma.ResumeListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -238,6 +287,12 @@ export type UserOrderByWithRelationInput = {
   profileBio?: Prisma.SortOrderInput | Prisma.SortOrder
   resumeLink?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedinLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  portfolioLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  resumeContent?: Prisma.SortOrderInput | Prisma.SortOrder
+  skills?: Prisma.SortOrderInput | Prisma.SortOrder
+  experience?: Prisma.SortOrderInput | Prisma.SortOrder
+  education?: Prisma.SortOrderInput | Prisma.SortOrder
+  certifications?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
@@ -245,6 +300,7 @@ export type UserOrderByWithRelationInput = {
   jobs?: Prisma.JobOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
   emails?: Prisma.EmailOrderByRelationAggregateInput
+  resumes?: Prisma.ResumeOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -259,6 +315,12 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   profileBio?: Prisma.StringNullableFilter<"User"> | string | null
   resumeLink?: Prisma.StringNullableFilter<"User"> | string | null
   linkedinLink?: Prisma.StringNullableFilter<"User"> | string | null
+  portfolioLink?: Prisma.StringNullableFilter<"User"> | string | null
+  resumeContent?: Prisma.StringNullableFilter<"User"> | string | null
+  skills?: Prisma.StringNullableFilter<"User"> | string | null
+  experience?: Prisma.StringNullableFilter<"User"> | string | null
+  education?: Prisma.StringNullableFilter<"User"> | string | null
+  certifications?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -266,6 +328,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   jobs?: Prisma.JobListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
   emails?: Prisma.EmailListRelationFilter
+  resumes?: Prisma.ResumeListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -277,6 +340,12 @@ export type UserOrderByWithAggregationInput = {
   profileBio?: Prisma.SortOrderInput | Prisma.SortOrder
   resumeLink?: Prisma.SortOrderInput | Prisma.SortOrder
   linkedinLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  portfolioLink?: Prisma.SortOrderInput | Prisma.SortOrder
+  resumeContent?: Prisma.SortOrderInput | Prisma.SortOrder
+  skills?: Prisma.SortOrderInput | Prisma.SortOrder
+  experience?: Prisma.SortOrderInput | Prisma.SortOrder
+  education?: Prisma.SortOrderInput | Prisma.SortOrder
+  certifications?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -296,6 +365,12 @@ export type UserScalarWhereWithAggregatesInput = {
   profileBio?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   resumeLink?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   linkedinLink?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  portfolioLink?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  resumeContent?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  skills?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  experience?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  education?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  certifications?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -309,6 +384,12 @@ export type UserCreateInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -316,6 +397,7 @@ export type UserCreateInput = {
   jobs?: Prisma.JobCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -327,6 +409,12 @@ export type UserUncheckedCreateInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -334,6 +422,7 @@ export type UserUncheckedCreateInput = {
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -345,6 +434,12 @@ export type UserUpdateInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -352,6 +447,7 @@ export type UserUpdateInput = {
   jobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -363,6 +459,12 @@ export type UserUncheckedUpdateInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -370,6 +472,7 @@ export type UserUncheckedUpdateInput = {
   jobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -381,6 +484,12 @@ export type UserCreateManyInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -394,6 +503,12 @@ export type UserUpdateManyMutationInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -407,6 +522,12 @@ export type UserUncheckedUpdateManyInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -420,6 +541,12 @@ export type UserCountOrderByAggregateInput = {
   profileBio?: Prisma.SortOrder
   resumeLink?: Prisma.SortOrder
   linkedinLink?: Prisma.SortOrder
+  portfolioLink?: Prisma.SortOrder
+  resumeContent?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
+  experience?: Prisma.SortOrder
+  education?: Prisma.SortOrder
+  certifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -433,6 +560,12 @@ export type UserMaxOrderByAggregateInput = {
   profileBio?: Prisma.SortOrder
   resumeLink?: Prisma.SortOrder
   linkedinLink?: Prisma.SortOrder
+  portfolioLink?: Prisma.SortOrder
+  resumeContent?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
+  experience?: Prisma.SortOrder
+  education?: Prisma.SortOrder
+  certifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -446,6 +579,12 @@ export type UserMinOrderByAggregateInput = {
   profileBio?: Prisma.SortOrder
   resumeLink?: Prisma.SortOrder
   linkedinLink?: Prisma.SortOrder
+  portfolioLink?: Prisma.SortOrder
+  resumeContent?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
+  experience?: Prisma.SortOrder
+  education?: Prisma.SortOrder
+  certifications?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -513,6 +652,20 @@ export type UserUpdateOneRequiredWithoutJobsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutJobsInput, Prisma.UserUpdateWithoutJobsInput>, Prisma.UserUncheckedUpdateWithoutJobsInput>
 }
 
+export type UserCreateNestedOneWithoutResumesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutResumesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutResumesInput
+  upsert?: Prisma.UserUpsertWithoutResumesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutResumesInput, Prisma.UserUpdateWithoutResumesInput>, Prisma.UserUncheckedUpdateWithoutResumesInput>
+}
+
 export type UserCreateNestedOneWithoutEmailsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutEmailsInput, Prisma.UserUncheckedCreateWithoutEmailsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutEmailsInput
@@ -550,12 +703,19 @@ export type UserCreateWithoutSessionsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -567,12 +727,19 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -600,12 +767,19 @@ export type UserUpdateWithoutSessionsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -617,12 +791,19 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -634,12 +815,19 @@ export type UserCreateWithoutAccountsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -651,12 +839,19 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -684,12 +879,19 @@ export type UserUpdateWithoutAccountsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -701,12 +903,19 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutJobsInput = {
@@ -718,12 +927,19 @@ export type UserCreateWithoutJobsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutJobsInput = {
@@ -735,12 +951,19 @@ export type UserUncheckedCreateWithoutJobsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutJobsInput = {
@@ -768,12 +991,19 @@ export type UserUpdateWithoutJobsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutJobsInput = {
@@ -785,10 +1015,129 @@ export type UserUncheckedUpdateWithoutJobsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutResumesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  profileBio?: string | null
+  resumeLink?: string | null
+  linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  emails?: Prisma.EmailCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutResumesInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  profileBio?: string | null
+  resumeLink?: string | null
+  linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutResumesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+}
+
+export type UserUpsertWithoutResumesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutResumesInput, Prisma.UserUncheckedUpdateWithoutResumesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutResumesInput, Prisma.UserUncheckedCreateWithoutResumesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutResumesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutResumesInput, Prisma.UserUncheckedUpdateWithoutResumesInput>
+}
+
+export type UserUpdateWithoutResumesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutResumesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -802,12 +1151,19 @@ export type UserCreateWithoutEmailsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmailsInput = {
@@ -819,12 +1175,19 @@ export type UserUncheckedCreateWithoutEmailsInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmailsInput = {
@@ -852,12 +1215,19 @@ export type UserUpdateWithoutEmailsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmailsInput = {
@@ -869,12 +1239,19 @@ export type UserUncheckedUpdateWithoutEmailsInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -886,12 +1263,19 @@ export type UserCreateWithoutTasksInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -903,12 +1287,19 @@ export type UserUncheckedCreateWithoutTasksInput = {
   profileBio?: string | null
   resumeLink?: string | null
   linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   jobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -936,12 +1327,19 @@ export type UserUpdateWithoutTasksInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -953,12 +1351,19 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   jobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -972,6 +1377,7 @@ export type UserCountOutputType = {
   jobs: number
   tasks: number
   emails: number
+  resumes: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -980,6 +1386,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   jobs?: boolean | UserCountOutputTypeCountJobsArgs
   tasks?: boolean | UserCountOutputTypeCountTasksArgs
   emails?: boolean | UserCountOutputTypeCountEmailsArgs
+  resumes?: boolean | UserCountOutputTypeCountResumesArgs
 }
 
 /**
@@ -1027,6 +1434,13 @@ export type UserCountOutputTypeCountEmailsArgs<ExtArgs extends runtime.Types.Ext
   where?: Prisma.EmailWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountResumesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResumeWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1037,6 +1451,12 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   profileBio?: boolean
   resumeLink?: boolean
   linkedinLink?: boolean
+  portfolioLink?: boolean
+  resumeContent?: boolean
+  skills?: boolean
+  experience?: boolean
+  education?: boolean
+  certifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
@@ -1044,6 +1464,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   jobs?: boolean | Prisma.User$jobsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   emails?: boolean | Prisma.User$emailsArgs<ExtArgs>
+  resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1056,6 +1477,12 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   profileBio?: boolean
   resumeLink?: boolean
   linkedinLink?: boolean
+  portfolioLink?: boolean
+  resumeContent?: boolean
+  skills?: boolean
+  experience?: boolean
+  education?: boolean
+  certifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1069,6 +1496,12 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   profileBio?: boolean
   resumeLink?: boolean
   linkedinLink?: boolean
+  portfolioLink?: boolean
+  resumeContent?: boolean
+  skills?: boolean
+  experience?: boolean
+  education?: boolean
+  certifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1082,17 +1515,24 @@ export type UserSelectScalar = {
   profileBio?: boolean
   resumeLink?: boolean
   linkedinLink?: boolean
+  portfolioLink?: boolean
+  resumeContent?: boolean
+  skills?: boolean
+  experience?: boolean
+  education?: boolean
+  certifications?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "profileBio" | "resumeLink" | "linkedinLink" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "profileBio" | "resumeLink" | "linkedinLink" | "portfolioLink" | "resumeContent" | "skills" | "experience" | "education" | "certifications" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
   jobs?: boolean | Prisma.User$jobsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   emails?: boolean | Prisma.User$emailsArgs<ExtArgs>
+  resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1106,6 +1546,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     jobs: Prisma.$JobPayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
     emails: Prisma.$EmailPayload<ExtArgs>[]
+    resumes: Prisma.$ResumePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1116,6 +1557,12 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     profileBio: string | null
     resumeLink: string | null
     linkedinLink: string | null
+    portfolioLink: string | null
+    resumeContent: string | null
+    skills: string | null
+    experience: string | null
+    education: string | null
+    certifications: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1517,6 +1964,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   jobs<T extends Prisma.User$jobsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.User$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emails<T extends Prisma.User$emailsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$emailsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  resumes<T extends Prisma.User$resumesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1554,6 +2002,12 @@ export interface UserFieldRefs {
   readonly profileBio: Prisma.FieldRef<"User", 'String'>
   readonly resumeLink: Prisma.FieldRef<"User", 'String'>
   readonly linkedinLink: Prisma.FieldRef<"User", 'String'>
+  readonly portfolioLink: Prisma.FieldRef<"User", 'String'>
+  readonly resumeContent: Prisma.FieldRef<"User", 'String'>
+  readonly skills: Prisma.FieldRef<"User", 'String'>
+  readonly experience: Prisma.FieldRef<"User", 'String'>
+  readonly education: Prisma.FieldRef<"User", 'String'>
+  readonly certifications: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }
@@ -2061,6 +2515,30 @@ export type User$emailsArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.EmailScalarFieldEnum | Prisma.EmailScalarFieldEnum[]
+}
+
+/**
+ * User.resumes
+ */
+export type User$resumesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Resume
+   */
+  select?: Prisma.ResumeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Resume
+   */
+  omit?: Prisma.ResumeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResumeInclude<ExtArgs> | null
+  where?: Prisma.ResumeWhereInput
+  orderBy?: Prisma.ResumeOrderByWithRelationInput | Prisma.ResumeOrderByWithRelationInput[]
+  cursor?: Prisma.ResumeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResumeScalarFieldEnum | Prisma.ResumeScalarFieldEnum[]
 }
 
 /**

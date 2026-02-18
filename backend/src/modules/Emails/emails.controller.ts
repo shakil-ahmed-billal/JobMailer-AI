@@ -1,16 +1,26 @@
 import { Request, Response } from "express";
-import { PrismaClient } from "../../../generated/prisma/client";
+import { AIProvider } from "../../../generated/prisma/client";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { EmailsService } from "./emails.service";
 import { prisma } from "../../lib/prisma";
+import { ResumesService } from "../Resumes/resumes.service";
 
 
 
 const generateApplicationEmail = catchAsync(
   async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
-    const { jobId } = req.body;
+    const { jobId, aiProvider = AIProvider.OPENAI } = req.body;
+
+    // Validate AI provider
+    if (!Object.values(AIProvider).includes(aiProvider)) {
+      return sendResponse(res, {
+        statusCode: 400,
+        success: false,
+        message: "Invalid AI provider. Must be OPENAI or GEMINI",
+      });
+    }
 
     // Get job data
     const job = await prisma.job.findFirst({
@@ -25,7 +35,7 @@ const generateApplicationEmail = catchAsync(
       });
     }
 
-    // Get user data
+    // Get user data with resume content
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
@@ -43,6 +53,7 @@ const generateApplicationEmail = catchAsync(
         jobData: {
           companyName: job.companyName,
           jobTitle: job.jobTitle,
+          jobRole: job.jobRole,
           jobDescription: job.jobDescription,
           companyEmail: job.companyEmail,
         },
@@ -50,9 +61,15 @@ const generateApplicationEmail = catchAsync(
           name: user.name,
           email: user.email,
           profileBio: user.profileBio || undefined,
-          resumeLink: user.resumeLink || undefined,
+          resumeContent: user.resumeContent || undefined,
+          skills: user.skills || undefined,
+          experience: user.experience || undefined,
+          education: user.education || undefined,
+          certifications: user.certifications || undefined,
           linkedinLink: user.linkedinLink || undefined,
+          portfolioLink: user.portfolioLink || undefined,
         },
+        aiProvider: aiProvider as AIProvider,
       });
 
       sendResponse(res, {
@@ -73,7 +90,16 @@ const generateApplicationEmail = catchAsync(
 
 const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
-  const { emailId, userPrompt } = req.body;
+  const { emailId, userPrompt, aiProvider = AIProvider.OPENAI } = req.body;
+
+  // Validate AI provider
+  if (!Object.values(AIProvider).includes(aiProvider)) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: "Invalid AI provider. Must be OPENAI or GEMINI",
+    });
+  }
 
   // Get original email
   const originalEmail = await EmailsService.getEmailById(userId, emailId);
@@ -86,7 +112,7 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
     });
   }
 
-  // Get user data
+  // Get user data with resume content
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -108,7 +134,10 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
       userPrompt,
       userData: {
         name: user.name,
+        resumeContent: user.resumeContent || undefined,
+        skills: user.skills || undefined,
       },
+      aiProvider: aiProvider as AIProvider,
     });
 
     sendResponse(res, {
@@ -128,7 +157,16 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
 
 const sendEmail = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
-  const { jobId, subject, content, emailType } = req.body;
+  const { jobId, subject, content, emailType, aiProvider = AIProvider.OPENAI } = req.body;
+
+  // Validate AI provider
+  if (!Object.values(AIProvider).includes(aiProvider)) {
+    return sendResponse(res, {
+      statusCode: 400,
+      success: false,
+      message: "Invalid AI provider. Must be OPENAI or GEMINI",
+    });
+  }
 
   // Get job to get company email
   const job = await prisma.job.findFirst({
@@ -144,6 +182,22 @@ const sendEmail = catchAsync(async (req: Request, res: Response) => {
   }
 
   try {
+    // Find matching resume for this job role and ensure file exists
+    const resume = await ResumesService.getResumeByUserAndRole(
+      userId,
+      job.jobRole,
+    );
+    if (!resume) {
+      return sendResponse(res, {
+        statusCode: 400,
+        success: false,
+        message:
+          "No resume uploaded for this role. Please upload resume first.",
+      });
+    }
+
+    const { absolutePath } = await ResumesService.getResumeFile(userId, resume.id);
+
     const result = await EmailsService.sendEmail(
       job.companyEmail,
       subject,
@@ -151,6 +205,12 @@ const sendEmail = catchAsync(async (req: Request, res: Response) => {
       userId,
       jobId,
       emailType,
+      aiProvider as AIProvider,
+      {
+        filename: resume.fileName,
+        path: absolutePath,
+        contentType: "application/pdf",
+      },
     );
 
     sendResponse(res, {

@@ -27,7 +27,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { authClient } from "@/lib/auth/auth-client";
+import { usersApi } from "@/lib/api/users";
 import { useAuthContext } from "@/lib/auth/auth-context";
 
 const profileSchema = z.object({
@@ -44,6 +44,16 @@ const profileSchema = z.object({
     .url("Must be a valid URL")
     .optional()
     .or(z.literal("")),
+  portfolioLink: z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.literal("")),
+  resumeContent: z.string().optional(),
+  skills: z.string().optional(),
+  experience: z.string().optional(),
+  education: z.string().optional(),
+  certifications: z.string().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -60,47 +70,65 @@ export default function ProfilePage() {
       profileBio: "",
       resumeLink: "",
       linkedinLink: "",
+      portfolioLink: "",
+      resumeContent: "",
+      skills: "",
+      experience: "",
+      education: "",
+      certifications: "",
     },
   });
 
   // Load user data when available
   useEffect(() => {
-    if (user) {
-      form.reset({
-        name: user.name || "",
-        email: user.email || "",
-        profileBio: user.profileBio || "",
-        resumeLink: user.resumeLink || "",
-        linkedinLink: user.linkedinLink || "",
-      });
-    }
+    const loadProfile = async () => {
+      try {
+        const profileData = await usersApi.getProfile();
+        form.reset({
+          name: profileData.name || "",
+          email: profileData.email || "",
+          profileBio: profileData.profileBio || "",
+          resumeLink: profileData.resumeLink || "",
+          linkedinLink: profileData.linkedinLink || "",
+          portfolioLink: profileData.portfolioLink || "",
+          resumeContent: profileData.resumeContent || "",
+          skills: profileData.skills || "",
+          experience: profileData.experience || "",
+          education: profileData.education || "",
+          certifications: profileData.certifications || "",
+        });
+      } catch (error) {
+        // Fallback to user from context if API fails
+        if (user) {
+          form.reset({
+            name: user.name || "",
+            email: user.email || "",
+            profileBio: user.profileBio || "",
+            resumeLink: user.resumeLink || "",
+            linkedinLink: user.linkedinLink || "",
+            portfolioLink: user.portfolioLink || "",
+            resumeContent: user.resumeContent || "",
+            skills: user.skills || "",
+            experience: user.experience || "",
+            education: user.education || "",
+            certifications: user.certifications || "",
+          });
+        }
+      }
+    };
+    loadProfile();
   }, [user, form]);
 
   async function onSubmit(data: ProfileFormValues) {
     setIsLoading(true);
     try {
-      // Update user profile using better-auth or custom endpoint
-      // Assuming better-auth has update user or we use a custom endpoint
-      // For now, let's assume we use a custom endpoint or better-auth's update
-      const { error } = await authClient.updateUser({
-        name: data.name,
-        // image: image if we had it
-      });
-
-      // Special handling for extra fields (bio, links) if better-auth doesn't support them natively in the basic user object
-      // We might need a separate API call for extended profile data if we stored them in a separate table or extended schema
-      // Since our Prisma schema has them on User model, we'll assume the backend handles it via a custom endpoint or better-auth extensions
-
-      // Let's call a custom endpoint for the extended profile data
-      // await apiClient.put('/users/profile', data);
-      // But for now, we'll just simulate success or assume better-auth is configured to handle these
-
-      if (error) throw error;
-
+      await usersApi.updateProfile(data);
       await checkSession(); // Refresh session data
       toast.success("Profile updated successfully");
-    } catch (error: any) {
-      toast.error("Failed to update profile");
+    } catch (error: unknown) {
+      const msg = (error as { response?: { data?: { message?: string } } })
+        ?.response?.data?.message;
+      toast.error(msg || "Failed to update profile");
     } finally {
       setIsLoading(false);
     }
@@ -210,6 +238,121 @@ export default function ProfilePage() {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="portfolioLink"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Portfolio Link</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="https://yourportfolio.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Separator className="my-4" />
+
+                <div className="space-y-4">
+                  <h3 className="text-lg font-semibold">Resume Content (for AI)</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Paste your full resume content here. This will be used by AI to generate personalized emails.
+                  </p>
+
+                  <FormField
+                    control={form.control}
+                    name="resumeContent"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Resume Content</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Paste your complete resume text here..."
+                            className="min-h-[200px] font-mono text-sm"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="skills"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Skills</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="React, Node.js, TypeScript, PostgreSQL..."
+                            className="min-h-[80px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="experience"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Experience Summary</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="5+ years of full-stack development experience..."
+                            className="min-h-[100px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="education"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Education</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="BS in Computer Science, University Name..."
+                            className="min-h-[80px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="certifications"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Certifications (Optional)</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="AWS Certified Developer, Google Cloud Professional..."
+                            className="min-h-[80px]"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <Button type="submit" disabled={isLoading}>
                   {isLoading && (
