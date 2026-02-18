@@ -33,8 +33,11 @@ export default function MessagesPage() {
       setLoading(true);
       try {
         const data = await emailsApi.getAll();
-        setEmails(data);
-        setFilteredEmails(data);
+        const emailList = Array.isArray(data)
+          ? data
+          : ((data as any)?.data ?? []);
+        setEmails(emailList);
+        setFilteredEmails(emailList);
       } catch (error) {
         console.error(error);
         toast.error("Failed to load messages");
@@ -137,7 +140,10 @@ export default function MessagesPage() {
                 <div className="flex items-center gap-4 shrink-0">
                   <Badge variant="outline">{email.status}</Badge>
                   <div className="text-xs text-muted-foreground">
-                    {format(new Date(email.createdAt), "MMM d, h:mm a")}
+                    {email.createdAt &&
+                    !isNaN(new Date(email.createdAt).getTime())
+                      ? format(new Date(email.createdAt), "MMM d, h:mm a")
+                      : "—"}
                   </div>
                 </div>
               </CardContent>

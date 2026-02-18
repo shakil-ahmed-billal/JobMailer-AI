@@ -75,7 +75,7 @@ export function JobTable({ jobs, onDelete, onApply }: JobTableProps) {
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  {job.applyDate
+                  {job.applyDate && !isNaN(new Date(job.applyDate).getTime())
                     ? format(new Date(job.applyDate), "MMM d, yyyy")
                     : "-"}
                 </TableCell>

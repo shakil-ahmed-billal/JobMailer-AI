@@ -17,6 +17,7 @@ router.use(authenticate);
 
 // Job stats for dashboard
 router.get("/stats", JobsController.getJobStats);
+router.get("/stats/overview", JobsController.getJobStats);
 
 // CRUD operations
 router.post("/", validateRequest(createJobSchema), JobsController.createJob);

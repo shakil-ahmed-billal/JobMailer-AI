@@ -23,7 +23,7 @@ export default function JobsPage() {
     setLoading(true);
     try {
       const data = await jobsApi.getAll(filters);
-      setJobs(data.data || []); // Handle paginated structure appropriately
+      setJobs(data || []);
     } catch (error) {
       console.error("Failed to fetch jobs", error);
       toast.error("Failed to load jobs");

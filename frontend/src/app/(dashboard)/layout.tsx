@@ -1,7 +1,8 @@
 "use client";
 
+import { AppSidebar } from "@/components/app-sidebar";
 import { Header } from "@/components/layout/header";
-import { Sidebar } from "@/components/layout/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AuthProvider } from "@/lib/auth/auth-context";
 
 export default function DashboardLayout({
@@ -11,15 +12,15 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthProvider>
-      <div className="flex min-h-screen bg-background text-foreground">
-        <div className="hidden border-r md:block md:w-64 lg:w-72 bg-muted/20">
-          <Sidebar className="h-full" />
-        </div>
-        <div className="flex flex-1 flex-col">
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
           <Header />
-          <main className="flex-1 space-y-4 p-4 md:p-8 pt-6">{children}</main>
-        </div>
-      </div>
+          <main className="flex flex-1 flex-col gap-4 p-4 md:p-6">
+            {children}
+          </main>
+        </SidebarInset>
+      </SidebarProvider>
     </AuthProvider>
   );
 }

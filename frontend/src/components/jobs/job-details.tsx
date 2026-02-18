@@ -126,12 +126,18 @@ export function JobDetails({
               </div>
               <div className="flex items-center text-sm">
                 <Calendar className="mr-2 h-4 w-4 text-muted-foreground" />
-                Posted: {format(new Date(job.createdAt), "MMM d, yyyy")}
+                Posted:{" "}
+                {job.createdAt && !isNaN(new Date(job.createdAt).getTime())
+                  ? format(new Date(job.createdAt), "MMM d, yyyy")
+                  : "—"}
               </div>
               {job.applyDate && (
                 <div className="flex items-center text-sm">
                   <Send className="mr-2 h-4 w-4 text-muted-foreground" />
-                  Applied: {format(new Date(job.applyDate), "MMM d, yyyy")}
+                  Applied:{" "}
+                  {job.applyDate && !isNaN(new Date(job.applyDate).getTime())
+                    ? format(new Date(job.applyDate), "MMM d, yyyy")
+                    : "—"}
                 </div>
               )}
             </CardContent>

@@ -21,7 +21,7 @@ export default function TasksPage() {
     setLoading(true);
     try {
       const data = await tasksApi.getAll();
-      setTasks(data);
+      setTasks(Array.isArray(data) ? data : ((data as any)?.data ?? []));
     } catch (error) {
       console.error(error);
       toast.error("Failed to load tasks");
@@ -33,7 +33,7 @@ export default function TasksPage() {
   const fetchJobs = async () => {
     try {
       const data = await jobsApi.getAll();
-      setJobs(data.data || []);
+      setJobs(data || []);
     } catch (error) {
       console.error("Failed to load jobs for task form");
     }

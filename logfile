@@ -1,0 +1,24 @@
+2026-02-18 09:43:05.482 +06 [57399] LOG:  starting PostgreSQL 18.1 (Homebrew petere/postgresql) on aarch64-apple-darwin25.1.0, compiled by Apple clang version 17.0.0 (clang-1700.4.4.1), 64-bit
+2026-02-18 09:43:05.484 +06 [57399] LOG:  listening on IPv6 address "::1", port 5432
+2026-02-18 09:43:05.484 +06 [57399] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2026-02-18 09:43:05.484 +06 [57399] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2026-02-18 09:43:05.500 +06 [57405] LOG:  database system was shut down at 2026-02-06 01:10:50 +06
+2026-02-18 09:43:05.505 +06 [57399] LOG:  database system is ready to accept connections
+2026-02-18 09:43:14.458 +06 [57450] FATAL:  database "JobMailerAi" does not exist
+2026-02-18 09:43:14.461 +06 [57451] FATAL:  database "JobMailerAi" does not exist
+2026-02-18 09:43:14.472 +06 [57453] FATAL:  database "JobMailerAi" does not exist
+2026-02-18 09:43:14.476 +06 [57454] FATAL:  database "JobMailerAi" does not exist
+2026-02-18 09:43:14.628 +06 [57459] ERROR:  relation "_prisma_migrations" does not exist at character 126
+2026-02-18 09:43:14.628 +06 [57459] STATEMENT:  SELECT "id", "checksum", "finished_at", "migration_name", "logs", "rolled_back_at", "started_at", "applied_steps_count" FROM "_prisma_migrations" ORDER BY "started_at" ASC
+2026-02-18 09:43:14.699 +06 [57403] LOG:  checkpoint starting: immediate force wait
+2026-02-18 09:43:14.743 +06 [57403] LOG:  checkpoint complete: wrote 960 buffers (5.9%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.035 s, sync=0.008 s, total=0.044 s; sync files=307, longest=0.001 s, average=0.001 s; distance=8905 kB, estimate=8905 kB; lsn=0/1E13BB00, redo lsn=0/1E13BAA8
+2026-02-18 09:43:14.865 +06 [57403] LOG:  checkpoint starting: immediate force wait
+2026-02-18 09:43:14.867 +06 [57403] LOG:  checkpoint complete: wrote 8 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=8, longest=0.001 s, average=0.001 s; distance=4731 kB, estimate=8488 kB; lsn=0/1E5DA7F8, redo lsn=0/1E5DA7A0
+2026-02-18 09:43:14.998 +06 [57403] LOG:  checkpoint starting: immediate force wait
+2026-02-18 09:43:15.003 +06 [57403] LOG:  checkpoint complete: wrote 104 buffers (0.6%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.003 s, total=0.005 s; sync files=98, longest=0.001 s, average=0.001 s; distance=5303 kB, estimate=8169 kB; lsn=0/1EB08658, redo lsn=0/1EB08600
+2026-02-18 09:44:57.564 +06 [57399] LOG:  received smart shutdown request
+2026-02-18 09:44:57.574 +06 [57399] LOG:  background worker "logical replication launcher" (PID 57408) exited with exit code 1
+2026-02-18 09:44:57.621 +06 [57403] LOG:  shutting down
+2026-02-18 09:44:57.622 +06 [57403] LOG:  checkpoint starting: shutdown immediate
+2026-02-18 09:44:57.649 +06 [57403] LOG:  checkpoint complete: wrote 28 buffers (0.2%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.024 s, sync=0.003 s, total=0.029 s; sync files=12, longest=0.001 s, average=0.001 s; distance=200 kB, estimate=7373 kB; lsn=0/1EB3A7C0, redo lsn=0/1EB3A7C0
+2026-02-18 09:44:57.670 +06 [57399] LOG:  database system is shut down

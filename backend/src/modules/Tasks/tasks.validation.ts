@@ -8,6 +8,7 @@ export const createTaskSchema = z.object({
     taskLink: z.string().url().optional().or(z.literal("")),
     deadline: z.string().datetime(),
     description: z.string().optional(),
+    submitStatus: z.nativeEnum(TaskStatus).optional(),
   }),
 });
 

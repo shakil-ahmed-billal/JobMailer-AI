@@ -1,12 +1,9 @@
 import {
   ApplyStatus,
   JobStatus,
-  PrismaClient,
   ResponseStatus,
 } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-
-
 
 interface CreateJobData {
   companyName: string;
@@ -161,12 +158,31 @@ const getJobStats = async (userId: string) => {
     where: { userId },
     _count: true,
   });
+  const jobStatusStats = await prisma.job.groupBy({
+    by: ["status"],
+    where: { userId },
+    _count: true,
+  });
+
+  const interviewCount =
+    jobStatusStats.find((s) => s.status === "INTERVIEW")?._count || 0;
+
+  // Calculate response rate: (Jobs with response / Applied jobs) * 100
+  const totalResponses = responseStats.reduce((acc, curr) => {
+    if (curr.responseStatus !== "NO_RESPONSE") return acc + curr._count;
+    return acc;
+  }, 0);
+
+  const responseRate =
+    appliedJobs > 0 ? Math.round((totalResponses / appliedJobs) * 100) : 0;
 
   return {
     totalJobs,
     appliedJobs,
-    emailsSent,
-    responseStats,
+    emailsSent, // Keeping this if needed elsewhere
+    responseStats, // Keeping this if needed elsewhere
+    interviewCount,
+    responseRate,
   };
 };
 

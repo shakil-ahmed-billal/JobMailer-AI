@@ -9,12 +9,6 @@ import router from "./routes";
 
 const app: Application = express();
 
-// parsers
-// parsers
-app.use((req, res, next) => {
-  console.log(`[DEBUG] Incoming Request: ${req.method} ${req.url}`);
-  next();
-});
 app.use(morgan("dev"));
 app.use(
   cors({
