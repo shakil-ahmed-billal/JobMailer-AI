@@ -1,10 +1,15 @@
 {
   "version": 2,
-  "outputDirectory": "api",
+  "builds": [
+    {
+      "src": "api/index.mjs",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/server.mjs"
+      "dest": "/api/index.mjs"
     }
   ]
 }

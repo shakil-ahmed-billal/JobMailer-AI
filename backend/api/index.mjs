@@ -10,17 +10,6 @@ import cors from "cors";
 import express from "express";
 import morgan from "morgan";
 
-// src/config/index.ts
-import dotenv from "dotenv";
-import path from "path";
-dotenv.config({ path: path.join(process.cwd(), ".env") });
-var config_default = {
-  port: process.env.PORT || 8e3,
-  database_url: process.env.DATABASE_URL,
-  frontend_url: process.env.CLIENT_URL,
-  backend_url: process.env.BETTER_AUTH_URL
-};
-
 // src/lib/auth.ts
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -28,6 +17,10 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 // src/lib/prisma.ts
 import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
+
+// generated/prisma/client.ts
+import * as path from "path";
+import { fileURLToPath } from "url";
 
 // generated/prisma/internal/class.ts
 import * as runtime from "@prisma/client/runtime/client";
@@ -58,9 +51,9 @@ async function decodeBase64AsWasm(wasmBase64) {
   return new WebAssembly.Module(wasmArray);
 }
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.js"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.js");
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs");
     return await decodeBase64AsWasm(wasm);
   },
   importName: "./query_compiler_fast_bg.js"
@@ -313,7 +306,19 @@ var AIProvider = {
 };
 
 // generated/prisma/client.ts
+globalThis["__dirname"] = path.dirname(fileURLToPath(import.meta.url));
 var PrismaClient = getPrismaClientClass();
+
+// src/config/index.ts
+import dotenv from "dotenv";
+import path2 from "path";
+dotenv.config({ path: path2.join(process.cwd(), ".env") });
+var config_default = {
+  port: process.env.PORT || 8e3,
+  database_url: process.env.DATABASE_URL,
+  frontend_url: process.env.CLIENT_URL,
+  backend_url: process.env.BETTER_AUTH_URL
+};
 
 // src/lib/prisma.ts
 var connectionString = `${config_default.database_url}`;
@@ -329,6 +334,22 @@ var auth = betterAuth({
   //...other options
   emailAndPassword: {
     enabled: true
+  },
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60
+      // 5 minutes
+    }
+  },
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: false
+    },
+    disableCSRFCheck: true
+    // Allow requests without Origin header (Postman, mobile apps, etc.)
   },
   baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {
@@ -756,21 +777,21 @@ var EmailsService = {
 // src/modules/Resumes/resumes.service.ts
 import fs from "fs";
 import fsp from "fs/promises";
-import path2 from "path";
-var UPLOAD_ROOT = path2.join(process.cwd(), "uploads", "resumes");
+import path3 from "path";
+var UPLOAD_ROOT = path3.join(process.cwd(), "uploads", "resumes");
 function sanitizeFileName(name) {
-  const base = path2.basename(name);
+  const base = path3.basename(name);
   return base.replace(/[^\w.\-() ]+/g, "_").replace(/\s+/g, " ").trim();
 }
 function ensurePdfName(name) {
   return name.toLowerCase().endsWith(".pdf") ? name : `${name}.pdf`;
 }
 function toPosix(p) {
-  return p.split(path2.sep).join("/");
+  return p.split(path3.sep).join("/");
 }
 function isPathInside(child, parent) {
-  const rel = path2.relative(parent, child);
-  return rel && !rel.startsWith("..") && !path2.isAbsolute(rel);
+  const rel = path3.relative(parent, child);
+  return rel && !rel.startsWith("..") && !path3.isAbsolute(rel);
 }
 async function ensureDir(dir) {
   await fsp.mkdir(dir, { recursive: true });
@@ -806,12 +827,12 @@ var createResume = async (input) => {
   const safeName = ensurePdfName(sanitizeFileName(originalFileName || "resume.pdf"));
   const stamp = Date.now();
   const storedFileName = `${stamp}-${safeName}`;
-  const roleDir = path2.join(UPLOAD_ROOT, userId, jobRole);
+  const roleDir = path3.join(UPLOAD_ROOT, userId, jobRole);
   await ensureDir(roleDir);
-  const absolutePath = path2.join(roleDir, storedFileName);
+  const absolutePath = path3.join(roleDir, storedFileName);
   await fsp.writeFile(absolutePath, buffer);
   const relativePath = toPosix(
-    path2.relative(process.cwd(), absolutePath)
+    path3.relative(process.cwd(), absolutePath)
   );
   return prisma.resume.create({
     data: {
@@ -834,7 +855,7 @@ var updateResume = async (input) => {
   let nextFileUrl = resume.fileUrl;
   let nextFileName = resume.fileName;
   if (buffer && originalFileName) {
-    const oldAbs = path2.join(process.cwd(), resume.fileUrl);
+    const oldAbs = path3.join(process.cwd(), resume.fileUrl);
     if (isPathInside(oldAbs, UPLOAD_ROOT)) {
       await safeUnlink(oldAbs);
     }
@@ -843,11 +864,11 @@ var updateResume = async (input) => {
     );
     const stamp = Date.now();
     const storedFileName = `${stamp}-${safeName}`;
-    const roleDir = path2.join(UPLOAD_ROOT, userId, nextRole);
+    const roleDir = path3.join(UPLOAD_ROOT, userId, nextRole);
     await ensureDir(roleDir);
-    const absolutePath = path2.join(roleDir, storedFileName);
+    const absolutePath = path3.join(roleDir, storedFileName);
     await fsp.writeFile(absolutePath, buffer);
-    nextFileUrl = toPosix(path2.relative(process.cwd(), absolutePath));
+    nextFileUrl = toPosix(path3.relative(process.cwd(), absolutePath));
     nextFileName = safeName;
   }
   try {
@@ -877,7 +898,7 @@ var deleteResume = async (userId, id) => {
     err.statusCode = 404;
     throw err;
   }
-  const abs = path2.join(process.cwd(), resume.fileUrl);
+  const abs = path3.join(process.cwd(), resume.fileUrl);
   if (isPathInside(abs, UPLOAD_ROOT)) {
     await safeUnlink(abs);
   }
@@ -890,7 +911,7 @@ var getResumeFile = async (userId, id) => {
     err.statusCode = 404;
     throw err;
   }
-  const abs = path2.join(process.cwd(), resume.fileUrl);
+  const abs = path3.join(process.cwd(), resume.fileUrl);
   if (!isPathInside(abs, UPLOAD_ROOT)) {
     const err = new Error("Invalid resume file path");
     err.statusCode = 400;
@@ -2125,20 +2146,26 @@ var routes_default = router6;
 // src/app.ts
 var app = express();
 app.use(morgan("dev"));
+var allowedOrigins = [
+  process.env.APP_URL || "http://localhost:3000",
+  process.env.PROD_APP_URL
+  // Production frontend URL
+].filter(Boolean);
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = [config_default.frontend_url, "http://localhost:3000"];
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+      if (isAllowed) {
         callback(null, true);
       } else {
-        console.warn(`Blocked by CORS: ${origin}`);
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error(`Origin ${origin} not allowed by CORS`));
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    exposedHeaders: ["Set-Cookie"]
   })
 );
 app.use(express.json());
@@ -2150,14 +2177,8 @@ app.get("/", (req, res) => {
 app.use(globalErrorHandler);
 var app_default = app;
 
-// src/server.ts
-async function main() {
-  try {
-    app_default.listen(config_default.port, () => {
-      console.log(`Example app listening on port ${config_default.port}`);
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-main();
+// src/index.ts
+var index_default = app_default;
+export {
+  index_default as default
+};
