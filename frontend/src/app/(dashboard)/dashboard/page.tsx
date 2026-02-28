@@ -3,6 +3,7 @@
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { UpcomingTasks } from "@/components/dashboard/upcoming-tasks";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,14 +11,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { jobsApi } from "@/lib/api/jobs";
 import { resumesApi } from "@/lib/api/resumes";
-import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { useAuthContext } from "@/lib/auth/auth-context";
+import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { Briefcase, CheckCircle, Clock, Send } from "lucide-react";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
@@ -65,8 +65,10 @@ export default function DashboardPage() {
 
   return (
     <div className="flex-1 space-y-4">
-      <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
+          Dashboard
+        </h2>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
@@ -100,7 +102,8 @@ export default function DashboardPage() {
           <div>
             <CardTitle>Resumes</CardTitle>
             <CardDescription>
-              {resumeStats.total} uploaded • {resumeStats.missingCount} roles missing
+              {resumeStats.total} uploaded • {resumeStats.missingCount} roles
+              missing
             </CardDescription>
           </div>
           <Button asChild>

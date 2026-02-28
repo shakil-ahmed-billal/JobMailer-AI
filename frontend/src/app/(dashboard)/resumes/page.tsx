@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { toast } from "sonner";
 import { format } from "date-fns";
 import { FileDown, FileUp, Trash2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -21,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -66,7 +66,10 @@ function ResumeUploadModal({
       toast.error("Please choose a PDF file");
       return;
     }
-    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+    if (
+      file.type !== "application/pdf" &&
+      !file.name.toLowerCase().endsWith(".pdf")
+    ) {
       toast.error("Only PDF files are allowed");
       return;
     }
@@ -97,9 +100,12 @@ function ResumeUploadModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[520px]">
         <DialogHeader>
-          <DialogTitle>{isReplace ? "Replace Resume" : "Upload Resume"}</DialogTitle>
+          <DialogTitle>
+            {isReplace ? "Replace Resume" : "Upload Resume"}
+          </DialogTitle>
           <DialogDescription>
-            Upload a PDF resume and assign it to a job role. One resume per role.
+            Upload a PDF resume and assign it to a job role. One resume per
+            role.
           </DialogDescription>
         </DialogHeader>
 
@@ -148,11 +154,15 @@ export default function ResumesPage() {
   const [loading, setLoading] = useState(true);
 
   const [isUploadOpen, setIsUploadOpen] = useState(false);
-  const [replaceTarget, setReplaceTarget] = useState<Resume | undefined>(undefined);
+  const [replaceTarget, setReplaceTarget] = useState<Resume | undefined>(
+    undefined,
+  );
 
   const missingRoles = useMemo(() => {
     const have = new Set(resumes.map((r) => r.jobRole));
-    return JOB_ROLE_OPTIONS.filter((o) => !have.has(o.value)).map((o) => o.label);
+    return JOB_ROLE_OPTIONS.filter((o) => !have.has(o.value)).map(
+      (o) => o.label,
+    );
   }, [resumes]);
 
   const fetchResumes = async () => {
@@ -183,15 +193,21 @@ export default function ResumesPage() {
   };
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between">
+    <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8 pt-3 sm:pt-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Resume Manager</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Upload one resume per job role. The correct resume will be attached automatically when you apply.
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
+            Resume Manager
+          </h2>
+          <p className="text-xs sm:text-sm text-muted-foreground mt-1">
+            Upload one resume per job role. The correct resume will be attached
+            automatically when you apply.
           </p>
         </div>
-        <Button onClick={() => setIsUploadOpen(true)}>
+        <Button
+          onClick={() => setIsUploadOpen(true)}
+          className="w-full sm:w-auto"
+        >
           <FileUp className="mr-2 h-4 w-4" /> Upload Resume
         </Button>
       </div>
@@ -199,7 +215,9 @@ export default function ResumesPage() {
       {missingRoles.length > 0 && (
         <div className="rounded-md border p-3 text-sm">
           <span className="font-medium">Missing roles:</span>{" "}
-          <span className="text-muted-foreground">{missingRoles.join(", ")}</span>
+          <span className="text-muted-foreground">
+            {missingRoles.join(", ")}
+          </span>
         </div>
       )}
 
@@ -283,4 +301,3 @@ export default function ResumesPage() {
     </div>
   );
 }
-

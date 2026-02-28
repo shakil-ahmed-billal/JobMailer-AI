@@ -62,6 +62,7 @@ export default function JobDetailsPage({
         onDelete={handleDelete}
         onEdit={() => setIsEditOpen(true)}
         onReply={() => setIsReplyOpen(true)}
+        onRefresh={fetchJob}
       />
 
       <JobForm

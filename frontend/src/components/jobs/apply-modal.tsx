@@ -57,7 +57,9 @@ export function ApplyModal({
       const response = await emailsApi.generate(job.id, aiProvider);
       setSubject(response.subject);
       setContent(response.content);
-      toast.success(`Email generated successfully using ${aiProvider === "OPENAI" ? "ChatGPT" : "Gemini"}!`);
+      toast.success(
+        `Email generated successfully using ${aiProvider === "OPENAI" ? "ChatGPT" : "Gemini"}!`,
+      );
     } catch (error: unknown) {
       const msg = (error as { response?: { data?: { message?: string } } })
         ?.response?.data?.message;
@@ -101,14 +103,18 @@ export function ApplyModal({
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="font-semibold">Recipient:</span>{" "}
-              {job.companyEmail}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm bg-muted/30 p-3 rounded-lg border">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-muted-foreground text-xs uppercase font-semibold">
+                Recipient:
+              </span>
+              <span className="font-medium truncate">{job.companyEmail}</span>
             </div>
-            <div>
-              <span className="font-semibold">Job Role:</span>{" "}
-              {formatJobRole(job.jobRole)}
+            <div className="flex flex-col gap-0.5">
+              <span className="text-muted-foreground text-xs uppercase font-semibold">
+                Job Role:
+              </span>
+              <span className="font-medium">{formatJobRole(job.jobRole)}</span>
             </div>
           </div>
 
@@ -118,19 +124,20 @@ export function ApplyModal({
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
+              className="h-10"
             />
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center justify-between gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <Label htmlFor="content">Email Content</Label>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 w-full sm:w-auto">
                 <Select
                   value={aiProvider}
                   onValueChange={(value) => setAiProvider(value as AIProvider)}
                   disabled={isGenerating}
                 >
-                  <SelectTrigger className="w-[140px] h-8">
+                  <SelectTrigger className="flex-1 sm:w-[120px] h-9">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -143,12 +150,12 @@ export function ApplyModal({
                   size="sm"
                   onClick={handleGenerateEmail}
                   disabled={isGenerating}
-                  className="h-8"
+                  className="h-9 flex-1 sm:flex-none px-3"
                 >
                   {isGenerating ? (
-                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
-                    <Sparkles className="mr-2 h-3 w-3" />
+                    <Sparkles className="mr-2 h-4 w-4" />
                   )}
                   Generate
                 </Button>
@@ -158,8 +165,8 @@ export function ApplyModal({
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="min-h-[300px] font-mono text-sm"
-              placeholder="Click 'Generate with AI' to create your application email..."
+              className="min-h-[250px] sm:min-h-[300px] font-mono text-sm leading-relaxed"
+              placeholder="Click 'Generate' to create your application email..."
             />
           </div>
         </div>

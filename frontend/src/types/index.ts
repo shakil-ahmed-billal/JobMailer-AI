@@ -62,6 +62,8 @@ export interface Job {
   applyDate?: string | null;
   createdAt: string;
   updatedAt: string;
+  tasks?: Task[];
+  emails?: Email[];
 }
 
 export interface Resume {
