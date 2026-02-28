@@ -25,6 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { emailsApi } from "@/lib/api/emails";
 import { AIProvider } from "@/types";
+import { Separator } from "@/components/ui/separator";
 
 interface ReplyModalProps {
   open: boolean;
@@ -42,6 +43,7 @@ export function ReplyModal({
   open,
   onOpenChange,
   jobId,
+  emailId,
   companyEmail,
   companyName,
   onSuccess,
@@ -72,7 +74,9 @@ export function ReplyModal({
       );
       if (response.subject) setSubject(response.subject);
       setContent(response.content);
-      toast.success(`Reply generated successfully using ${aiProvider === "OPENAI" ? "ChatGPT" : "Gemini"}!`);
+      toast.success(
+        `Reply generated successfully using ${aiProvider === "OPENAI" ? "ChatGPT" : "Gemini"}!`,
+      );
     } catch (error: unknown) {
       const msg = (error as { response?: { data?: { message?: string } } })
         ?.response?.data?.message;
@@ -191,5 +195,3 @@ export function ReplyModal({
     </Dialog>
   );
 }
-
-import { Separator } from "@/components/ui/separator";
