@@ -27,8 +27,7 @@ class ApiClient {
     options: any = {},
   ): Promise<ApiResponse<T>> {
     const cookies = await getAuthHeaders();
-    console.log("shakil jobmailer ai api cokkie" ,cookies);
-
+    const isBrowser = typeof window !== "undefined";
     const baseUrl = this.getBaseUrl();
     let url = `${baseUrl}${endpoint}`;
 
@@ -46,15 +45,34 @@ class ApiClient {
       }
     }
 
+    const headers: any = {
+      ...options.headers,
+    };
+
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = headers["Content-Type"] || "application/json";
+    }
+
+    // CRITICAL: Manual Cookie injection ONLY on server.
+    // In browser, credentials: "include" + same-origin proxy handles it.
+    if (!isBrowser && cookies) {
+      headers["Cookie"] = cookies;
+    }
+
     try {
       const response = await fetch(url, {
         ...options,
-        headers: {
-          "Content-Type": "application/json",
-          ...(cookies && { Cookie: cookies }),
-          ...options.headers,
-        },
+        headers,
+        credentials: "include", // CRITICAL for sending cookies
       });
+
+      if (options.responseType === "blob") {
+        const blob = await response.blob();
+        return {
+          success: response.ok,
+          data: blob as any as T,
+        };
+      }
 
       const data = await response.json();
 
@@ -86,7 +104,7 @@ class ApiClient {
     return this.request<T>(endpoint, {
       ...options,
       method: "POST",
-      body: JSON.stringify(body),
+      body: body instanceof FormData ? body : JSON.stringify(body),
     });
   }
 
@@ -94,7 +112,7 @@ class ApiClient {
     return this.request<T>(endpoint, {
       ...options,
       method: "PUT",
-      body: JSON.stringify(body),
+      body: body instanceof FormData ? body : JSON.stringify(body),
     });
   }
 
@@ -102,7 +120,7 @@ class ApiClient {
     return this.request<T>(endpoint, {
       ...options,
       method: "PATCH",
-      body: JSON.stringify(body),
+      body: body instanceof FormData ? body : JSON.stringify(body),
     });
   }
 

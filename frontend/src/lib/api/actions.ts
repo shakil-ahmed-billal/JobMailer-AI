@@ -8,6 +8,5 @@ import { cookies } from "next/headers";
  */
 export const getAuthHeaders = async () => {
   const cookieStore = await cookies();
-  console.log(cookieStore)
   return cookieStore.toString();
 };

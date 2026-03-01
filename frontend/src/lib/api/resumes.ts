@@ -12,16 +12,14 @@ export const resumesApi = {
     form.append("jobRole", data.jobRole);
     form.append("file", data.file);
 
-    const response = await apiClient.post<ApiResponse<Resume>>("/resumes", form, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const response = await apiClient.post<ApiResponse<Resume>>(
+      "/resumes",
+      form,
+    );
     return response.data.data;
   },
 
-  update: async (
-    id: string,
-    data: { jobRole?: string; file?: File } = {},
-  ) => {
+  update: async (id: string, data: { jobRole?: string; file?: File } = {}) => {
     const form = new FormData();
     if (data.jobRole) form.append("jobRole", data.jobRole);
     if (data.file) form.append("file", data.file);
@@ -29,7 +27,6 @@ export const resumesApi = {
     const response = await apiClient.put<ApiResponse<Resume>>(
       `/resumes/${id}`,
       form,
-      { headers: { "Content-Type": "multipart/form-data" } },
     );
     return response.data.data;
   },
@@ -39,12 +36,11 @@ export const resumesApi = {
   },
 
   download: async (id: string, fileName: string) => {
-    const response = await apiClient.get(`/resumes/${id}/file`, {
+    const response = await apiClient.get<Blob>(`/resumes/${id}/file`, {
       responseType: "blob",
     });
 
-    const blob = new Blob([response.data], { type: "application/pdf" });
-    const url = window.URL.createObjectURL(blob);
+    const url = window.URL.createObjectURL(response.data);
     const a = document.createElement("a");
     a.href = url;
     a.download = fileName || "resume.pdf";
@@ -54,4 +50,3 @@ export const resumesApi = {
     window.URL.revokeObjectURL(url);
   },
 };
-

@@ -354,10 +354,11 @@ var auth = betterAuth({
   },
   advanced: {
     cookiePrefix: "jobmailer-ai",
-    useSecureCookies: true,
+    useSecureCookies: process.env.NODE_ENV === "production",
     crossSubDomainCookies: {
       enabled: true
     },
+    trustHost: true,
     disableCSRFCheck: true
   },
   baseURL: process.env.BETTER_AUTH_URL,
