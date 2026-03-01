@@ -1,4 +1,4 @@
-import { ApiResponse, Job } from "@/types";
+import { Job } from "@/types";
 import { apiClient } from "./client";
 
 export interface JobFilters {
@@ -14,25 +14,25 @@ export interface JobFilters {
 export const jobsApi = {
   getAll: async (filters?: JobFilters, page = 1, limit = 10) => {
     const params = { ...filters, page, limit };
-    const response = await apiClient.get<ApiResponse<Job[]>>("/jobs", {
+    const response = await apiClient.get<Job[]>("/jobs", {
       params,
     });
-    return response.data.data;
+    return response.data;
   },
 
   getById: async (id: string) => {
-    const response = await apiClient.get<ApiResponse<Job>>(`/jobs/${id}`);
-    return response.data.data;
+    const response = await apiClient.get<Job>(`/jobs/${id}`);
+    return response.data;
   },
 
   create: async (data: Partial<Job>) => {
-    const response = await apiClient.post<ApiResponse<Job>>("/jobs", data);
-    return response.data.data;
+    const response = await apiClient.post<Job>("/jobs", data);
+    return response.data;
   },
 
   update: async (id: string, data: Partial<Job>) => {
-    const response = await apiClient.put<ApiResponse<Job>>(`/jobs/${id}`, data);
-    return response.data.data;
+    const response = await apiClient.put<Job>(`/jobs/${id}`, data);
+    return response.data;
   },
 
   delete: async (id: string) => {
@@ -41,15 +41,13 @@ export const jobsApi = {
 
   getStats: async () => {
     try {
-      const response = await apiClient.get<
-        ApiResponse<{
-          totalJobs: number;
-          appliedJobs: number;
-          interviewCount: number;
-          responseRate: number;
-        }>
-      >("/jobs/stats/overview");
-      return response.data.data;
+      const response = await apiClient.get<{
+        totalJobs: number;
+        appliedJobs: number;
+        interviewCount: number;
+        responseRate: number;
+      }>("/jobs/stats/overview");
+      return response.data;
     } catch (error) {
       // Fallback for now if endpoint doesn't exist
       return {

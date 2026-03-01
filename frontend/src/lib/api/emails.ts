@@ -1,20 +1,21 @@
-import { ApiResponse, AIProvider, Email, EmailType } from "@/types";
+import { AIProvider, Email, EmailType } from "@/types";
 import { apiClient } from "./client";
 
 export const emailsApi = {
   getAll: async () => {
-    const response = await apiClient.get<ApiResponse<Email[]>>("/emails");
-    return response.data.data;
+    const response = await apiClient.get<Email[]>("/emails");
+    return response.data;
   },
 
   generate: async (jobId: string, aiProvider: AIProvider = "OPENAI") => {
-    const response = await apiClient.post<
-      ApiResponse<{ subject: string; content: string }>
-    >("/emails/generate-application", {
-      jobId,
-      aiProvider,
-    });
-    return response.data.data;
+    const response = await apiClient.post<{ subject: string; content: string }>(
+      "/emails/generate-application",
+      {
+        jobId,
+        aiProvider,
+      },
+    );
+    return response.data;
   },
 
   generateReply: async (
@@ -22,14 +23,15 @@ export const emailsApi = {
     instruction: string,
     aiProvider: AIProvider = "OPENAI",
   ) => {
-    const response = await apiClient.post<
-      ApiResponse<{ subject: string; content: string }>
-    >("/emails/generate-reply", {
-      emailId,
-      userPrompt: instruction,
-      aiProvider,
-    });
-    return response.data.data;
+    const response = await apiClient.post<{ subject: string; content: string }>(
+      "/emails/generate-reply",
+      {
+        emailId,
+        userPrompt: instruction,
+        aiProvider,
+      },
+    );
+    return response.data;
   },
 
   send: async (data: {
@@ -39,10 +41,7 @@ export const emailsApi = {
     emailType: EmailType;
     aiProvider?: AIProvider;
   }) => {
-    const response = await apiClient.post<ApiResponse<Email>>(
-      "/emails/send",
-      data,
-    );
-    return response.data.data;
+    const response = await apiClient.post<Email>("/emails/send", data);
+    return response.data;
   },
 };
