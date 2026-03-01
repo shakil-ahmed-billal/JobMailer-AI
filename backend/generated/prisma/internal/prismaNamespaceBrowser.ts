@@ -175,6 +175,7 @@ export const ResumeScalarFieldEnum = {
   userId: 'userId',
   jobRole: 'jobRole',
   fileUrl: 'fileUrl',
+  publicId: 'publicId',
   fileName: 'fileName',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

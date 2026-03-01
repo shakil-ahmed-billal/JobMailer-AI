@@ -18,19 +18,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatJobRole } from "@/lib/job-roles";
 import { Job } from "@/types";
 import { format } from "date-fns";
 import { Edit, Eye, MoreHorizontal, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { formatJobRole } from "@/lib/job-roles";
 
 interface JobTableProps {
   jobs: Job[];
   onDelete: (id: string) => void;
   onApply: (job: Job) => void;
+  onEdit: (job: Job) => void;
 }
 
-export function JobTable({ jobs, onDelete, onApply }: JobTableProps) {
+export function JobTable({ jobs, onDelete, onApply, onEdit }: JobTableProps) {
   const getStatusColor = (
     status: string,
   ): "default" | "outline" | "secondary" | "destructive" => {
@@ -107,7 +108,7 @@ export function JobTable({ jobs, onDelete, onApply }: JobTableProps) {
                           View Details
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => onEdit(job)}>
                         <Edit className="mr-2 h-4 w-4" />
                         Edit
                       </DropdownMenuItem>

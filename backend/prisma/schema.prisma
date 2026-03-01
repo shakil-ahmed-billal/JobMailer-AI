@@ -178,6 +178,7 @@ model Resume {
   userId    String
   jobRole   JobRole
   fileUrl   String
+  publicId  String?
   fileName  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

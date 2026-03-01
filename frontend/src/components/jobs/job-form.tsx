@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -32,8 +32,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { jobsApi } from "@/lib/api/jobs";
+import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { Job } from "@/types";
 
 // Define schema locally for now or move to validators
@@ -85,6 +85,33 @@ export function JobForm({ open, onOpenChange, onSuccess, job }: JobFormProps) {
       location: job?.location || "",
     },
   });
+
+  // Reset form when job changes for editing
+  useEffect(() => {
+    if (job && open) {
+      form.reset({
+        companyName: job.companyName,
+        jobTitle: job.jobTitle,
+        companyEmail: job.companyEmail,
+        jobDescription: job.jobDescription,
+        jobRole: job.jobRole,
+        status: job.status as any,
+        salary: job.salary || "",
+        location: job.location || "",
+      });
+    } else if (!job && open) {
+      form.reset({
+        companyName: "",
+        jobTitle: "",
+        companyEmail: "",
+        jobDescription: "",
+        jobRole: "SOFTWARE_ENGINEER",
+        status: "DRAFT",
+        salary: "",
+        location: "",
+      });
+    }
+  }, [job, open, form]);
 
   async function onSubmit(data: JobFormValues) {
     setIsLoading(true);

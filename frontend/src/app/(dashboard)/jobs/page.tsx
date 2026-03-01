@@ -18,6 +18,7 @@ export default function JobsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | undefined>(undefined);
+  const [editingJob, setEditingJob] = useState<Job | undefined>(undefined);
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -53,12 +54,29 @@ export default function JobsPage() {
     setIsApplyModalOpen(true);
   };
 
+  const handleEdit = (job: Job) => {
+    setEditingJob(job);
+    setIsFormOpen(true);
+  };
+
+  const handleFormOpenChange = (open: boolean) => {
+    setIsFormOpen(open);
+    if (!open) {
+      setEditingJob(undefined);
+    }
+  };
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Job Applications</h2>
         <div className="flex items-center space-x-2">
-          <Button onClick={() => setIsFormOpen(true)}>
+          <Button
+            onClick={() => {
+              setEditingJob(undefined);
+              setIsFormOpen(true);
+            }}
+          >
             <Plus className="mr-2 h-4 w-4" /> Add Job
           </Button>
         </div>
@@ -68,14 +86,20 @@ export default function JobsPage() {
         {loading ? (
           <div className="text-center py-10">Loading jobs...</div>
         ) : (
-          <JobTable jobs={jobs} onDelete={handleDelete} onApply={handleApply} />
+          <JobTable
+            jobs={jobs}
+            onDelete={handleDelete}
+            onApply={handleApply}
+            onEdit={handleEdit}
+          />
         )}
       </div>
 
       <JobForm
         open={isFormOpen}
-        onOpenChange={setIsFormOpen}
+        onOpenChange={handleFormOpenChange}
         onSuccess={fetchJobs}
+        job={editingJob}
       />
 
       {selectedJob && (

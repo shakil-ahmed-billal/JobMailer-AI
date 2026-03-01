@@ -1,12 +1,10 @@
 import { Request, Response } from "express";
 import { AIProvider } from "../../../generated/prisma/client";
+import { prisma } from "../../lib/prisma";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
-import { EmailsService } from "./emails.service";
-import { prisma } from "../../lib/prisma";
 import { ResumesService } from "../Resumes/resumes.service";
-
-
+import { EmailsService } from "./emails.service";
 
 const generateApplicationEmail = catchAsync(
   async (req: Request, res: Response) => {
@@ -157,7 +155,13 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
 
 const sendEmail = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
-  const { jobId, subject, content, emailType, aiProvider = AIProvider.OPENAI } = req.body;
+  const {
+    jobId,
+    subject,
+    content,
+    emailType,
+    aiProvider = AIProvider.OPENAI,
+  } = req.body;
 
   // Validate AI provider
   if (!Object.values(AIProvider).includes(aiProvider)) {
@@ -196,7 +200,7 @@ const sendEmail = catchAsync(async (req: Request, res: Response) => {
       });
     }
 
-    const { absolutePath } = await ResumesService.getResumeFile(userId, resume.id);
+    const { fileUrl } = await ResumesService.getResumeFile(userId, resume.id);
 
     const result = await EmailsService.sendEmail(
       job.companyEmail,
@@ -208,7 +212,8 @@ const sendEmail = catchAsync(async (req: Request, res: Response) => {
       aiProvider as AIProvider,
       {
         filename: resume.fileName,
-        path: absolutePath,
+        path: fileUrl,
+        publicId: resume.publicId ?? undefined,
         contentType: "application/pdf",
       },
     );
