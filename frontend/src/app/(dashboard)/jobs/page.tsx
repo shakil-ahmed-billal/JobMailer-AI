@@ -30,9 +30,21 @@ export default function JobsPage() {
     setLoading(true);
     try {
       const response = await jobsApi.getAll(filters, currentPage, 10);
-      setJobs(response.data || []);
-      setTotalPages(response.meta.totalPages);
-      setTotalItems(response.meta.total);
+
+      // Resilience check: handle both paginated and non-paginated (array) responses
+      if (Array.isArray(response)) {
+        setJobs(response);
+        setTotalPages(1);
+        setTotalItems(response.length);
+      } else if (response && typeof response === "object") {
+        setJobs(response.data || []);
+        setTotalPages(response.meta?.totalPages || 1);
+        setTotalItems(response.meta?.total || response.data?.length || 0);
+      } else {
+        setJobs([]);
+        setTotalPages(1);
+        setTotalItems(0);
+      }
     } catch (error) {
       console.error("Failed to fetch jobs", error);
       toast.error("Failed to load jobs");

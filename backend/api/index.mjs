@@ -366,6 +366,7 @@ var auth = betterAuth({
     crossSubDomainCookies: {
       enabled: false
     },
+    trustHost: true,
     disableCSRFCheck: true
     // Allow requests without Origin header (Postman, mobile apps, etc.)
   }
@@ -973,12 +974,21 @@ var getEmailById = async (userId, emailId) => {
     }
   });
 };
+var deleteEmail = async (userId, emailId) => {
+  return await prisma.email.delete({
+    where: {
+      id: emailId,
+      userId
+    }
+  });
+};
 var EmailsService = {
   generateApplicationEmail,
   generateReplyEmail,
   sendEmail,
   getEmails,
-  getEmailById
+  getEmailById,
+  deleteEmail
 };
 
 // src/modules/Emails/emails.controller.ts
@@ -1204,12 +1214,24 @@ var getEmailById2 = catchAsync(async (req, res) => {
     data: result
   });
 });
+var deleteEmail2 = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const { id } = req.params;
+  const result = await EmailsService.deleteEmail(userId, id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Email deleted successfully",
+    data: result
+  });
+});
 var EmailsController = {
   generateApplicationEmail: generateApplicationEmail2,
   generateReplyEmail: generateReplyEmail2,
   sendEmail: sendEmail2,
   getEmails: getEmails2,
-  getEmailById: getEmailById2
+  getEmailById: getEmailById2,
+  deleteEmail: deleteEmail2
 };
 
 // src/modules/Emails/emails.validation.ts
@@ -1272,6 +1294,11 @@ router.get(
   validateRequest(getEmailSchema),
   EmailsController.getEmailById
 );
+router.delete(
+  "/:id",
+  validateRequest(getEmailSchema),
+  EmailsController.deleteEmail
+);
 var emails_routes_default = router;
 
 // src/modules/Jobs/jobs.routes.ts
@@ -1296,7 +1323,19 @@ var createJob = async (userId, data) => {
   });
 };
 var getJobs = async (userId, filters = {}) => {
-  const { status, applyStatus, responseStatus, jobRole, search, startDate, endDate } = filters;
+  const {
+    status,
+    applyStatus,
+    responseStatus,
+    jobRole,
+    search,
+    startDate,
+    endDate,
+    page = 1,
+    limit = 10
+  } = filters;
+  const skip = (Number(page) - 1) * Number(limit);
+  const take = Number(limit);
   const where = { userId };
   if (status) where.status = status;
   if (applyStatus) where.applyStatus = applyStatus;
@@ -1316,18 +1355,32 @@ var getJobs = async (userId, filters = {}) => {
     if (startDate) where.createdAt.gte = new Date(startDate);
     if (endDate) where.createdAt.lte = new Date(endDate);
   }
-  return await prisma.job.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    include: {
-      _count: {
-        select: {
-          tasks: true,
-          emails: true
+  const [jobs, total] = await Promise.all([
+    prisma.job.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            tasks: true,
+            emails: true
+          }
         }
       }
+    }),
+    prisma.job.count({ where })
+  ]);
+  return {
+    data: jobs,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit))
     }
-  });
+  };
 };
 var getJobById = async (userId, jobId) => {
   const job = await prisma.job.findFirst({
