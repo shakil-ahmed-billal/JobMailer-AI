@@ -31,9 +31,14 @@ class ApiClient {
       }
 
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
-        ...options,
+          ...options,
         credentials: "include",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+          ...(cookies && { Cookie: cookies }),
+          ...options.headers,
+        },
+        // withCredentials: true,
       });
 
       const contentType = response.headers.get("content-type");
