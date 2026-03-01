@@ -2155,7 +2155,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+      const isAllowed = allowedOrigins.includes(origin);
       if (isAllowed) {
         callback(null, true);
       } else {

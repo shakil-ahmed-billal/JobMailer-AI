@@ -16,6 +16,7 @@ class ApiClient {
     options: any = {},
   ): Promise<ApiResponse<T>> {
     const cookies = await getCookies();
+    console.log(cookies)
 
     try {
       // For FormData, we must NOT set Content-Type manually so the browser can set the boundary
@@ -31,14 +32,9 @@ class ApiClient {
       }
 
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
-          ...options,
+        ...options,
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          ...(cookies && { Cookie: cookies }),
-          ...options.headers,
-        },
-        // withCredentials: true,
+        headers,
       });
 
       const contentType = response.headers.get("content-type");
