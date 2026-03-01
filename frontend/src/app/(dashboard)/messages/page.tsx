@@ -1,8 +1,8 @@
 "use client";
 
 import { format } from "date-fns";
-import { Mail, Reply, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Loader2, Mail, Reply, Search, Trash2 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { EmailPreview } from "@/components/emails/email-preview";
@@ -27,27 +27,28 @@ export default function MessagesPage() {
   const [typeFilter, setTypeFilter] = useState<string>("ALL");
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const fetchEmails = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await emailsApi.getAll();
+      const emailList = Array.isArray(data)
+        ? data
+        : ((data as any)?.data ?? []);
+      setEmails(emailList);
+      setFilteredEmails(emailList);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load messages");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    const fetchEmails = async () => {
-      setLoading(true);
-      try {
-        const data = await emailsApi.getAll();
-        const emailList = Array.isArray(data)
-          ? data
-          : ((data as any)?.data ?? []);
-        setEmails(emailList);
-        setFilteredEmails(emailList);
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load messages");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchEmails();
-  }, []);
+  }, [fetchEmails]);
 
   useEffect(() => {
     let result = emails;
@@ -70,6 +71,22 @@ export default function MessagesPage() {
   const handleEmailClick = (email: Email) => {
     setSelectedEmail(email);
     setIsPreviewOpen(true);
+  };
+
+  const handleDeleteEmail = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this message?")) return;
+
+    setDeletingId(id);
+    try {
+      await emailsApi.delete(id);
+      toast.success("Message deleted successfully");
+      fetchEmails();
+    } catch (error) {
+      toast.error("Failed to delete message");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   return (
@@ -139,12 +156,22 @@ export default function MessagesPage() {
                 </div>
                 <div className="flex items-center gap-4 shrink-0">
                   <Badge variant="outline">{email.status}</Badge>
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground mr-2">
                     {email.createdAt &&
                     !isNaN(new Date(email.createdAt).getTime())
                       ? format(new Date(email.createdAt), "MMM d, h:mm a")
                       : "—"}
                   </div>
+                  <button
+                    onClick={(e) => handleDeleteEmail(e, email.id)}
+                    className="p-2 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive transition-colors"
+                  >
+                    {deletingId === email.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </button>
                 </div>
               </CardContent>
             </Card>

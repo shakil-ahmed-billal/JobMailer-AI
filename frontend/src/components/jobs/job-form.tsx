@@ -57,6 +57,7 @@ const jobSchema = z.object({
   status: z.enum(["DRAFT", "APPLIED", "INTERVIEW", "REJECTED", "OFFER"]),
   salary: z.string().optional(),
   location: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 type JobFormValues = z.infer<typeof jobSchema>;
@@ -83,6 +84,7 @@ export function JobForm({ open, onOpenChange, onSuccess, job }: JobFormProps) {
       status: (job?.status as any) || "DRAFT",
       salary: job?.salary || "",
       location: job?.location || "",
+      notes: job?.notes || "",
     },
   });
 
@@ -98,6 +100,7 @@ export function JobForm({ open, onOpenChange, onSuccess, job }: JobFormProps) {
         status: job.status as any,
         salary: job.salary || "",
         location: job.location || "",
+        notes: job.notes || "",
       });
     } else if (!job && open) {
       form.reset({
@@ -109,6 +112,7 @@ export function JobForm({ open, onOpenChange, onSuccess, job }: JobFormProps) {
         status: "DRAFT",
         salary: "",
         location: "",
+        notes: "",
       });
     }
   }, [job, open, form]);
@@ -287,6 +291,23 @@ export function JobForm({ open, onOpenChange, onSuccess, job }: JobFormProps) {
                     <Textarea
                       placeholder="Paste the full job description here..."
                       className="min-h-[150px]"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes (Optional)</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Add any additional notes..."
                       {...field}
                     />
                   </FormControl>

@@ -7,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -21,7 +20,7 @@ import {
 import { formatJobRole } from "@/lib/job-roles";
 import { Job } from "@/types";
 import { format } from "date-fns";
-import { Edit, Eye, MoreHorizontal, Send, Trash2 } from "lucide-react";
+import { Edit, Eye, MoreHorizontal, Plus, Send, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 interface JobTableProps {
@@ -29,9 +28,16 @@ interface JobTableProps {
   onDelete: (id: string) => void;
   onApply: (job: Job) => void;
   onEdit: (job: Job) => void;
+  onAddTask: (job: Job) => void;
 }
 
-export function JobTable({ jobs, onDelete, onApply, onEdit }: JobTableProps) {
+export function JobTable({
+  jobs,
+  onDelete,
+  onApply,
+  onEdit,
+  onAddTask,
+}: JobTableProps) {
   const getStatusColor = (
     status: string,
   ): "default" | "outline" | "secondary" | "destructive" => {
@@ -86,42 +92,63 @@ export function JobTable({ jobs, onDelete, onApply, onEdit }: JobTableProps) {
                     : "-"}
                 </TableCell>
                 <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Open menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      {job.applyStatus === "NOT_APPLIED" && (
+                  <div className="flex items-center justify-end gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onAddTask(job)}
+                      title="Add Task"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onApply(job)}
+                      title="Apply"
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      asChild
+                      title="View Details"
+                    >
+                      <Link href={`/jobs/${job.id}`}>
+                        <Eye className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onDelete(job.id)}
+                      className="text-destructive hover:text-destructive"
+                      title="Delete"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                        <DropdownMenuItem onClick={() => onEdit(job)}>
+                          <Edit className="mr-2 h-4 w-4" />
+                          Edit
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onApply(job)}>
                           <Send className="mr-2 h-4 w-4" />
-                          Apply Now
+                          Apply Now (Alt)
                         </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href={`/jobs/${job.id}`}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          View Details
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => onEdit(job)}>
-                        <Edit className="mr-2 h-4 w-4" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => onDelete(job.id)}
-                        className="text-red-600 focus:text-red-600"
-                      >
-                        <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </TableCell>
               </TableRow>
             ))

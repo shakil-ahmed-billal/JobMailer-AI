@@ -269,10 +269,25 @@ const getEmailById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteEmail = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { id } = req.params;
+
+  const result = await EmailsService.deleteEmail(userId, id as string);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Email deleted successfully",
+    data: result,
+  });
+});
+
 export const EmailsController = {
   generateApplicationEmail,
   generateReplyEmail,
   sendEmail,
   getEmails,
   getEmailById,
+  deleteEmail,
 };

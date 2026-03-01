@@ -398,10 +398,20 @@ const getEmailById = async (userId: string, emailId: string) => {
   });
 };
 
+const deleteEmail = async (userId: string, emailId: string) => {
+  return await prisma.email.delete({
+    where: {
+      id: emailId,
+      userId,
+    },
+  });
+};
+
 export const EmailsService = {
   generateApplicationEmail,
   generateReplyEmail,
   sendEmail,
   getEmails,
   getEmailById,
+  deleteEmail,
 };

@@ -34,6 +34,8 @@ interface JobFilters {
   search?: string;
   startDate?: string;
   endDate?: string;
+  page?: number;
+  limit?: number;
 }
 
 const createJob = async (userId: string, data: CreateJobData) => {
@@ -55,8 +57,20 @@ const createJob = async (userId: string, data: CreateJobData) => {
 };
 
 const getJobs = async (userId: string, filters: JobFilters = {}) => {
-  const { status, applyStatus, responseStatus, jobRole, search, startDate, endDate } =
-    filters;
+  const {
+    status,
+    applyStatus,
+    responseStatus,
+    jobRole,
+    search,
+    startDate,
+    endDate,
+    page = 1,
+    limit = 10,
+  } = filters;
+
+  const skip = (Number(page) - 1) * Number(limit);
+  const take = Number(limit);
 
   const where: any = { userId };
 
@@ -84,18 +98,33 @@ const getJobs = async (userId: string, filters: JobFilters = {}) => {
     if (endDate) where.createdAt.lte = new Date(endDate);
   }
 
-  return await prisma.job.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    include: {
-      _count: {
-        select: {
-          tasks: true,
-          emails: true,
+  const [jobs, total] = await Promise.all([
+    prisma.job.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        _count: {
+          select: {
+            tasks: true,
+            emails: true,
+          },
         },
       },
+    }),
+    prisma.job.count({ where }),
+  ]);
+
+  return {
+    data: jobs,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit)),
     },
-  });
+  };
 };
 
 const getJobById = async (userId: string, jobId: string) => {
