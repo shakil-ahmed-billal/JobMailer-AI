@@ -22,11 +22,10 @@ app.use(
       // Allow requests with no origin (mobile apps, Postman, etc.)
       if (!origin) return callback(null, true);
 
-      // Check if origin is in allowedOrigins or matches Vercel preview pattern
+      // Check if origin is in allowedOrigins or matches Vercel Preview/Prod patterns
       const isAllowed =
         allowedOrigins.includes(origin) ||
-        /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) ||
-        /^https:\/\/.*\.vercel\.app$/.test(origin); // Any Vercel deployment
+        /^https:\/\/.*\.vercel\.app$/.test(origin);
 
       if (isAllowed) {
         callback(null, true);
@@ -36,7 +35,12 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cookie",
+      "x-requested-with",
+    ],
     exposedHeaders: ["Set-Cookie"],
   }),
 );

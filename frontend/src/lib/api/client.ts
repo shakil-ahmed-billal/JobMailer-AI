@@ -1,6 +1,8 @@
 import axios from "axios";
+import { getAuthHeaders } from "./actions";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const baseURL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 export const apiClient = axios.create({
   baseURL,
@@ -10,20 +12,24 @@ export const apiClient = axios.create({
   withCredentials: true, // Important for cookies/sessions
 });
 
-// Request interceptor to add manual token if needed
+// PH-L2-Assignment-4 approach: manually inject cookies
 apiClient.interceptors.request.use(async (config) => {
-  if (typeof window !== "undefined") {
-    // Better-auth stores the session token in local storage or cookies.
-    // We can try to get it from the cookie via a helper or just let axios handle withCredentials.
-    // However, if the user wants manual cookie set, we can try to pass the session token as a header.
-    const sessionToken = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("jobmailer-ai.session_token="))
-      ?.split("=")[1];
+  try {
+    const cookies = await getAuthHeaders();
+    if (cookies) {
+      config.headers["Cookie"] = cookies;
+      // Also try to extract the session token specifically if needed
+      const sessionToken = cookies
+        .split("; ")
+        .find((row) => row.startsWith("jobmailer-ai.session_token="))
+        ?.split("=")[1];
 
-    if (sessionToken) {
-      config.headers["Authorization"] = `Bearer ${sessionToken}`;
+      if (sessionToken) {
+        config.headers["Authorization"] = `Bearer ${sessionToken}`;
+      }
     }
+  } catch (error) {
+    console.error("Failed to get auth headers", error);
   }
   return config;
 });

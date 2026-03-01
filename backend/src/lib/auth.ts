@@ -16,15 +16,18 @@ export const auth = betterAuth({
       enabled: true,
       maxAge: 5 * 60, // 5 minutes
     },
+    cookie: {
+      sameSite: "none",
+      secure: true,
+    },
   },
   advanced: {
     cookiePrefix: "jobmailer-ai",
-    useSecureCookies: process.env.NODE_ENV === "production",
-    trustHost: true,
+    useSecureCookies: true,
     crossSubDomainCookies: {
-      enabled: false,
+      enabled: true,
     },
-    disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
+    disableCSRFCheck: true,
   },
   baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {

@@ -346,16 +346,19 @@ var auth = betterAuth({
       enabled: true,
       maxAge: 5 * 60
       // 5 minutes
+    },
+    cookie: {
+      sameSite: "none",
+      secure: true
     }
   },
   advanced: {
-    cookiePrefix: "better-auth",
-    useSecureCookies: process.env.NODE_ENV === "production",
+    cookiePrefix: "jobmailer-ai",
+    useSecureCookies: true,
     crossSubDomainCookies: {
-      enabled: false
+      enabled: true
     },
     disableCSRFCheck: true
-    // Allow requests without Origin header (Postman, mobile apps, etc.)
   },
   baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {
@@ -364,7 +367,11 @@ var auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }
   },
-  trustedOrigins: [process.env.CLIENT_URL || "http://localhost:3000"]
+  trustedOrigins: [
+    process.env.CLIENT_URL || "http://localhost:3000",
+    "https://job-mailer-ai.vercel.app",
+    "https://api-job-mailer-ai.vercel.app"
+  ]
 });
 
 // src/middlewares/globalErrorHandler.ts
@@ -415,7 +422,7 @@ var AppError = class extends Error {
 var authenticate = async (req, res, next) => {
   try {
     const session = await auth.api.getSession({
-      headers: req.headers
+      headers: new Headers(req.headers)
     });
     if (!session) {
       throw new AppError(401, "Unauthorized. Please login to continue.");
@@ -2203,7 +2210,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
       if (isAllowed) {
         callback(null, true);
       } else {
@@ -2212,7 +2219,12 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cookie",
+      "x-requested-with"
+    ],
     exposedHeaders: ["Set-Cookie"]
   })
 );
