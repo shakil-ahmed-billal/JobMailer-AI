@@ -18,8 +18,9 @@ export const auth = betterAuth({
     },
   },
   advanced: {
-    cookiePrefix: "better-auth",
+    cookiePrefix: "jobmailer-ai",
     useSecureCookies: process.env.NODE_ENV === "production",
+    trustHost: true,
     crossSubDomainCookies: {
       enabled: false,
     },
@@ -32,5 +33,9 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  trustedOrigins: [process.env.CLIENT_URL || "http://localhost:3000"],
+  trustedOrigins: [
+    process.env.CLIENT_URL || "http://localhost:3000",
+    "https://job-mailer-ai.vercel.app",
+    "https://api-job-mailer-ai.vercel.app",
+  ],
 });
