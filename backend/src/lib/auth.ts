@@ -11,25 +11,6 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60, // 5 minutes
-    },
-    cookie: {
-      sameSite: "none",
-      secure: true,
-    },
-  },
-  advanced: {
-    cookiePrefix: "jobmailer-ai",
-    useSecureCookies: process.env.NODE_ENV === "production",
-    crossSubDomainCookies: {
-      enabled: true,
-    },
-    trustHost: true,
-    disableCSRFCheck: true,
-  },
   baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {
     google: {
@@ -42,4 +23,19 @@ export const auth = betterAuth({
     "https://job-mailer-ai.vercel.app",
     "https://api-job-mailer-ai.vercel.app",
   ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60, // 5 minutes
+    },
+  },
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: false,
+    },
+    trustHost: true,
+    disableCSRFCheck: true, // Allow requests without Origin header (Postman, mobile apps, etc.)
+  },
 });

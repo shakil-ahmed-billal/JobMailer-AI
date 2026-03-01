@@ -341,26 +341,6 @@ var auth = betterAuth({
   emailAndPassword: {
     enabled: true
   },
-  session: {
-    cookieCache: {
-      enabled: true,
-      maxAge: 5 * 60
-      // 5 minutes
-    },
-    cookie: {
-      sameSite: "none",
-      secure: true
-    }
-  },
-  advanced: {
-    cookiePrefix: "jobmailer-ai",
-    useSecureCookies: process.env.NODE_ENV === "production",
-    crossSubDomainCookies: {
-      enabled: true
-    },
-    trustHost: true,
-    disableCSRFCheck: true
-  },
   baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {
     google: {
@@ -372,7 +352,23 @@ var auth = betterAuth({
     process.env.CLIENT_URL || "http://localhost:3000",
     "https://job-mailer-ai.vercel.app",
     "https://api-job-mailer-ai.vercel.app"
-  ]
+  ],
+  session: {
+    cookieCache: {
+      enabled: true,
+      maxAge: 5 * 60
+      // 5 minutes
+    }
+  },
+  advanced: {
+    cookiePrefix: "better-auth",
+    useSecureCookies: process.env.NODE_ENV === "production",
+    crossSubDomainCookies: {
+      enabled: false
+    },
+    disableCSRFCheck: true
+    // Allow requests without Origin header (Postman, mobile apps, etc.)
+  }
 });
 
 // src/middlewares/globalErrorHandler.ts
@@ -2211,7 +2207,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
       if (isAllowed) {
         callback(null, true);
       } else {
@@ -2220,12 +2216,7 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cookie",
-      "x-requested-with"
-    ],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
     exposedHeaders: ["Set-Cookie"]
   })
 );

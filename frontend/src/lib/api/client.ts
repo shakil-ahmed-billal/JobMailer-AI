@@ -13,11 +13,11 @@ export interface ApiResponse<T> {
 class ApiClient {
   private getBaseUrl(): string {
     if (typeof window !== "undefined") {
-      // Browser: Use the relative proxy route to ensure same-origin cookies
       return "/api/v1";
     }
-    // Server-side (SSR/Actions): Use the full backend URL
-    return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+    const backendUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    return `${backendUrl}/api/v1`;
   }
 
   constructor() {}
