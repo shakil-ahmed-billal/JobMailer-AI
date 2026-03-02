@@ -939,22 +939,43 @@ var sendEmail = async (to, subject, content, userId, jobId, emailType, aiProvide
   }
 };
 var getEmails = async (userId, filters = {}) => {
+  const { emailType, jobId, page = "1", limit = "10" } = filters;
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
   const where = { userId };
-  if (filters.emailType) where.emailType = filters.emailType;
-  if (filters.jobId) where.jobId = filters.jobId;
-  return await prisma.email.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    include: {
-      job: {
-        select: {
-          id: true,
-          companyName: true,
-          jobTitle: true
+  if (emailType) where.emailType = emailType;
+  if (jobId) where.jobId = jobId;
+  const [emails, total] = await Promise.all([
+    prisma.email.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        job: {
+          select: {
+            id: true,
+            companyName: true,
+            jobTitle: true,
+            companyEmail: true,
+            location: true
+          }
         }
       }
+    }),
+    prisma.email.count({ where })
+  ]);
+  return {
+    data: emails,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit))
     }
-  });
+  };
 };
 var getEmailById = async (userId, emailId) => {
   return await prisma.email.findFirst({
@@ -1261,7 +1282,9 @@ var sendEmailSchema = z2.object({
 var getEmailsSchema = z2.object({
   query: z2.object({
     emailType: z2.nativeEnum(EmailType).optional(),
-    jobId: z2.string().uuid().optional()
+    jobId: z2.string().uuid().optional(),
+    page: z2.string().optional(),
+    limit: z2.string().optional()
   })
 });
 var getEmailSchema = z2.object({
@@ -1334,8 +1357,10 @@ var getJobs = async (userId, filters = {}) => {
     page = 1,
     limit = 10
   } = filters;
-  const skip = (Number(page) - 1) * Number(limit);
-  const take = Number(limit);
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
   const where = { userId };
   if (status) where.status = status;
   if (applyStatus) where.applyStatus = applyStatus;
@@ -1619,7 +1644,9 @@ var getJobsSchema = z3.object({
     jobRole: z3.string().optional(),
     search: z3.string().optional(),
     startDate: z3.string().optional(),
-    endDate: z3.string().optional()
+    endDate: z3.string().optional(),
+    page: z3.string().optional(),
+    limit: z3.string().optional()
   })
 });
 
@@ -1872,12 +1899,48 @@ var createTask = async (userId, data) => {
   });
 };
 var getTasks = async (userId, filters = {}) => {
-  const { jobId, submitStatus } = filters;
+  const { jobId, submitStatus, page = 1, limit = 10 } = filters;
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
   const where = { userId };
   if (jobId) where.jobId = jobId;
   if (submitStatus) where.submitStatus = submitStatus;
+  const [tasks, total] = await Promise.all([
+    prisma.task.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { deadline: "asc" },
+      include: {
+        job: {
+          select: {
+            id: true,
+            companyName: true,
+            jobTitle: true
+          }
+        }
+      }
+    }),
+    prisma.task.count({ where })
+  ]);
+  return {
+    data: tasks,
+    meta: {
+      total,
+      page: validPage,
+      limit: validLimit,
+      totalPages: Math.ceil(total / validLimit)
+    }
+  };
+};
+var getTasksByJobId = async (userId, jobId) => {
   return await prisma.task.findMany({
-    where,
+    where: {
+      userId,
+      jobId
+    },
     orderBy: { deadline: "asc" },
     include: {
       job: {
@@ -1963,6 +2026,7 @@ var getUpcomingTasks = async (userId, limit = 5) => {
 var TasksService = {
   createTask,
   getTasks,
+  getTasksByJobId,
   getTaskById,
   updateTask,
   deleteTask,
@@ -2021,7 +2085,11 @@ var updateTask2 = catchAsync(async (req, res) => {
   const userId = req.user.id;
   const { id } = req.params;
   try {
-    const result = await TasksService.updateTask(userId, id, req.body);
+    const result = await TasksService.updateTask(
+      userId,
+      id,
+      req.body
+    );
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -2064,9 +2132,21 @@ var getUpcomingTasks2 = catchAsync(async (req, res) => {
     data: result
   });
 });
+var getTasksByJobId2 = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const { id } = req.params;
+  const result = await TasksService.getTasksByJobId(userId, id);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Tasks retrieved successfully",
+    data: result
+  });
+});
 var TasksController = {
   createTask: createTask2,
   getTasks: getTasks2,
+  getTasksByJobId: getTasksByJobId2,
   getTaskById: getTaskById2,
   updateTask: updateTask2,
   deleteTask: deleteTask2,
@@ -2110,7 +2190,9 @@ var deleteTaskSchema = z5.object({
 var getTasksSchema = z5.object({
   query: z5.object({
     jobId: z5.string().uuid().optional(),
-    submitStatus: z5.nativeEnum(TaskStatus).optional()
+    submitStatus: z5.nativeEnum(TaskStatus).optional(),
+    page: z5.string().optional(),
+    limit: z5.string().optional()
   })
 });
 
@@ -2121,6 +2203,11 @@ router4.get("/upcoming", TasksController.getUpcomingTasks);
 router4.post("/", validateRequest(createTaskSchema), TasksController.createTask);
 router4.get("/", validateRequest(getTasksSchema), TasksController.getTasks);
 router4.get("/:id", validateRequest(getTaskSchema), TasksController.getTaskById);
+router4.get(
+  "/job/:id",
+  validateRequest(getTaskSchema),
+  TasksController.getTasksByJobId
+);
 router4.put(
   "/:id",
   validateRequest(updateTaskSchema),
@@ -2180,9 +2267,78 @@ var getProfile = async (userId) => {
     }
   });
 };
+var getRecentActivity = async (userId, limit = 5) => {
+  const [jobs, tasks, emails] = await Promise.all([
+    prisma.job.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: {
+        id: true,
+        companyName: true,
+        jobTitle: true,
+        createdAt: true,
+        applyStatus: true
+      }
+    }),
+    prisma.task.findMany({
+      where: { userId },
+      orderBy: { updatedAt: "desc" },
+      take: limit,
+      select: { id: true, title: true, updatedAt: true, submitStatus: true }
+    }),
+    prisma.email.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      take: limit,
+      select: { id: true, subject: true, emailType: true, createdAt: true }
+    })
+  ]);
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { name: true }
+  });
+  const userName = user?.name || "You";
+  const activities = [];
+  jobs.forEach((job) => {
+    activities.push({
+      id: `job-${job.id}`,
+      user: { name: userName, image: "/avatars/01.png" },
+      action: job.applyStatus === "APPLIED" ? "applied to" : "saved a job at",
+      target: `${job.jobTitle} at ${job.companyName}`,
+      time: job.createdAt.toISOString(),
+      type: "job",
+      timestamp: new Date(job.createdAt).getTime()
+    });
+  });
+  tasks.forEach((task) => {
+    activities.push({
+      id: `task-${task.id}`,
+      user: { name: userName, image: "/avatars/01.png" },
+      action: task.submitStatus === "SUBMITTED" ? "completed task" : "updated task",
+      target: task.title,
+      time: task.updatedAt.toISOString(),
+      type: "task",
+      timestamp: new Date(task.updatedAt).getTime()
+    });
+  });
+  emails.forEach((email) => {
+    activities.push({
+      id: `email-${email.id}`,
+      user: { name: "System", image: "/avatars/02.png" },
+      action: email.emailType === "APPLICATION" ? "sent application email titled" : "sent reply email titled",
+      target: `"${email.subject}"`,
+      time: email.createdAt.toISOString(),
+      type: "email",
+      timestamp: new Date(email.createdAt).getTime()
+    });
+  });
+  return activities.sort((a, b) => b.timestamp - a.timestamp).slice(0, limit).map(({ timestamp, ...rest }) => rest);
+};
 var UsersService = {
   updateProfile,
-  getProfile
+  getProfile,
+  getRecentActivity
 };
 
 // src/modules/Users/users.controller.ts
@@ -2206,9 +2362,20 @@ var getProfile2 = catchAsync(async (req, res) => {
     data: result
   });
 });
+var getRecentActivity2 = catchAsync(async (req, res) => {
+  const userId = req.user.id;
+  const result = await UsersService.getRecentActivity(userId);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Recent activity retrieved successfully",
+    data: result
+  });
+});
 var UsersController = {
   updateProfile: updateProfile2,
-  getProfile: getProfile2
+  getProfile: getProfile2,
+  getRecentActivity: getRecentActivity2
 };
 
 // src/modules/Users/users.validation.ts
@@ -2232,6 +2399,7 @@ var updateProfileSchema = z6.object({
 var router5 = Router5();
 router5.use(authenticate);
 router5.get("/profile", UsersController.getProfile);
+router5.get("/activity", UsersController.getRecentActivity);
 router5.put(
   "/profile",
   validateRequest(updateProfileSchema),
