@@ -6,6 +6,7 @@ import { JobDetails } from "@/components/jobs/job-details";
 import { JobForm } from "@/components/jobs/job-form";
 import { TaskModal } from "@/components/jobs/task-modal";
 import { JobDetailsSkeleton } from "@/components/shared/skeletons";
+import { TaskViewModal } from "@/components/tasks/task-view-modal";
 import { swrFetcher } from "@/lib/api/client";
 import { jobsApi } from "@/lib/api/jobs";
 import { tasksApi } from "@/lib/api/tasks";
@@ -28,6 +29,7 @@ export default function JobDetailsPage({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
 
   // Parallel fetching with SWR
@@ -89,6 +91,11 @@ export default function JobDetailsPage({
     setIsTaskModalOpen(true);
   };
 
+  const handleViewTask = (task: Task) => {
+    setSelectedTask(task);
+    setIsViewModalOpen(true);
+  };
+
   const handleDeleteTask = async (taskId: string) => {
     if (confirm("Are you sure you want to delete this task?")) {
       try {
@@ -137,6 +144,7 @@ export default function JobDetailsPage({
           setIsTaskModalOpen(true);
         }}
         onEditTask={handleEditTask}
+        onViewTask={handleViewTask}
         onDeleteTask={handleDeleteTask}
       />
 
@@ -172,6 +180,12 @@ export default function JobDetailsPage({
         jobId={job!.id}
         task={selectedTask}
         onSuccess={mutateTasks}
+      />
+
+      <TaskViewModal
+        open={isViewModalOpen}
+        onOpenChange={setIsViewModalOpen}
+        task={selectedTask || null}
       />
     </div>
   );

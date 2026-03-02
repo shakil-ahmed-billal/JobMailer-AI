@@ -23,6 +23,11 @@ export const tasksApi = {
     return response.data.data;
   },
 
+  getById: async (id: string) => {
+    const response = await apiClient.get<ApiResponse<Task>>(`/tasks/${id}`);
+    return response.data.data;
+  },
+
   delete: async (id: string) => {
     await apiClient.delete(`/tasks/${id}`);
   },
