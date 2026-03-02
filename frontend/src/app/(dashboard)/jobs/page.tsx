@@ -158,37 +158,6 @@ export default function JobsPage() {
       {/* ── Filters + Table Card ── */}
       <div className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden">
 
-        {/* Card header bar */}
-        {/* <div className="flex items-center gap-2 px-5 py-4 border-b border-border/50 bg-muted/30">
-          <TrendingUp className="h-4 w-4 text-violet-500" />
-          <span className="text-sm font-semibold text-foreground">Application Pipeline</span>
-          {totalItems > 0 && (
-            <span className="ml-auto inline-flex items-center rounded-full bg-violet-500/10 border border-violet-500/20 px-2.5 py-0.5 text-xs font-semibold text-violet-700 dark:text-violet-400">
-              {totalItems} total
-            </span>
-          )}
-        </div> */}
-
-        {/* ── Stats Strip ── */}
-      <div className="grid grid-cols-2 sm:grid-cols-4">
-        {[
-          { label: "Total Jobs", value: totalItems, accent: "from-violet-500/10 to-purple-500/5", border: "border-violet-500/15", text: "text-violet-700 dark:text-violet-400" },
-          { label: "This Page", value: jobs.length, accent: "from-sky-500/10 to-blue-500/5", border: "border-sky-500/15", text: "text-sky-700 dark:text-sky-400" },
-          { label: "Current Page", value: currentPage, accent: "from-emerald-500/10 to-teal-500/5", border: "border-emerald-500/15", text: "text-emerald-700 dark:text-emerald-400" },
-          { label: "Total Pages", value: totalPages, accent: "from-amber-500/10 to-orange-500/5", border: "border-amber-500/15", text: "text-amber-700 dark:text-amber-400" },
-        ].map((stat) => (
-          <div
-            key={stat.label}
-            className={`border ${stat.border} bg-gradient-to-br ${stat.accent} p-4`}
-          >
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
-              {stat.label}
-            </p>
-            <p className={`text-2xl font-bold ${stat.text}`}>{stat.value}</p>
-          </div>
-        ))}
-      </div>
-
         <div className="p-5 space-y-4">
           {/* Filters */}
           <JobFilters filters={filters} onFilterChange={handleFilterChange} />
