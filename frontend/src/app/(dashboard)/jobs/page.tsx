@@ -96,6 +96,26 @@ export default function JobsPage() {
     }
   };
 
+  const handleStatusChange = async (jobId: string, status: string) => {
+    // Optimistic update
+    const previousJobs = [...jobs];
+    setJobs((prev) =>
+      prev.map((job) =>
+        job.id === jobId ? { ...job, status: status as any } : job,
+      ),
+    );
+
+    try {
+      await jobsApi.update(jobId, { status: status as any });
+      toast.success("Status updated successfully");
+      // No need to fetchJobs() here as we've already updated the state locally
+    } catch (error) {
+      // Revert on error
+      setJobs(previousJobs);
+      toast.error("Failed to update status");
+    }
+  };
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -123,6 +143,7 @@ export default function JobsPage() {
               onApply={handleApply}
               onEdit={handleEdit}
               onAddTask={handleAddTask}
+              onStatusChange={handleStatusChange}
             />
 
             <div className="flex items-center justify-between py-4">

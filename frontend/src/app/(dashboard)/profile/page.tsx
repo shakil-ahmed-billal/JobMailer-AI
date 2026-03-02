@@ -149,165 +149,59 @@ export default function ProfilePage() {
         <h2 className="text-3xl font-bold tracking-tight">Profile Settings</h2>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-7 lg:col-span-3 order-last lg:order-first">
-          <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
-            <CardDescription>
-              Update your personal details and public profile.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="John Doe" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input {...field} disabled />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="profileBio"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Bio (for AI Context)</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="I am a Senior Frontend Developer with 5 years of experience..."
-                          className="min-h-[100px]"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="resumeLink"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Resume Link</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="https://docs.google.com/..."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="linkedinLink"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>LinkedIn Profile</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="https://linkedin.com/in/..."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="portfolioLink"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Portfolio Link</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="https://yourportfolio.com"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <Separator className="my-4" />
-
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold">Resume Content (for AI)</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Paste your full resume content here. This will be used by AI to generate personalized emails.
-                  </p>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Personal Information</CardTitle>
+              <CardDescription>
+                Update your personal details and public profile.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="John Doe" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input {...field} disabled />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
                   <FormField
                     control={form.control}
-                    name="resumeContent"
+                    name="profileBio"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Resume Content</FormLabel>
+                        <FormLabel>Bio (for AI Context)</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Paste your complete resume text here..."
-                            className="min-h-[200px] font-mono text-sm"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="skills"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Skills</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="React, Node.js, TypeScript, PostgreSQL..."
-                            className="min-h-[80px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="experience"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Experience Summary</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="5+ years of full-stack development experience..."
+                            placeholder="I am a Senior Frontend Developer with 5 years of experience..."
                             className="min-h-[100px]"
                             {...field}
                           />
@@ -317,91 +211,214 @@ export default function ProfilePage() {
                     )}
                   />
 
-                  <FormField
-                    control={form.control}
-                    name="education"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Education</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="BS in Computer Science, University Name..."
-                            className="min-h-[80px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="linkedinLink"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>LinkedIn Profile</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="https://linkedin.com/in/..."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="portfolioLink"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Portfolio Link</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="https://yourportfolio.com"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                  <FormField
-                    control={form.control}
-                    name="certifications"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Certifications (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="AWS Certified Developer, Google Cloud Professional..."
-                            className="min-h-[80px]"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="resumeLink"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Resume Link</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="https://docs.google.com/..."
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold italic">
+                      AI Context Data (Resume Details)
+                    </h3>
+
+                    <FormField
+                      control={form.control}
+                      name="resumeContent"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Resume Content</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Paste your complete resume text here..."
+                              className="min-h-[200px] font-mono text-sm"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="skills"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Skills</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="React, Node.js, TypeScript..."
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="experience"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Experience Summary</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="5+ years of full-stack development..."
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <FormField
+                        control={form.control}
+                        name="education"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Education</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="BS in Computer Science..."
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="certifications"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Certifications</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="AWS Certified Developer..."
+                                className="min-h-[100px]"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-4">
+                    <Button
+                      type="submit"
+                      size="lg"
+                      disabled={isLoading}
+                      className="px-8"
+                    >
+                      {isLoading && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      {!isLoading && <Save className="mr-2 h-4 w-4" />}
+                      Save Changes
+                    </Button>
+                  </div>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-6">
+          <Card className="h-fit sticky top-6">
+            <CardHeader>
+              <CardTitle>Profile Preview</CardTitle>
+              <CardDescription>
+                How your profile information appears.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center text-center space-y-4">
+              <Avatar className="h-24 w-24">
+                <AvatarImage src="/avatars/01.png" alt={user?.name || "User"} />
+                <AvatarFallback className="text-xl">{initials}</AvatarFallback>
+              </Avatar>
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold font-mono">
+                  {form.watch("name") || user?.name || "Your Name"}
+                </h3>
+                <p className="text-sm text-muted-foreground font-mono">
+                  {user?.email || "email@example.com"}
+                </p>
+              </div>
+              <Separator />
+              <div className="w-full text-left space-y-4">
+                <div>
+                  <h4 className="font-semibold text-sm">Bio Preview</h4>
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-6 text-justify">
+                    {form.watch("profileBio") ||
+                      "No bio added yet. AI will use this to generate personalized emails."}
+                  </p>
                 </div>
-
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  {!isLoading && <Save className="mr-2 h-4 w-4" />}
-                  Save Changes
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-
-        <Card className="col-span-7 lg:col-span-4 h-fit">
-          <CardHeader>
-            <CardTitle>Profile Preview</CardTitle>
-            <CardDescription>
-              How your profile information appears.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex flex-col items-center text-center space-y-4">
-            <Avatar className="h-24 w-24">
-              <AvatarImage src="/avatars/01.png" alt={user?.name || "User"} />
-              <AvatarFallback className="text-xl">{initials}</AvatarFallback>
-            </Avatar>
-            <div className="space-y-1">
-              <h3 className="text-xl font-bold">{user?.name || "Your Name"}</h3>
-              <p className="text-sm text-muted-foreground">
-                {user?.email || "email@example.com"}
-              </p>
-            </div>
-            <Separator />
-            <div className="w-full text-left space-y-4">
-              <div>
-                <h4 className="font-semibold text-sm">Target Roles</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Full Stack Developer, Frontend Engineer
-                </p>
               </div>
-              <div>
-                <h4 className="font-semibold text-sm">Bio Preview</h4>
-                <p className="text-sm text-muted-foreground mt-1 line-clamp-4">
-                  {form.watch("profileBio") ||
-                    "No bio added yet. AI will use this to generate personalized emails."}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

@@ -10,6 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Table,
   TableBody,
   TableCell,
@@ -29,6 +36,7 @@ interface JobTableProps {
   onApply: (job: Job) => void;
   onEdit: (job: Job) => void;
   onAddTask: (job: Job) => void;
+  onStatusChange: (jobId: string, status: string) => void;
 }
 
 export function JobTable({
@@ -37,6 +45,7 @@ export function JobTable({
   onApply,
   onEdit,
   onAddTask,
+  onStatusChange,
 }: JobTableProps) {
   const getStatusColor = (
     status: string,
@@ -78,13 +87,33 @@ export function JobTable({
           ) : (
             jobs.map((job) => (
               <TableRow key={job.id}>
-                <TableCell className="font-medium">{job.companyName}</TableCell>
-                <TableCell>{job.jobTitle}</TableCell>
+                <TableCell className="font-medium max-w-[150px] truncate">
+                  {job.companyName}
+                </TableCell>
+                <TableCell className="max-w-[200px] truncate">
+                  {job.jobTitle}
+                </TableCell>
                 <TableCell>{formatJobRole(job.jobRole)}</TableCell>
                 <TableCell>
-                  <Badge variant={getStatusColor(job.status)}>
-                    {job.status}
-                  </Badge>
+                  <Select
+                    defaultValue={job.status}
+                    onValueChange={(value) => onStatusChange(job.id, value)}
+                  >
+                    <SelectTrigger className="w-[130px]">
+                      <SelectValue>
+                        <Badge variant={getStatusColor(job.status)}>
+                          {job.status}
+                        </Badge>
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="DRAFT">Draft</SelectItem>
+                      <SelectItem value="APPLIED">Applied</SelectItem>
+                      <SelectItem value="INTERVIEW">Interview</SelectItem>
+                      <SelectItem value="OFFER">Offer</SelectItem>
+                      <SelectItem value="REJECTED">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell>
                   {job.applyDate && !isNaN(new Date(job.applyDate).getTime())

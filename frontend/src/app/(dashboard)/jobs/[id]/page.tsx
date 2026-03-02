@@ -84,6 +84,17 @@ export default function JobDetailsPage({
     }
   };
 
+  const handleUpdateNotes = async (notes: string) => {
+    try {
+      await jobsApi.update(id, { notes });
+      setJob((prev) => (prev ? { ...prev, notes } : null));
+      toast.success("Notes updated");
+    } catch (error) {
+      toast.error("Failed to update notes");
+      throw error;
+    }
+  };
+
   if (loading) return <div className="p-8">Loading...</div>;
   if (!job) return <div className="p-8">Job not found</div>;
 
@@ -97,6 +108,7 @@ export default function JobDetailsPage({
         onEdit={() => setIsEditOpen(true)}
         onReply={() => setIsReplyOpen(true)}
         onApply={() => setIsApplyOpen(true)}
+        onNotesUpdate={handleUpdateNotes}
         onAddTask={() => {
           setSelectedTask(undefined);
           setIsTaskModalOpen(true);

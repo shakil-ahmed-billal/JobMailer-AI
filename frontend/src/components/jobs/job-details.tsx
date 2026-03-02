@@ -1,5 +1,6 @@
 "use client";
 
+import { EmailPreview } from "@/components/emails/email-preview";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,20 +14,27 @@ import {
   Building2,
   Calendar,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Clock,
   DollarSign,
   Edit2,
+  Eye,
   Globe,
   Linkedin,
   Mail,
   MapPin,
   Plus,
+  Save,
   Send,
   Trash2,
+  X,
 } from "lucide-react";
 import Link from "next/link";
 
 import { Email, Task } from "@/types";
+import { useState } from "react";
+import { Textarea } from "../ui/textarea";
 
 interface JobDetailsProps {
   job: Job;
@@ -39,6 +47,7 @@ interface JobDetailsProps {
   onAddTask: () => void;
   onEditTask: (task: Task) => void;
   onDeleteTask: (id: string) => void;
+  onNotesUpdate: (notes: string) => Promise<void>;
 }
 
 export function JobDetails({
@@ -52,7 +61,38 @@ export function JobDetails({
   onAddTask,
   onEditTask,
   onDeleteTask,
+  onNotesUpdate,
 }: JobDetailsProps) {
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [editedNotes, setEditedNotes] = useState(job.notes || "");
+  const [isSavingNotes, setIsSavingNotes] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
+  const [isEmailPreviewOpen, setIsEmailPreviewOpen] = useState(false);
+
+  const descriptionLimit = 500;
+  const isLongDescription = job.jobDescription.length > descriptionLimit;
+  const displayedDescription =
+    isLongDescription && !isDescriptionExpanded
+      ? job.jobDescription.slice(0, descriptionLimit) + "..."
+      : job.jobDescription;
+
+  const handleSaveNotes = async () => {
+    setIsSavingNotes(true);
+    try {
+      await onNotesUpdate(editedNotes);
+      setIsEditingNotes(false);
+    } catch (error) {
+      console.error("Failed to update notes", error);
+    } finally {
+      setIsSavingNotes(false);
+    }
+  };
+
+  const handleCancelNotes = () => {
+    setEditedNotes(job.notes || "");
+    setIsEditingNotes(false);
+  };
   const getTaskStatusIcon = (status: string) => {
     switch (status) {
       case "SUBMITTED":
@@ -111,23 +151,83 @@ export function JobDetails({
             </CardHeader>
             <CardContent>
               <div className="whitespace-pre-wrap text-sm leading-relaxed">
-                {job.jobDescription}
+                {displayedDescription}
               </div>
+              {isLongDescription && (
+                <Button
+                  variant="link"
+                  size="sm"
+                  className="px-0 mt-2 h-8 text-primary font-semibold flex items-center gap-1"
+                  onClick={() =>
+                    setIsDescriptionExpanded(!isDescriptionExpanded)
+                  }
+                >
+                  {isDescriptionExpanded ? (
+                    <>
+                      See Less <ChevronUp className="h-4 w-4" />
+                    </>
+                  ) : (
+                    <>
+                      See More <ChevronDown className="h-4 w-4" />
+                    </>
+                  )}
+                </Button>
+              )}
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <CardTitle>Notes</CardTitle>
-              <Button variant="ghost" size="sm" onClick={onEdit}>
-                <Edit2 className="h-4 w-4 mr-2" />
-                Edit
-              </Button>
+              {!isEditingNotes && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsEditingNotes(true)}
+                >
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Edit
+                </Button>
+              )}
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                {job.notes || "No notes added yet."}
-              </p>
+              {isEditingNotes ? (
+                <div className="space-y-4">
+                  <Textarea
+                    value={editedNotes}
+                    onChange={(e) => setEditedNotes(e.target.value)}
+                    placeholder="Add your notes here..."
+                    className="min-h-[150px] text-sm"
+                  />
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleCancelNotes}
+                      disabled={isSavingNotes}
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Cancel
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleSaveNotes}
+                      disabled={isSavingNotes}
+                    >
+                      {isSavingNotes ? (
+                        <Clock className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4 mr-2" />
+                      )}
+                      Save
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                  {job.notes || "No notes added yet."}
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -210,7 +310,11 @@ export function JobDetails({
                   emails.map((email: Email) => (
                     <div
                       key={email.id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors"
+                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50 transition-colors cursor-pointer"
+                      onClick={() => {
+                        setSelectedEmail(email);
+                        setIsEmailPreviewOpen(true);
+                      }}
                     >
                       <div className="flex items-center gap-3">
                         <div className="p-2 bg-primary/10 rounded-full">
@@ -224,13 +328,22 @@ export function JobDetails({
                           </p>
                         </div>
                       </div>
-                      <Badge variant="outline">{email.status}</Badge>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline">{email.status}</Badge>
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      </div>
                     </div>
                   ))
                 )}
               </div>
             </CardContent>
           </Card>
+
+          <EmailPreview
+            open={isEmailPreviewOpen}
+            onOpenChange={setIsEmailPreviewOpen}
+            email={selectedEmail}
+          />
         </div>
 
         <div className="space-y-6">
