@@ -5,8 +5,10 @@ import { Loader2, Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import useSWR from "swr";
 import { z } from "zod";
 
+import { ProfileSkeleton } from "@/components/shared/skeletons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +29,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { swrFetcher } from "@/lib/api/client";
 import { usersApi } from "@/lib/api/users";
 import { useAuthContext } from "@/lib/auth/auth-context";
 
@@ -60,7 +63,13 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export default function ProfilePage() {
   const { user, checkSession } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const {
+    data: profileData,
+    isLoading: isProfileLoading,
+    mutate: mutateProfile,
+  } = useSWR("/users/profile", swrFetcher);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -79,50 +88,36 @@ export default function ProfilePage() {
     },
   });
 
-  // Load user data when available
+  // Load profile data into form when fetched
   useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const profileData = await usersApi.getProfile();
-        form.reset({
-          name: profileData.name || "",
-          email: profileData.email || "",
-          profileBio: profileData.profileBio || "",
-          resumeLink: profileData.resumeLink || "",
-          linkedinLink: profileData.linkedinLink || "",
-          portfolioLink: profileData.portfolioLink || "",
-          resumeContent: profileData.resumeContent || "",
-          skills: profileData.skills || "",
-          experience: profileData.experience || "",
-          education: profileData.education || "",
-          certifications: profileData.certifications || "",
-        });
-      } catch (error) {
-        // Fallback to user from context if API fails
-        if (user) {
-          form.reset({
-            name: user.name || "",
-            email: user.email || "",
-            profileBio: user.profileBio || "",
-            resumeLink: user.resumeLink || "",
-            linkedinLink: user.linkedinLink || "",
-            portfolioLink: user.portfolioLink || "",
-            resumeContent: user.resumeContent || "",
-            skills: user.skills || "",
-            experience: user.experience || "",
-            education: user.education || "",
-            certifications: user.certifications || "",
-          });
-        }
-      }
-    };
-    loadProfile();
-  }, [user, form]);
+    if (profileData) {
+      form.reset({
+        name: profileData.name || "",
+        email: profileData.email || "",
+        profileBio: profileData.profileBio || "",
+        resumeLink: profileData.resumeLink || "",
+        linkedinLink: profileData.linkedinLink || "",
+        portfolioLink: profileData.portfolioLink || "",
+        resumeContent: profileData.resumeContent || "",
+        skills: profileData.skills || "",
+        experience: profileData.experience || "",
+        education: profileData.education || "",
+        certifications: profileData.certifications || "",
+      });
+    } else if (!isProfileLoading && user) {
+      // Fallback to user from context if SWR fails or is empty
+      form.reset({
+        name: user.name || "",
+        email: user.email || "",
+      });
+    }
+  }, [profileData, isProfileLoading, user, form]);
 
   async function onSubmit(data: ProfileFormValues) {
-    setIsLoading(true);
+    setIsUpdating(true);
     try {
       await usersApi.updateProfile(data);
+      await mutateProfile(); // Refresh local SWR cache
       await checkSession(); // Refresh session data
       toast.success("Profile updated successfully");
     } catch (error: unknown) {
@@ -130,7 +125,7 @@ export default function ProfilePage() {
         ?.response?.data?.message;
       toast.error(msg || "Failed to update profile");
     } finally {
-      setIsLoading(false);
+      setIsUpdating(false);
     }
   }
 
@@ -142,6 +137,14 @@ export default function ProfilePage() {
         .toUpperCase()
         .substring(0, 2)
     : "U";
+
+  if (isProfileLoading && !profileData) {
+    return (
+      <div className="flex-1 space-y-4 p-8 pt-6">
+        <ProfileSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -369,13 +372,13 @@ export default function ProfilePage() {
                     <Button
                       type="submit"
                       size="lg"
-                      disabled={isLoading}
+                      disabled={isUpdating}
                       className="px-8"
                     >
-                      {isLoading && (
+                      {isUpdating && (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       )}
-                      {!isLoading && <Save className="mr-2 h-4 w-4" />}
+                      {!isUpdating && <Save className="mr-2 h-4 w-4" />}
                       Save Changes
                     </Button>
                   </div>

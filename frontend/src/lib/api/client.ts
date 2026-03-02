@@ -127,6 +127,19 @@ class ApiClient {
   async delete<T>(endpoint: string, options: any = {}) {
     return this.request<T>(endpoint, { ...options, method: "DELETE" });
   }
+
+  // Helper for SWR
+  fetcher = async (url: string) => {
+    const response = await this.get<any>(url);
+    if (!response.success) {
+      throw new Error(response.error?.message || "Failed to fetch");
+    }
+    // Most of our API methods return response.data.data
+    // but the request method already returns the whole body as 'data'
+    // so data.data is what the specific API methods (like jobsApi.getAll) were returning.
+    return response.data.data;
+  };
 }
 
 export const apiClient = new ApiClient();
+export const swrFetcher = apiClient.fetcher;

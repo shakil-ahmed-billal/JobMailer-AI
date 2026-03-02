@@ -5,16 +5,18 @@ import { JobFilters } from "@/components/jobs/job-filters";
 import { JobForm } from "@/components/jobs/job-form";
 import { JobTable } from "@/components/jobs/job-table";
 import { TaskModal } from "@/components/jobs/task-modal";
+import { JobTableSkeleton } from "@/components/shared/skeletons";
 import { Button } from "@/components/ui/button";
+import { swrFetcher } from "@/lib/api/client";
 import { JobFilters as FilterType, jobsApi } from "@/lib/api/jobs";
 import { Job } from "@/types";
 import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import useSWR from "swr";
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<FilterType>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -26,36 +28,52 @@ export default function JobsPage() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [jobForTask, setJobForTask] = useState<Job | undefined>(undefined);
 
-  const fetchJobs = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await jobsApi.getAll(filters, currentPage, 10);
+  // Generate SWR key based on filters and page
+  const swrKey = useMemo(() => {
+    const params = new URLSearchParams();
+    if (filters.status) params.append("status", filters.status);
+    if (filters.applyStatus) params.append("applyStatus", filters.applyStatus);
+    if (filters.responseStatus)
+      params.append("responseStatus", filters.responseStatus);
+    if (filters.jobRole) params.append("jobRole", filters.jobRole);
+    if (filters.search) params.append("search", filters.search);
+    if (filters.startDate) params.append("startDate", filters.startDate);
+    if (filters.endDate) params.append("endDate", filters.endDate);
+    params.append("page", String(currentPage));
+    params.append("limit", "10");
 
-      // Resilience check: handle both paginated and non-paginated (array) responses
-      if (Array.isArray(response)) {
-        setJobs(response);
-        setTotalPages(1);
-        setTotalItems(response.length);
-      } else if (response && typeof response === "object") {
-        setJobs(response.data || []);
-        setTotalPages(response.meta?.totalPages || 1);
-        setTotalItems(response.meta?.total || response.data?.length || 0);
-      } else {
-        setJobs([]);
-        setTotalPages(1);
-        setTotalItems(0);
-      }
-    } catch (error) {
-      console.error("Failed to fetch jobs", error);
-      toast.error("Failed to load jobs");
-    } finally {
-      setLoading(false);
-    }
+    return `/jobs?${params.toString()}`;
   }, [filters, currentPage]);
 
+  const {
+    data: rawResponse,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(swrKey, swrFetcher, {
+    keepPreviousData: true,
+  });
+
+  // Sync SWR data to local state for optimistic updates
   useEffect(() => {
-    fetchJobs();
-  }, [fetchJobs]);
+    if (rawResponse) {
+      if (Array.isArray(rawResponse)) {
+        setJobs(rawResponse);
+        setTotalPages(1);
+        setTotalItems(rawResponse.length);
+      } else if (rawResponse && typeof rawResponse === "object") {
+        setJobs(rawResponse.data || []);
+        setTotalPages(rawResponse.meta?.totalPages || 1);
+        setTotalItems(rawResponse.meta?.total || rawResponse.data?.length || 0);
+      }
+    }
+  }, [rawResponse]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to load jobs");
+    }
+  }, [error]);
 
   const handleFilterChange = (newFilters: FilterType) => {
     setFilters(newFilters);
@@ -67,7 +85,7 @@ export default function JobsPage() {
       try {
         await jobsApi.delete(id);
         toast.success("Job deleted successfully");
-        fetchJobs();
+        mutate();
       } catch (error) {
         toast.error("Failed to delete job");
       }
@@ -133,8 +151,8 @@ export default function JobsPage() {
       </div>
       <div className="space-y-4">
         <JobFilters filters={filters} onFilterChange={handleFilterChange} />
-        {loading ? (
-          <div className="text-center py-10">Loading jobs...</div>
+        {isLoading && !jobs.length ? (
+          <JobTableSkeleton />
         ) : (
           <div className="space-y-4">
             <JobTable
@@ -155,7 +173,7 @@ export default function JobsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  disabled={currentPage === 1 || loading}
+                  disabled={currentPage === 1 || isLoading}
                 >
                   <ChevronLeft className="h-4 w-4" />
                   Previous
@@ -169,7 +187,7 @@ export default function JobsPage() {
                   onClick={() =>
                     setCurrentPage((p) => Math.min(totalPages, p + 1))
                   }
-                  disabled={currentPage === totalPages || loading}
+                  disabled={currentPage === totalPages || isLoading}
                 >
                   Next
                   <ChevronRight className="h-4 w-4" />
@@ -183,7 +201,7 @@ export default function JobsPage() {
       <JobForm
         open={isFormOpen}
         onOpenChange={handleFormOpenChange}
-        onSuccess={fetchJobs}
+        onSuccess={() => mutate()}
         job={editingJob}
       />
 
@@ -192,7 +210,7 @@ export default function JobsPage() {
           open={isApplyModalOpen}
           onOpenChange={setIsApplyModalOpen}
           job={selectedJob}
-          onSuccess={fetchJobs}
+          onSuccess={() => mutate()}
         />
       )}
 
@@ -201,7 +219,7 @@ export default function JobsPage() {
           open={isTaskModalOpen}
           onOpenChange={setIsTaskModalOpen}
           jobId={jobForTask.id}
-          onSuccess={fetchJobs}
+          onSuccess={() => mutate()}
         />
       )}
     </div>

@@ -5,13 +5,15 @@ import { ApplyModal } from "@/components/jobs/apply-modal";
 import { JobDetails } from "@/components/jobs/job-details";
 import { JobForm } from "@/components/jobs/job-form";
 import { TaskModal } from "@/components/jobs/task-modal";
-import { emailsApi } from "@/lib/api/emails";
+import { JobDetailsSkeleton } from "@/components/shared/skeletons";
+import { swrFetcher } from "@/lib/api/client";
 import { jobsApi } from "@/lib/api/jobs";
 import { tasksApi } from "@/lib/api/tasks";
-import { Email, Job, Task } from "@/types";
+import { Job, Task } from "@/types";
 import { useRouter } from "next/navigation";
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
+import useSWR from "swr";
 
 export default function JobDetailsPage({
   params,
@@ -19,41 +21,56 @@ export default function JobDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = use(params);
+  const id = resolvedParams.id;
   const router = useRouter();
-  const [job, setJob] = useState<Job | null>(null);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [emails, setEmails] = useState<Email[]>([]);
-  const [loading, setLoading] = useState(true);
+
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isApplyOpen, setIsApplyOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
 
-  const id = resolvedParams.id;
+  // Parallel fetching with SWR
+  const {
+    data: job,
+    error: jobError,
+    isLoading: isJobLoading,
+    mutate: mutateJob,
+  } = useSWR<Job>(`/jobs/${id}`, swrFetcher);
 
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const [jobData, tasksData, emailsData] = await Promise.all([
-        jobsApi.getById(id),
-        tasksApi.getAll(id),
-        emailsApi.getAll({ jobId: id }),
-      ]);
-      setJob(jobData);
-      setTasks(tasksData || []);
-      setEmails(emailsData || []);
-    } catch (error) {
-      toast.error("Failed to load job details");
-      router.push("/jobs");
-    } finally {
-      setLoading(false);
-    }
-  }, [id, router]);
+  const { data: rawTasks, mutate: mutateTasks } = useSWR<any>(
+    `/tasks/job/${id}`,
+    swrFetcher,
+  );
+
+  const { data: rawEmails, mutate: mutateEmails } = useSWR<any>(
+    `/emails?jobId=${id}`,
+    swrFetcher,
+  );
+
+  const tasks = rawTasks
+    ? Array.isArray(rawTasks)
+      ? rawTasks
+      : rawTasks.data
+    : [];
+  const emails = rawEmails
+    ? Array.isArray(rawEmails)
+      ? rawEmails
+      : rawEmails.data
+    : [];
+
+  const mutateAll = () => {
+    mutateJob();
+    mutateTasks();
+    mutateEmails();
+  };
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (jobError) {
+      toast.error("Failed to load job details");
+      router.push("/jobs");
+    }
+  }, [jobError, router]);
 
   const handleDelete = async () => {
     if (confirm("Are you sure you want to delete this job?")) {
@@ -77,7 +94,7 @@ export default function JobDetailsPage({
       try {
         await tasksApi.delete(taskId);
         toast.success("Task deleted");
-        fetchData();
+        mutateTasks();
       } catch (error) {
         toast.error("Failed to delete task");
       }
@@ -87,7 +104,7 @@ export default function JobDetailsPage({
   const handleUpdateNotes = async (notes: string) => {
     try {
       await jobsApi.update(id, { notes });
-      setJob((prev) => (prev ? { ...prev, notes } : null));
+      mutateJob();
       toast.success("Notes updated");
     } catch (error) {
       toast.error("Failed to update notes");
@@ -95,15 +112,21 @@ export default function JobDetailsPage({
     }
   };
 
-  if (loading) return <div className="p-8">Loading...</div>;
-  if (!job) return <div className="p-8">Job not found</div>;
+  if (isJobLoading && !job)
+    return (
+      <div className="p-8">
+        <JobDetailsSkeleton />
+      </div>
+    );
+
+  if (!job && !isJobLoading) return <div className="p-8">Job not found</div>;
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
       <JobDetails
-        job={job}
-        tasks={tasks}
-        emails={emails}
+        job={job!}
+        tasks={tasks || []}
+        emails={emails || []}
         onDelete={handleDelete}
         onEdit={() => setIsEditOpen(true)}
         onReply={() => setIsReplyOpen(true)}
@@ -120,35 +143,35 @@ export default function JobDetailsPage({
       <JobForm
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
-        job={job}
-        onSuccess={fetchData}
+        job={job!}
+        onSuccess={mutateJob}
       />
 
       <ReplyModal
         open={isReplyOpen}
         onOpenChange={setIsReplyOpen}
-        jobId={job.id}
-        companyEmail={job.companyEmail}
-        companyName={job.companyName}
+        jobId={job!.id}
+        companyEmail={job!.companyEmail}
+        companyName={job!.companyName}
         onSuccess={() => {
           toast.success("Reply generated and sent!");
-          // Optionally refresh job/emails
+          mutateEmails();
         }}
       />
 
       <ApplyModal
         open={isApplyOpen}
         onOpenChange={setIsApplyOpen}
-        job={job}
-        onSuccess={fetchData}
+        job={job!}
+        onSuccess={mutateAll}
       />
 
       <TaskModal
         open={isTaskModalOpen}
         onOpenChange={setIsTaskModalOpen}
-        jobId={job.id}
+        jobId={job!.id}
         task={selectedTask}
-        onSuccess={fetchData}
+        onSuccess={mutateTasks}
       />
     </div>
   );

@@ -1,13 +1,14 @@
 "use client";
 
-import { format } from "date-fns";
-import { Loader2, Mail, Reply, Search, Trash2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import useSWR from "swr";
 
 import { EmailPreview } from "@/components/emails/email-preview";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
+import { EmailTable } from "@/components/emails/email-table";
+import { EmailTableSkeleton } from "@/components/emails/email-table-skeleton";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -16,64 +17,69 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { swrFetcher } from "@/lib/api/client";
 import { emailsApi } from "@/lib/api/emails";
-import { Email } from "@/types";
+import { Email, PaginatedResponse } from "@/types";
 
 export default function MessagesPage() {
-  const [emails, setEmails] = useState<Email[]>([]);
-  const [filteredEmails, setFilteredEmails] = useState<Email[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("ALL");
   const [selectedEmail, setSelectedEmail] = useState<Email | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const fetchEmails = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await emailsApi.getAll();
-      const emailList = Array.isArray(data)
-        ? data
-        : ((data as any)?.data ?? []);
-      setEmails(emailList);
-      setFilteredEmails(emailList);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to load messages");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const swrKey = useMemo(() => {
+    const params = new URLSearchParams();
+    if (typeFilter !== "ALL") params.append("emailType", typeFilter);
+    // Note: Search might be better handled client-side if the API doesn't support it,
+    // but the backend support for it in getEmails wasn't added yet.
+    // However, the user asked for pagination, so we should fetch by page.
+    params.append("page", String(currentPage));
+    params.append("limit", "10");
+    return `/emails?${params.toString()}`;
+  }, [currentPage, typeFilter]);
 
-  useEffect(() => {
-    fetchEmails();
-  }, [fetchEmails]);
+  const {
+    data: rawResponse,
+    isLoading,
+    mutate,
+  } = useSWR<PaginatedResponse<Email>>(swrKey, swrFetcher, {
+    keepPreviousData: true,
+  });
 
-  useEffect(() => {
-    let result = emails;
+  const emails = useMemo(() => {
+    if (!rawResponse) return [];
+    const baseData = Array.isArray(rawResponse)
+      ? rawResponse
+      : rawResponse.data;
 
     if (search) {
-      result = result.filter(
+      return baseData.filter(
         (email) =>
           email.subject.toLowerCase().includes(search.toLowerCase()) ||
           email.content.toLowerCase().includes(search.toLowerCase()),
       );
     }
+    return baseData;
+  }, [rawResponse, search]);
 
-    if (typeFilter !== "ALL") {
-      result = result.filter((email) => email.emailType === typeFilter);
-    }
+  const totalPages =
+    rawResponse && !Array.isArray(rawResponse)
+      ? rawResponse.meta?.totalPages || 1
+      : 1;
 
-    setFilteredEmails(result);
-  }, [search, typeFilter, emails]);
+  const totalItems =
+    rawResponse && !Array.isArray(rawResponse)
+      ? rawResponse.meta?.total || 0
+      : emails.length;
 
   const handleEmailClick = (email: Email) => {
     setSelectedEmail(email);
     setIsPreviewOpen(true);
   };
 
-  const handleDeleteEmail = async (e: React.MouseEvent, id: string) => {
+  const handleDeleteEmail = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (!confirm("Are you sure you want to delete this message?")) return;
 
@@ -81,7 +87,7 @@ export default function MessagesPage() {
     try {
       await emailsApi.delete(id);
       toast.success("Message deleted successfully");
-      fetchEmails();
+      mutate();
     } catch (error) {
       toast.error("Failed to delete message");
     } finally {
@@ -108,7 +114,13 @@ export default function MessagesPage() {
             />
           </div>
         </div>
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
+        <Select
+          value={typeFilter}
+          onValueChange={(val) => {
+            setTypeFilter(val);
+            setCurrentPage(1);
+          }}
+        >
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
@@ -120,64 +132,49 @@ export default function MessagesPage() {
         </Select>
       </div>
 
-      <div className="grid gap-4">
-        {loading ? (
-          <div className="text-center py-10">Loading messages...</div>
-        ) : filteredEmails.length === 0 ? (
-          <div className="text-center py-10 text-muted-foreground">
-            No messages found.
+      {isLoading && !emails.length ? (
+        <EmailTableSkeleton />
+      ) : (
+        <div className="space-y-4">
+          <EmailTable
+            emails={emails}
+            onDelete={handleDeleteEmail}
+            onView={handleEmailClick}
+            deletingId={deletingId}
+          />
+
+          <div className="flex items-center justify-between py-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {emails.length} of {totalItems} messages
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1 || isLoading}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              <div className="text-sm font-medium">
+                Page {currentPage} of {totalPages}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
+                disabled={currentPage === totalPages || isLoading}
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-        ) : (
-          filteredEmails.map((email) => (
-            <Card
-              key={email.id}
-              className="cursor-pointer hover:bg-accent/50 transition-colors"
-              onClick={() => handleEmailClick(email)}
-            >
-              <CardContent className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-4 overflow-hidden">
-                  <div
-                    className={`p-2 rounded-full ${email.emailType === "APPLICATION" ? "bg-primary/10" : "bg-secondary"}`}
-                  >
-                    {email.emailType === "APPLICATION" ? (
-                      <Mail className="h-4 w-4 text-primary" />
-                    ) : (
-                      <Reply className="h-4 w-4 text-foreground" />
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-semibold truncate">
-                      {email.subject}
-                    </div>
-                    <div className="text-xs text-muted-foreground truncate max-w-[500px]">
-                      {email.content.substring(0, 100)}...
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 shrink-0">
-                  <Badge variant="outline">{email.status}</Badge>
-                  <div className="text-xs text-muted-foreground mr-2">
-                    {email.createdAt &&
-                    !isNaN(new Date(email.createdAt).getTime())
-                      ? format(new Date(email.createdAt), "MMM d, h:mm a")
-                      : "—"}
-                  </div>
-                  <button
-                    onClick={(e) => handleDeleteEmail(e, email.id)}
-                    className="p-2 hover:bg-destructive/10 rounded-md text-muted-foreground hover:text-destructive transition-colors"
-                  >
-                    {deletingId === email.id ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+        </div>
+      )}
 
       <EmailPreview
         open={isPreviewOpen}

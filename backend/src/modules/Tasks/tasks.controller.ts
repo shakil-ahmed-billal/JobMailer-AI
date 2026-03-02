@@ -62,7 +62,11 @@ const updateTask = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    const result = await TasksService.updateTask(userId, id as string, req.body);
+    const result = await TasksService.updateTask(
+      userId,
+      id as string,
+      req.body,
+    );
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -110,9 +114,23 @@ const getUpcomingTasks = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getTasksByJobId = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { id } = req.params;
+  const result = await TasksService.getTasksByJobId(userId, id as string);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Tasks retrieved successfully",
+    data: result,
+  });
+});
+
 export const TasksController = {
   createTask,
   getTasks,
+  getTasksByJobId,
   getTaskById,
   updateTask,
   deleteTask,

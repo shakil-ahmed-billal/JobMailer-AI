@@ -357,26 +357,54 @@ const sendEmail = async (
 
 const getEmails = async (
   userId: string,
-  filters: { emailType?: EmailType; jobId?: string } = {},
+  filters: {
+    emailType?: EmailType;
+    jobId?: string;
+    page?: string;
+    limit?: string;
+  } = {},
 ) => {
+  const { emailType, jobId, page = "1", limit = "10" } = filters;
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
+
   const where: any = { userId };
 
-  if (filters.emailType) where.emailType = filters.emailType;
-  if (filters.jobId) where.jobId = filters.jobId;
+  if (emailType) where.emailType = emailType;
+  if (jobId) where.jobId = jobId;
 
-  return await prisma.email.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    include: {
-      job: {
-        select: {
-          id: true,
-          companyName: true,
-          jobTitle: true,
+  const [emails, total] = await Promise.all([
+    prisma.email.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        job: {
+          select: {
+            id: true,
+            companyName: true,
+            jobTitle: true,
+            companyEmail: true,
+            location: true,
+          },
         },
       },
+    }),
+    prisma.email.count({ where }),
+  ]);
+
+  return {
+    data: emails,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit)),
     },
-  });
+  };
 };
 
 const getEmailById = async (userId: string, emailId: string) => {

@@ -69,8 +69,10 @@ const getJobs = async (userId: string, filters: JobFilters = {}) => {
     limit = 10,
   } = filters;
 
-  const skip = (Number(page) - 1) * Number(limit);
-  const take = Number(limit);
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
 
   const where: any = { userId };
 
