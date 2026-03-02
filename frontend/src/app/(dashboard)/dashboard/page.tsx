@@ -3,6 +3,7 @@
 import { RecentActivity } from "@/components/dashboard/recent-activity";
 import { StatsCard } from "@/components/dashboard/stats-card";
 import { UpcomingTasks } from "@/components/dashboard/upcoming-tasks";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,14 +11,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { swrFetcher } from "@/lib/api/client";
 import { jobsApi } from "@/lib/api/jobs";
 import { resumesApi } from "@/lib/api/resumes";
-import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { useAuthContext } from "@/lib/auth/auth-context";
+import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 import { Briefcase, CheckCircle, Clock, Send } from "lucide-react";
-import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
@@ -32,6 +34,23 @@ export default function DashboardPage() {
     missingCount: JOB_ROLE_OPTIONS.length,
     missingLabels: JOB_ROLE_OPTIONS.map((o) => o.label),
   });
+
+  const { data: upcomingTasksResponse } = useSWR("/tasks/upcoming", swrFetcher);
+  const { data: recentActivityResponse } = useSWR(
+    "/users/activity",
+    swrFetcher,
+  );
+
+  const upcomingTasks = upcomingTasksResponse
+    ? Array.isArray(upcomingTasksResponse)
+      ? upcomingTasksResponse
+      : upcomingTasksResponse.data
+    : [];
+  const recentActivities = recentActivityResponse
+    ? Array.isArray(recentActivityResponse)
+      ? recentActivityResponse
+      : recentActivityResponse.data
+    : [];
 
   useEffect(() => {
     // Fetch real stats
@@ -100,7 +119,8 @@ export default function DashboardPage() {
           <div>
             <CardTitle>Resumes</CardTitle>
             <CardDescription>
-              {resumeStats.total} uploaded • {resumeStats.missingCount} roles missing
+              {resumeStats.total} uploaded • {resumeStats.missingCount} roles
+              missing
             </CardDescription>
           </div>
           <Button asChild>
@@ -125,7 +145,7 @@ export default function DashboardPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <RecentActivity />
+            <RecentActivity activities={recentActivities} />
           </CardContent>
         </Card>
         <Card className="col-span-3">
@@ -134,7 +154,7 @@ export default function DashboardPage() {
             <CardDescription>Tasks due soon and deadlines</CardDescription>
           </CardHeader>
           <CardContent>
-            <UpcomingTasks />
+            <UpcomingTasks tasks={upcomingTasks} />
           </CardContent>
         </Card>
       </div>
