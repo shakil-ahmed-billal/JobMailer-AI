@@ -101,6 +101,17 @@ export interface Task {
   job?: Job; // Optional relation for display
 }
 
+export interface TopCompany {
+  id: string;
+  userId: string;
+  name: string;
+  company?: string | null;
+  webLink?: string | null;
+  location?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   meta: {

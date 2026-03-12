@@ -1,4 +1,5 @@
 import { Router } from "express";
+import companiesRoutes from "../modules/Companies/companies.routes";
 import emailsRoutes from "../modules/Emails/emails.routes";
 import jobsRoutes from "../modules/Jobs/jobs.routes";
 import resumesRoutes from "../modules/Resumes/resumes.routes";
@@ -13,5 +14,6 @@ router.use("/emails", emailsRoutes);
 router.use("/tasks", tasksRoutes);
 router.use("/resumes", resumesRoutes);
 router.use("/users", usersRoutes);
+router.use("/companies", companiesRoutes);
 
 export default router;

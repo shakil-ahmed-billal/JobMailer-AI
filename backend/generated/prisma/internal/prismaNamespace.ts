@@ -391,7 +391,8 @@ export const ModelName = {
   Job: 'Job',
   Resume: 'Resume',
   Email: 'Email',
-  Task: 'Task'
+  Task: 'Task',
+  TopCompany: 'TopCompany'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "job" | "resume" | "email" | "task"
+    modelProps: "user" | "session" | "account" | "verification" | "job" | "resume" | "email" | "task" | "topCompany"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1003,6 +1004,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TopCompany: {
+      payload: Prisma.$TopCompanyPayload<ExtArgs>
+      fields: Prisma.TopCompanyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TopCompanyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TopCompanyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>
+        }
+        findFirst: {
+          args: Prisma.TopCompanyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TopCompanyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>
+        }
+        findMany: {
+          args: Prisma.TopCompanyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>[]
+        }
+        create: {
+          args: Prisma.TopCompanyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>
+        }
+        createMany: {
+          args: Prisma.TopCompanyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TopCompanyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>[]
+        }
+        delete: {
+          args: Prisma.TopCompanyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>
+        }
+        update: {
+          args: Prisma.TopCompanyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>
+        }
+        deleteMany: {
+          args: Prisma.TopCompanyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TopCompanyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TopCompanyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>[]
+        }
+        upsert: {
+          args: Prisma.TopCompanyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TopCompanyPayload>
+        }
+        aggregate: {
+          args: Prisma.TopCompanyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTopCompany>
+        }
+        groupBy: {
+          args: Prisma.TopCompanyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TopCompanyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TopCompanyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TopCompanyCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1179,6 +1254,20 @@ export const TaskScalarFieldEnum = {
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+export const TopCompanyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  company: 'company',
+  webLink: 'webLink',
+  location: 'location',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TopCompanyScalarFieldEnum = (typeof TopCompanyScalarFieldEnum)[keyof typeof TopCompanyScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1474,6 +1563,7 @@ export type GlobalOmitConfig = {
   resume?: Prisma.ResumeOmit
   email?: Prisma.EmailOmit
   task?: Prisma.TaskOmit
+  topCompany?: Prisma.TopCompanyOmit
 }
 
 /* Types for Logging */
