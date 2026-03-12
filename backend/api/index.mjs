@@ -489,17 +489,42 @@ var sendResponse = (res, data) => {
 // src/modules/Companies/companies.service.ts
 var createCompany = async (userId, data) => {
   return await prisma.topCompany.create({
-    data: {
-      ...data,
-      userId
-    }
+    data: { ...data, userId }
   });
 };
-var getCompanies = async (userId) => {
-  return await prisma.topCompany.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" }
-  });
+var getCompanies = async (userId, options = {}) => {
+  const { page = 1, limit = 10, search, type, location } = options;
+  const validPage = Math.max(1, Number(page));
+  const validLimit = Math.min(100, Math.max(1, Number(limit)));
+  const skip = (validPage - 1) * validLimit;
+  const where = { userId };
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: "insensitive" } },
+      { company: { contains: search, mode: "insensitive" } },
+      { location: { contains: search, mode: "insensitive" } }
+    ];
+  }
+  if (type) where.company = type;
+  if (location) where.location = { contains: location, mode: "insensitive" };
+  const [data, total] = await Promise.all([
+    prisma.topCompany.findMany({
+      where,
+      skip,
+      take: validLimit,
+      orderBy: { createdAt: "desc" }
+    }),
+    prisma.topCompany.count({ where })
+  ]);
+  return {
+    data,
+    meta: {
+      total,
+      page: validPage,
+      limit: validLimit,
+      totalPages: Math.ceil(total / validLimit)
+    }
+  };
 };
 var getCompanyById = async (userId, id) => {
   return await prisma.topCompany.findFirst({
@@ -550,7 +575,14 @@ var createCompany2 = catchAsync(async (req, res) => {
 });
 var getCompanies2 = catchAsync(async (req, res) => {
   const userId = req.user.id;
-  const result = await TopCompaniesService.getCompanies(userId);
+  const { page, limit, search, type, location } = req.query;
+  const result = await TopCompaniesService.getCompanies(userId, {
+    page: page ? Number(page) : void 0,
+    limit: limit ? Number(limit) : void 0,
+    search,
+    type,
+    location
+  });
   sendResponse(res, {
     statusCode: 200,
     success: true,

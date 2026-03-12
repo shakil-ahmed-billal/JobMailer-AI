@@ -1,9 +1,18 @@
-import { ApiResponse, TopCompany } from "@/types";
+import { ApiResponse, PaginatedResponse, TopCompany } from "@/types";
 import { apiClient } from "./client";
 
+export interface CompanyFilters {
+  page?: number;
+  limit?: number;
+  search?: string;
+  type?: string;
+  location?: string;
+}
+
 export const companiesApi = {
-  getAll: async () => {
-    const response = await apiClient.get<ApiResponse<TopCompany[]>>("/companies");
+  getAll: async (filters: CompanyFilters = {}) => {
+    const params = { ...filters };
+    const response = await apiClient.get<ApiResponse<PaginatedResponse<TopCompany>>>("/companies", { params });
     return response.data.data;
   },
 

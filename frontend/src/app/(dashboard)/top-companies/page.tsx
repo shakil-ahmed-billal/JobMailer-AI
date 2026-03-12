@@ -12,47 +12,52 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { swrFetcher } from "@/lib/api/client";
-import { TopCompany } from "@/types";
-import { Building2, Plus, RotateCcw, Search } from "lucide-react";
+import { TopCompany, PaginatedResponse } from "@/types";
+import {
+  Building2,
+  ChevronLeft,
+  ChevronRight,
+  Plus,
+  RotateCcw,
+  Search,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import useSWR from "swr";
+
+const PAGE_SIZE = 10;
 
 export default function TopCompaniesPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState<TopCompany | undefined>(undefined);
 
-  // ── Filters ──
+  // ── Filters & Pagination ──
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [locationFilter, setLocationFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Build the SWR key — changes when any filter/page changes → triggers a new API request
+  const swrKey = useMemo(() => {
+    const params = new URLSearchParams();
+    params.set("page", String(currentPage));
+    params.set("limit", String(PAGE_SIZE));
+    if (search) params.set("search", search);
+    if (typeFilter !== "all") params.set("type", typeFilter);
+    if (locationFilter) params.set("location", locationFilter);
+    return `/companies?${params.toString()}`;
+  }, [currentPage, search, typeFilter, locationFilter]);
 
   const {
-    data: companies,
+    data: response,
     isLoading,
     mutate,
-  } = useSWR<TopCompany[]>("/companies", swrFetcher);
+  } = useSWR<PaginatedResponse<TopCompany>>(swrKey, swrFetcher, {
+    keepPreviousData: true,
+  });
 
-  // ── Client-side filtering ──
-  const filtered = useMemo(() => {
-    if (!companies) return [];
-    return companies.filter((c) => {
-      const matchesSearch =
-        !search ||
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        (c.company && c.company.toLowerCase().includes(search.toLowerCase())) ||
-        (c.location && c.location.toLowerCase().includes(search.toLowerCase()));
-
-      const matchesType =
-        typeFilter === "all" || c.company === typeFilter;
-
-      const matchesLocation =
-        !locationFilter ||
-        (c.location &&
-          c.location.toLowerCase().includes(locationFilter.toLowerCase()));
-
-      return matchesSearch && matchesType && matchesLocation;
-    });
-  }, [companies, search, typeFilter, locationFilter]);
+  const companies = response?.data ?? [];
+  const meta = response?.meta;
+  const totalPages = meta?.totalPages ?? 1;
 
   const hasActiveFilters = search || typeFilter !== "all" || locationFilter;
 
@@ -60,20 +65,24 @@ export default function TopCompaniesPage() {
     setSearch("");
     setTypeFilter("all");
     setLocationFilter("");
+    setCurrentPage(1);
   };
+
+  const handleSearchChange = (v: string) => { setSearch(v); setCurrentPage(1); };
+  const handleTypeChange = (v: string) => { setTypeFilter(v); setCurrentPage(1); };
+  const handleLocationChange = (v: string) => { setLocationFilter(v); setCurrentPage(1); };
 
   const handleEdit = (company: TopCompany) => {
     setEditingCompany(company);
     setIsFormOpen(true);
   };
-
   const handleFormOpenChange = (open: boolean) => {
     setIsFormOpen(open);
     if (!open) setEditingCompany(undefined);
   };
 
   return (
-    <div className="flex-1 space-y-6 p-3 md:p-5">
+    <div className="flex-1 space-y-3 p-3 md:p-5">
       {/* ── Page Header ── */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
@@ -89,12 +98,8 @@ export default function TopCompaniesPage() {
             </p>
           </div>
         </div>
-
         <Button
-          onClick={() => {
-            setEditingCompany(undefined);
-            setIsFormOpen(true);
-          }}
+          onClick={() => { setEditingCompany(undefined); setIsFormOpen(true); }}
           className="gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white shadow-md shadow-purple-500/20 hover:shadow-purple-500/30 transition-all duration-200 border-0"
         >
           <Plus className="h-4 w-4" />
@@ -103,14 +108,14 @@ export default function TopCompaniesPage() {
       </div>
 
       {/* ── Stats Row ── */}
-      {companies && companies.length > 0 && (
+      {meta && meta.total > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="rounded-xl border border-border/60 bg-card p-4 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-500/10 shrink-0">
               <Building2 className="h-5 w-5 text-violet-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{companies.length}</p>
+              <p className="text-2xl font-bold text-foreground">{meta.total}</p>
               <p className="text-xs text-muted-foreground">Total</p>
             </div>
           </div>
@@ -121,8 +126,8 @@ export default function TopCompaniesPage() {
               </svg>
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">{filtered.length}</p>
-              <p className="text-xs text-muted-foreground">Filtered</p>
+              <p className="text-2xl font-bold text-foreground">{meta.total}</p>
+              <p className="text-xs text-muted-foreground">Matched</p>
             </div>
           </div>
           <div className="rounded-xl border border-border/60 bg-card p-4 flex items-center gap-3">
@@ -158,44 +163,35 @@ export default function TopCompaniesPage() {
       {/* ── Table Card ── */}
       <div className="rounded-2xl border border-border/60 bg-card shadow-sm overflow-hidden">
 
-        {/* ── Advanced Filters Bar ── */}
+        {/* ── Filters Bar ── */}
         <div className="p-4 border-b border-border/50 space-y-3">
           <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
               <Input
                 placeholder="Search by name, type or location…"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => handleSearchChange(e.target.value)}
                 className="pl-9"
               />
             </div>
-
-            {/* Company Type Filter */}
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
+            <Select value={typeFilter} onValueChange={handleTypeChange}>
               <SelectTrigger className="w-full sm:w-[200px]">
                 <SelectValue placeholder="All Types" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
                 {COMPANY_TYPES.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-
-            {/* Location filter */}
             <Input
               placeholder="Filter by location…"
               value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
+              onChange={(e) => handleLocationChange(e.target.value)}
               className="w-full sm:w-[180px]"
             />
-
-            {/* Reset */}
             {hasActiveFilters && (
               <Button
                 variant="outline"
@@ -208,29 +204,99 @@ export default function TopCompaniesPage() {
               </Button>
             )}
           </div>
-
-          {hasActiveFilters && (
+          {meta && (
             <p className="text-xs text-muted-foreground">
-              Showing <span className="font-semibold text-foreground">{filtered.length}</span> of{" "}
-              <span className="font-semibold text-foreground">{companies?.length ?? 0}</span> companies
+              Showing{" "}
+              <span className="font-semibold text-foreground">
+                {meta.total === 0 ? 0 : (meta.page - 1) * meta.limit + 1}–{Math.min(meta.page * meta.limit, meta.total)}
+              </span>{" "}
+              of{" "}
+              <span className="font-semibold text-foreground">{meta.total}</span> companies
             </p>
           )}
         </div>
 
         {/* Table */}
-        <div className="p-5">
+        <div className="p-5 space-y-4">
           {isLoading ? (
             <div className="space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => (
+              {Array.from({ length: PAGE_SIZE }).map((_, i) => (
                 <div key={i} className="h-12 w-full rounded-lg bg-muted/50 animate-pulse" />
               ))}
             </div>
           ) : (
             <CompanyTable
-              companies={filtered}
+              companies={companies}
               onEdit={handleEdit}
               onDeleted={() => mutate()}
+              startIndex={(currentPage - 1) * PAGE_SIZE}
             />
+          )}
+
+          {/* ── Pagination Controls ── */}
+          {!isLoading && meta && meta.totalPages > 1 && (
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2 border-t border-border/50">
+              <p className="text-sm text-muted-foreground">
+                Page{" "}
+                <span className="font-medium text-foreground">{meta.page}</span>{" "}
+                of{" "}
+                <span className="font-medium text-foreground">{meta.totalPages}</span>
+              </p>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={currentPage === 1 || isLoading}
+                  className="gap-1.5 h-8 px-3 border-border/60 hover:bg-accent/70 hover:border-violet-500/30 disabled:opacity-40 transition-all"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                  Previous
+                </Button>
+
+                {/* Smart page pills */}
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
+                    .reduce<(number | "…")[]>((acc, p, idx, arr) => {
+                      if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("…");
+                      acc.push(p);
+                      return acc;
+                    }, [])
+                    .map((item, idx) =>
+                      item === "…" ? (
+                        <span key={`el-${idx}`} className="px-1 text-muted-foreground text-xs">…</span>
+                      ) : (
+                        <Button
+                          key={item}
+                          variant={currentPage === item ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setCurrentPage(item as number)}
+                          className={`h-8 w-8 p-0 text-xs font-semibold transition-all ${
+                            currentPage === item
+                              ? "bg-gradient-to-r from-violet-600 to-purple-600 border-0 text-white shadow-sm"
+                              : "border-border/60 hover:bg-accent/70 hover:border-violet-500/30"
+                          }`}
+                        >
+                          {item}
+                        </Button>
+                      )
+                    )}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages || isLoading}
+                  className="gap-1.5 h-8 px-3 border-border/60 hover:bg-accent/70 hover:border-violet-500/30 disabled:opacity-40 transition-all"
+                >
+                  Next
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
           )}
         </div>
       </div>

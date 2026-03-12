@@ -30,9 +30,10 @@ interface CompanyTableProps {
   companies: TopCompany[];
   onEdit: (company: TopCompany) => void;
   onDeleted: () => void;
+  startIndex?: number;
 }
 
-export function CompanyTable({ companies, onEdit, onDeleted }: CompanyTableProps) {
+export function CompanyTable({ companies, onEdit, onDeleted, startIndex = 0 }: CompanyTableProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -88,7 +89,7 @@ export function CompanyTable({ companies, onEdit, onDeleted }: CompanyTableProps
                 className="group transition-colors hover:bg-muted/20"
               >
                 <TableCell className="text-muted-foreground font-mono text-xs">
-                  {index + 1}
+                  {startIndex + index + 1}
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2.5">

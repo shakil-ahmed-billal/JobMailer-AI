@@ -17,7 +17,14 @@ const createCompany = catchAsync(async (req: Request, res: Response) => {
 
 const getCompanies = catchAsync(async (req: Request, res: Response) => {
   const userId = (req as any).user.id;
-  const result = await TopCompaniesService.getCompanies(userId);
+  const { page, limit, search, type, location } = req.query as Record<string, string>;
+  const result = await TopCompaniesService.getCompanies(userId, {
+    page: page ? Number(page) : undefined,
+    limit: limit ? Number(limit) : undefined,
+    search,
+    type,
+    location,
+  });
 
   sendResponse(res, {
     statusCode: 200,
