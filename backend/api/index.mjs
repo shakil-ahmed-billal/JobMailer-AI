@@ -1697,13 +1697,92 @@ var getJobStats = async (userId) => {
     responseRate
   };
 };
+var getPublicJobs = async (userId, filters = {}) => {
+  const {
+    status,
+    applyStatus,
+    responseStatus,
+    jobRole,
+    search,
+    page = 1,
+    limit = 10
+  } = filters;
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      profileBio: true,
+      linkedinLink: true,
+      portfolioLink: true
+    }
+  });
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const where = { userId };
+  if (status) where.status = status;
+  if (applyStatus) where.applyStatus = applyStatus;
+  if (responseStatus) where.responseStatus = responseStatus;
+  if (jobRole) {
+    const roles = jobRole.split(",").map((r) => r.trim()).filter(Boolean);
+    if (roles.length > 0) where.jobRole = { in: roles };
+  }
+  if (search) {
+    where.OR = [
+      { companyName: { contains: search, mode: "insensitive" } },
+      { jobTitle: { contains: search, mode: "insensitive" } }
+    ];
+  }
+  const [jobs, total] = await Promise.all([
+    prisma.job.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        companyName: true,
+        jobTitle: true,
+        jobDescription: true,
+        companyWebsite: true,
+        location: true,
+        salary: true,
+        jobRole: true,
+        status: true,
+        applyStatus: true,
+        responseStatus: true,
+        applyDate: true,
+        createdAt: true
+      }
+    }),
+    prisma.job.count({ where })
+  ]);
+  return {
+    user,
+    data: jobs,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit))
+    }
+  };
+};
 var JobsService = {
   createJob,
   getJobs,
   getJobById,
   updateJob,
   deleteJob,
-  getJobStats
+  getJobStats,
+  getPublicJobs
 };
 
 // src/modules/Jobs/jobs.controller.ts
@@ -1793,13 +1872,25 @@ var getJobStats2 = catchAsync(async (req, res) => {
     data: result
   });
 });
+var getPublicJobs2 = catchAsync(async (req, res) => {
+  const { userId } = req.params;
+  const filters = req.query;
+  const result = await JobsService.getPublicJobs(userId, filters);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Public jobs retrieved successfully",
+    data: result
+  });
+});
 var JobsController = {
   createJob: createJob2,
   getJobs: getJobs2,
   getJobById: getJobById2,
   updateJob: updateJob2,
   deleteJob: deleteJob2,
-  getJobStats: getJobStats2
+  getJobStats: getJobStats2,
+  getPublicJobs: getPublicJobs2
 };
 
 // src/modules/Jobs/jobs.validation.ts
@@ -1867,6 +1958,7 @@ var getJobsSchema = z4.object({
 
 // src/modules/Jobs/jobs.routes.ts
 var router3 = Router3();
+router3.get("/public/:userId", JobsController.getPublicJobs);
 router3.use(authenticate);
 router3.get("/stats", JobsController.getJobStats);
 router3.get("/stats/overview", JobsController.getJobStats);
@@ -2644,7 +2736,7 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      const isAllowed = allowedOrigins.includes(origin);
+      const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
       if (isAllowed) {
         callback(null, true);
       } else {

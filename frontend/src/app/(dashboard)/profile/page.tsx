@@ -396,19 +396,63 @@ export default function ProfilePage() {
                 How your profile information appears.
               </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col items-center text-center space-y-4">
-              <Avatar className="h-24 w-24">
-                <AvatarImage src="/avatars/01.png" alt={user?.name || "User"} />
-                <AvatarFallback className="text-xl">{initials}</AvatarFallback>
-              </Avatar>
-              <div className="space-y-1">
-                <h3 className="text-xl font-bold font-mono">
-                  {form.watch("name") || user?.name || "Your Name"}
-                </h3>
-                <p className="text-sm text-muted-foreground font-mono">
-                  {user?.email || "email@example.com"}
+            <CardContent className="space-y-6">
+              <div className="flex flex-col items-center text-center space-y-4">
+                <Avatar className="h-24 w-24">
+                  <AvatarImage src="/avatars/01.png" alt={user?.name || "User"} />
+                  <AvatarFallback className="text-xl">{initials}</AvatarFallback>
+                </Avatar>
+                <div className="space-y-1">
+                  <h3 className="text-xl font-bold font-mono">
+                    {form.watch("name") || user?.name || "Your Name"}
+                  </h3>
+                  <p className="text-sm text-muted-foreground font-mono">
+                    {user?.email || "email@example.com"}
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold text-sm">Public Shared Link</h4>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Input
+                    readOnly
+                    value={`${typeof window !== "undefined" ? window.location.origin : ""}/shared/profile/${user?.id}`}
+                    className="h-9 text-xs bg-slate-50 font-mono rounded-xl"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-9 shrink-0 rounded-xl"
+                    onClick={() => {
+                      const url = `${window.location.origin}/shared/profile/${user?.id}`;
+                      navigator.clipboard.writeText(url);
+                      toast.success("Link copied to clipboard");
+                    }}
+                  >
+                    Copy
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-9 shrink-0 rounded-xl"
+                    onClick={() => {
+                      const url = `${window.location.origin}/shared/profile/${user?.id}`;
+                      window.open(url, "_blank");
+                    }}
+                  >
+                    View
+                  </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  Share this link with anyone to show your applied jobs list professionally. No login required.
                 </p>
               </div>
+
               <Separator />
               <div className="w-full text-left space-y-4">
                 <div>

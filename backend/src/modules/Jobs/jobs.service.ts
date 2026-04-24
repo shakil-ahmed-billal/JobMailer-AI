@@ -227,6 +227,101 @@ const getJobStats = async (userId: string) => {
   };
 };
 
+const getPublicJobs = async (userId: string, filters: JobFilters = {}) => {
+  const {
+    status,
+    applyStatus,
+    responseStatus,
+    jobRole,
+    search,
+    page = 1,
+    limit = 10,
+  } = filters;
+
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
+
+  // Verify user exists and get basic info
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      image: true,
+      profileBio: true,
+      linkedinLink: true,
+      portfolioLink: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  const where: any = { userId };
+
+  // Only show applied or further status jobs in public view? 
+  // User said "job gulo te applay korsi", so maybe filter by APPLIED by default if not specified?
+  // Let's allow filters but focus on applied ones.
+  if (status) where.status = status;
+  if (applyStatus) where.applyStatus = applyStatus;
+  if (responseStatus) where.responseStatus = responseStatus;
+  
+  if (jobRole) {
+    const roles = jobRole
+      .split(",")
+      .map((r) => r.trim())
+      .filter(Boolean);
+    if (roles.length > 0) where.jobRole = { in: roles };
+  }
+
+  if (search) {
+    where.OR = [
+      { companyName: { contains: search, mode: "insensitive" } },
+      { jobTitle: { contains: search, mode: "insensitive" } },
+    ];
+  }
+
+  const [jobs, total] = await Promise.all([
+    prisma.job.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        companyName: true,
+        jobTitle: true,
+        jobDescription: true,
+        companyWebsite: true,
+        location: true,
+        salary: true,
+        jobRole: true,
+        status: true,
+        applyStatus: true,
+        responseStatus: true,
+        applyDate: true,
+        createdAt: true,
+      },
+    }),
+    prisma.job.count({ where }),
+  ]);
+
+  return {
+    user,
+    data: jobs,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit)),
+    },
+  };
+};
+
 export const JobsService = {
   createJob,
   getJobs,
@@ -234,4 +329,5 @@ export const JobsService = {
   updateJob,
   deleteJob,
   getJobStats,
+  getPublicJobs,
 };

@@ -24,9 +24,12 @@ import {
   TrendingUp,
   Upload,
   Zap,
+  Share2,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import useSWR from "swr";
 
 /* ── Tiny section wrapper ── */
@@ -161,6 +164,40 @@ export default function DashboardPage() {
 
   return (
     <div className="flex-1 space-y-6 p-4 md:p-6 lg:p-8">
+      {/* ── Header with Share Button ── */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-6 rounded-3xl border border-border/50 shadow-sm">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Welcome back, {firstName}! 👋</h1>
+          <p className="text-sm text-muted-foreground mt-1">Here&apos;s what&apos;s happening with your job search today.</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="rounded-xl gap-2 h-10 px-4 border-violet-200/50 hover:bg-violet-50 dark:border-violet-800/40"
+            onClick={() => {
+              const url = `${window.location.origin}/shared/profile/${user?.id}`;
+              navigator.clipboard.writeText(url);
+              toast.success("Public profile link copied!");
+            }}
+          >
+            <Share2 className="h-4 w-4 text-violet-500" />
+            Share Profile
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="rounded-xl gap-2 h-10 px-4 border-violet-200/50 hover:bg-violet-50 dark:border-violet-800/40"
+            onClick={() => {
+              const url = `${window.location.origin}/shared/profile/${user?.id}`;
+              window.open(url, "_blank");
+            }}
+          >
+            <ExternalLink className="h-4 w-4 text-violet-500" />
+            View Public
+          </Button>
+        </div>
+      </div>
 
       {/* ── 4 stat tiles ── */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

@@ -224,7 +224,7 @@ export default function TaskDetailsPage({
               </div>
 
               <div className="pt-4 border-t border-border/40">
-                <div className="flex items-center justify-between text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+                <div className="flex items-center justify-between text-[10px] text-muted-foreground font-bold">
                   <span>Created</span>
                   <span>{format(new Date(task.createdAt), "MMM d, yyyy")}</span>
                 </div>

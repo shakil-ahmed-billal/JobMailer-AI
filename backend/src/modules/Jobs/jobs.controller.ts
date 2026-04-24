@@ -102,6 +102,19 @@ const getJobStats = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getPublicJobs = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const filters = req.query;
+  const result = await JobsService.getPublicJobs(userId, filters);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Public jobs retrieved successfully",
+    data: result,
+  });
+});
+
 export const JobsController = {
   createJob,
   getJobs,
@@ -109,4 +122,5 @@ export const JobsController = {
   updateJob,
   deleteJob,
   getJobStats,
+  getPublicJobs,
 };

@@ -33,7 +33,12 @@ interface CompanyTableProps {
   startIndex?: number;
 }
 
-export function CompanyTable({ companies, onEdit, onDeleted, startIndex = 0 }: CompanyTableProps) {
+export function CompanyTable({
+  companies,
+  onEdit,
+  onDeleted,
+  startIndex = 0,
+}: CompanyTableProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -56,13 +61,27 @@ export function CompanyTable({ companies, onEdit, onDeleted, startIndex = 0 }: C
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-700/10 mb-4 border border-violet-500/20">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-8 w-8 text-violet-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+            />
           </svg>
         </div>
-        <h3 className="text-lg font-semibold text-foreground">No companies yet</h3>
+        <h3 className="text-lg font-semibold text-foreground">
+          No companies yet
+        </h3>
         <p className="text-sm text-muted-foreground mt-1 max-w-xs">
-          Start building your list of top companies to target in your job search.
+          Start building your list of top companies to target in your job
+          search.
         </p>
       </div>
     );
@@ -74,12 +93,24 @@ export function CompanyTable({ companies, onEdit, onDeleted, startIndex = 0 }: C
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
-              <TableHead className="font-semibold text-foreground w-[50px]">#</TableHead>
-              <TableHead className="font-semibold text-foreground">Name</TableHead>
-              <TableHead className="font-semibold text-foreground hidden sm:table-cell">Company Type</TableHead>
-              <TableHead className="font-semibold text-foreground hidden md:table-cell">Web Link</TableHead>
-              <TableHead className="font-semibold text-foreground hidden lg:table-cell">Location</TableHead>
-              <TableHead className="font-semibold text-foreground text-right">Actions</TableHead>
+              <TableHead className="font-semibold text-foreground w-[50px]">
+                #
+              </TableHead>
+              <TableHead className="font-semibold text-foreground">
+                Name
+              </TableHead>
+              <TableHead className="font-semibold text-foreground hidden sm:table-cell">
+                Company Type
+              </TableHead>
+              <TableHead className="font-semibold text-foreground hidden md:table-cell">
+                Web Link
+              </TableHead>
+              <TableHead className="font-semibold text-foreground hidden lg:table-cell">
+                Location
+              </TableHead>
+              <TableHead className="font-semibold text-foreground text-right">
+                Actions
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -98,7 +129,9 @@ export function CompanyTable({ companies, onEdit, onDeleted, startIndex = 0 }: C
                         {company.name.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <span className="font-medium text-foreground">{company.name}</span>
+                    <span className="font-medium text-foreground">
+                      {company.name}
+                    </span>
                   </div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
@@ -163,12 +196,16 @@ export function CompanyTable({ companies, onEdit, onDeleted, startIndex = 0 }: C
         </Table>
       </div>
 
-      <AlertDialog open={!!deletingId} onOpenChange={(open) => !open && setDeletingId(null)}>
+      <AlertDialog
+        open={!!deletingId}
+        onOpenChange={(open) => !open && setDeletingId(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Company</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this company? This action cannot be undone.
+              Are you sure you want to delete this company? This action cannot
+              be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
