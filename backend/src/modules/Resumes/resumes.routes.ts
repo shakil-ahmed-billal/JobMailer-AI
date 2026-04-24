@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { multerUpload } from "../../config/multer.config";
 import { authenticate } from "../../middlewares/auth.middleware";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { ResumesController } from "./resumes.controller";
@@ -9,8 +10,8 @@ const router = Router();
 router.use(authenticate);
 
 router.get("/", ResumesController.getResumes);
-router.post("/", ...(ResumesController.createResume as any));
-router.put("/:id", ...(ResumesController.updateResume as any));
+router.post("/", multerUpload.single("file"), ResumesController.createResume);
+router.put("/:id", multerUpload.single("file"), ResumesController.updateResume);
 router.delete(
   "/:id",
   validateRequest(resumeIdSchema),
@@ -23,4 +24,3 @@ router.get(
 );
 
 export default router;
-

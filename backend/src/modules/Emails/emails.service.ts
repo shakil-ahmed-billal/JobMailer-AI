@@ -9,6 +9,7 @@ import { emailTransporter } from "../../config/email.config";
 import { geminiConfig } from "../../config/gemini.config";
 import { openaiConfig } from "../../config/openai.config";
 import { prisma } from "../../lib/prisma";
+import { CloudinaryUtils } from "../../utils/cloudinary";
 
 const openai = new OpenAI({ apiKey: openaiConfig.apiKey });
 const genAI = geminiConfig.apiKey
@@ -213,7 +214,6 @@ const generateApplicationEmail = async (
     return { subject, content };
   } catch (error: any) {
     const providerName = aiProvider === AIProvider.OPENAI ? "OpenAI" : "Gemini";
-    console.error(`${providerName} generation error:`, error.message);
     throw new Error(`${providerName} generation failed: ${error.message}`);
   }
 };
@@ -253,6 +253,7 @@ const sendEmail = async (
   attachment?: {
     filename: string;
     path: string;
+    publicId?: string;
     contentType?: string;
   },
 ) => {
@@ -267,6 +268,37 @@ const sendEmail = async (
       throw new Error("User not found");
     }
 
+    let emailAttachments = [];
+    if (attachment) {
+      if (attachment.path.startsWith("http")) {
+        try {
+          let buffer: Buffer;
+
+          if (attachment.publicId) {
+            // Use fetchFileBuffer which uses private_download_url (confirmed to work)
+            buffer = await CloudinaryUtils.fetchFileBuffer(attachment.publicId);
+          } else {
+            // Fallback: direct URL fetch (works only for truly public files)
+            const response = await fetch(attachment.path);
+            if (!response.ok)
+              throw new Error(`Direct fetch failed: ${response.status}`);
+            buffer = Buffer.from(await response.arrayBuffer());
+          }
+
+          emailAttachments.push({
+            filename: attachment.filename,
+            content: buffer,
+            contentType: attachment.contentType || "application/pdf",
+          });
+        } catch (fetchError: any) {
+          throw new Error(`Email attachment failure: ${fetchError.message}`);
+        }
+      } else {
+        // Local file path
+        emailAttachments.push(attachment);
+      }
+    }
+
     // Send email via SMTP
     await emailTransporter.sendMail({
       from: `"${user.name}" <${process.env.SMTP_USER}>`,
@@ -274,7 +306,7 @@ const sendEmail = async (
       subject,
       text: content,
       html: content.replace(/\n/g, "<br>"),
-      ...(attachment && { attachments: [attachment] }),
+      attachments: emailAttachments,
     });
 
     // Store email in database with aiProvider
@@ -325,26 +357,54 @@ const sendEmail = async (
 
 const getEmails = async (
   userId: string,
-  filters: { emailType?: EmailType; jobId?: string } = {},
+  filters: {
+    emailType?: EmailType;
+    jobId?: string;
+    page?: string;
+    limit?: string;
+  } = {},
 ) => {
+  const { emailType, jobId, page = "1", limit = "10" } = filters;
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
+
   const where: any = { userId };
 
-  if (filters.emailType) where.emailType = filters.emailType;
-  if (filters.jobId) where.jobId = filters.jobId;
+  if (emailType) where.emailType = emailType;
+  if (jobId) where.jobId = jobId;
 
-  return await prisma.email.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    include: {
-      job: {
-        select: {
-          id: true,
-          companyName: true,
-          jobTitle: true,
+  const [emails, total] = await Promise.all([
+    prisma.email.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        job: {
+          select: {
+            id: true,
+            companyName: true,
+            jobTitle: true,
+            companyEmail: true,
+            location: true,
+          },
         },
       },
+    }),
+    prisma.email.count({ where }),
+  ]);
+
+  return {
+    data: emails,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit)),
     },
-  });
+  };
 };
 
 const getEmailById = async (userId: string, emailId: string) => {
@@ -366,10 +426,20 @@ const getEmailById = async (userId: string, emailId: string) => {
   });
 };
 
+const deleteEmail = async (userId: string, emailId: string) => {
+  return await prisma.email.delete({
+    where: {
+      id: emailId,
+      userId,
+    },
+  });
+};
+
 export const EmailsService = {
   generateApplicationEmail,
   generateReplyEmail,
   sendEmail,
   getEmails,
   getEmailById,
+  deleteEmail,
 };

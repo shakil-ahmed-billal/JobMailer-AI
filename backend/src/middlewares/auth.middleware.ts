@@ -9,7 +9,7 @@ export const authenticate = async (
 ) => {
   try {
     const session = await auth.api.getSession({
-      headers: req.headers as any,
+      headers: new Headers(req.headers as any),
     });
 
     if (!session) {

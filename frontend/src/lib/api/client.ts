@@ -1,97 +1,106 @@
-import getCookies from "@/constants/getCookies";
-import { ApiResponse } from "@/types";
+import { getAuthHeaders } from "./actions";
 
-const API_URL =
+const baseURL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
-class ApiClient {
-  private baseUrl: string;
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  message?: string;
+  error?: any;
+}
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+class ApiClient {
+  private getBaseUrl(): string {
+    if (typeof window !== "undefined") {
+      return "/api/v1";
+    }
+    const backendUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    return `${backendUrl}/api/v1`;
   }
+
+  constructor() {}
 
   private async request<T>(
     endpoint: string,
     options: any = {},
   ): Promise<ApiResponse<T>> {
-    const cookies = await getCookies();
-    console.log(cookies)
+    const cookies = await getAuthHeaders();
+    const isBrowser = typeof window !== "undefined";
+    const baseUrl = this.getBaseUrl();
+    let url = `${baseUrl}${endpoint}`;
+
+    // Handle query parameters (Axios-style params)
+    if (options.params) {
+      const searchParams = new URLSearchParams();
+      Object.entries(options.params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        url += (url.includes("?") ? "&" : "?") + queryString;
+      }
+    }
+
+    const headers: any = {
+      ...options.headers,
+    };
+
+    if (!(options.body instanceof FormData)) {
+      headers["Content-Type"] = headers["Content-Type"] || "application/json";
+    }
+
+    // CRITICAL: Manual Cookie injection ONLY on server.
+    // In browser, credentials: "include" + same-origin proxy handles it.
+    if (!isBrowser && cookies) {
+      headers["Cookie"] = cookies;
+    }
 
     try {
-      // For FormData, we must NOT set Content-Type manually so the browser can set the boundary
-      const isFormData = options.body instanceof FormData;
-
-      const headers: any = {
-        ...(cookies && { Cookie: cookies }),
-        ...options.headers,
-      };
-
-      if (!isFormData && !headers["Content-Type"] && !headers["content-type"]) {
-        headers["Content-Type"] = "application/json";
-      }
-
-      const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      const response = await fetch(url, {
         ...options,
-        credentials: "include",
         headers,
+        credentials: "include", // CRITICAL for sending cookies
       });
 
-      const contentType = response.headers.get("content-type");
-      let data: any;
-
-      if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
-      } else {
-        const text = await response.text();
-        data = {
+      if (options.responseType === "blob") {
+        const blob = await response.blob();
+        return {
           success: response.ok,
-          message: text || response.statusText,
-          data: text as any,
+          data: blob as any as T,
         };
       }
 
-      if (!response.ok) {
-        return {
-          statusCode: response.status,
-          success: false,
-          message: data.message || data.error?.message || "An error occurred",
-          data: data.data || (null as any),
-          error: data.error,
-        };
+      const data = await response.json();
+
+      // Better-auth and your backend might return 401
+      if (response.status === 401 && typeof window !== "undefined") {
+        // Handle logout if needed
       }
 
-      return data as ApiResponse<T>;
-    } catch (error) {
-      console.error("API Request Error:", error);
-      if (error instanceof Error) {
-        return {
-          statusCode: 500,
-          success: false,
-          message: error.message,
-          data: null as any,
-          error: { message: error.message },
-        };
-      }
       return {
-        statusCode: 500,
+        success: response.ok,
+        data: data,
+        message: data.message,
+        error: data.error,
+      };
+    } catch (error: any) {
+      return {
         success: false,
-        message: "An error occurred",
-        data: null as any,
-        error: { message: "An error occurred" },
+        data: null as T,
+        error: { message: error.message || "An error occurred" },
       };
     }
   }
 
-  async get<T>(endpoint: string, options: any = {}): Promise<ApiResponse<T>> {
+  async get<T>(endpoint: string, options: any = {}) {
     return this.request<T>(endpoint, { ...options, method: "GET" });
   }
 
-  async post<T>(
-    endpoint: string,
-    body?: any,
-    options: any = {},
-  ): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, body?: any, options: any = {}) {
     return this.request<T>(endpoint, {
       ...options,
       method: "POST",
@@ -99,11 +108,7 @@ class ApiClient {
     });
   }
 
-  async put<T>(
-    endpoint: string,
-    body?: any,
-    options: any = {},
-  ): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, body?: any, options: any = {}) {
     return this.request<T>(endpoint, {
       ...options,
       method: "PUT",
@@ -111,11 +116,7 @@ class ApiClient {
     });
   }
 
-  async patch<T>(
-    endpoint: string,
-    body?: any,
-    options: any = {},
-  ): Promise<ApiResponse<T>> {
+  async patch<T>(endpoint: string, body?: any, options: any = {}) {
     return this.request<T>(endpoint, {
       ...options,
       method: "PATCH",
@@ -123,12 +124,22 @@ class ApiClient {
     });
   }
 
-  async delete<T>(
-    endpoint: string,
-    options: any = {},
-  ): Promise<ApiResponse<T>> {
+  async delete<T>(endpoint: string, options: any = {}) {
     return this.request<T>(endpoint, { ...options, method: "DELETE" });
   }
+
+  // Helper for SWR
+  fetcher = async (url: string) => {
+    const response = await this.get<any>(url);
+    if (!response.success) {
+      throw new Error(response.error?.message || "Failed to fetch");
+    }
+    // Most of our API methods return response.data.data
+    // but the request method already returns the whole body as 'data'
+    // so data.data is what the specific API methods (like jobsApi.getAll) were returning.
+    return response.data.data;
+  };
 }
 
-export const apiClient = new ApiClient(API_URL);
+export const apiClient = new ApiClient();
+export const swrFetcher = apiClient.fetcher;

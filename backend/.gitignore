@@ -3,3 +3,4 @@ generate
 dist
 .env
 .vercel
+api

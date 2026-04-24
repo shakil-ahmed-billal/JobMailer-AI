@@ -32,8 +32,15 @@ export default function TasksPage() {
 
   const fetchJobs = async () => {
     try {
-      const data = await jobsApi.getAll();
-      setJobs(data || []);
+      const response = await jobsApi.getAll();
+      // Handle both paginated and non-paginated (array) responses
+      if (Array.isArray(response)) {
+        setJobs(response);
+      } else if (response && typeof response === "object") {
+        setJobs(response.data || []);
+      } else {
+        setJobs([]);
+      }
     } catch (error) {
       console.error("Failed to load jobs for task form");
     }

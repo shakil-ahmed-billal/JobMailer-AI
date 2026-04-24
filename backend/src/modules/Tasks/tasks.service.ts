@@ -1,6 +1,5 @@
-import { PrismaClient, TaskStatus } from "../../../generated/prisma/client";
+import { TaskStatus } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
-
 
 interface CreateTaskData {
   jobId: string;
@@ -57,16 +56,54 @@ const createTask = async (userId: string, data: CreateTaskData) => {
   });
 };
 
-const getTasks = async (userId: string, filters: TaskFilters = {}) => {
-  const { jobId, submitStatus } = filters;
+const getTasks = async (userId: string, filters: any = {}) => {
+  const { jobId, submitStatus, page = 1, limit = 10 } = filters;
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
 
   const where: any = { userId };
 
   if (jobId) where.jobId = jobId;
   if (submitStatus) where.submitStatus = submitStatus;
 
+  const [tasks, total] = await Promise.all([
+    prisma.task.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { deadline: "asc" },
+      include: {
+        job: {
+          select: {
+            id: true,
+            companyName: true,
+            jobTitle: true,
+          },
+        },
+      },
+    }),
+    prisma.task.count({ where }),
+  ]);
+
+  return {
+    data: tasks,
+    meta: {
+      total,
+      page: validPage,
+      limit: validLimit,
+      totalPages: Math.ceil(total / validLimit),
+    },
+  };
+};
+
+const getTasksByJobId = async (userId: string, jobId: string) => {
   return await prisma.task.findMany({
-    where,
+    where: {
+      userId,
+      jobId,
+    },
     orderBy: { deadline: "asc" },
     include: {
       job: {
@@ -169,6 +206,7 @@ const getUpcomingTasks = async (userId: string, limit: number = 5) => {
 export const TasksService = {
   createTask,
   getTasks,
+  getTasksByJobId,
   getTaskById,
   updateTask,
   deleteTask,

@@ -29,6 +29,7 @@ export type ResumeMinAggregateOutputType = {
   userId: string | null
   jobRole: $Enums.JobRole | null
   fileUrl: string | null
+  publicId: string | null
   fileName: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -39,6 +40,7 @@ export type ResumeMaxAggregateOutputType = {
   userId: string | null
   jobRole: $Enums.JobRole | null
   fileUrl: string | null
+  publicId: string | null
   fileName: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +51,7 @@ export type ResumeCountAggregateOutputType = {
   userId: number
   jobRole: number
   fileUrl: number
+  publicId: number
   fileName: number
   createdAt: number
   updatedAt: number
@@ -61,6 +64,7 @@ export type ResumeMinAggregateInputType = {
   userId?: true
   jobRole?: true
   fileUrl?: true
+  publicId?: true
   fileName?: true
   createdAt?: true
   updatedAt?: true
@@ -71,6 +75,7 @@ export type ResumeMaxAggregateInputType = {
   userId?: true
   jobRole?: true
   fileUrl?: true
+  publicId?: true
   fileName?: true
   createdAt?: true
   updatedAt?: true
@@ -81,6 +86,7 @@ export type ResumeCountAggregateInputType = {
   userId?: true
   jobRole?: true
   fileUrl?: true
+  publicId?: true
   fileName?: true
   createdAt?: true
   updatedAt?: true
@@ -164,6 +170,7 @@ export type ResumeGroupByOutputType = {
   userId: string
   jobRole: $Enums.JobRole
   fileUrl: string
+  publicId: string | null
   fileName: string
   createdAt: Date
   updatedAt: Date
@@ -195,6 +202,7 @@ export type ResumeWhereInput = {
   userId?: Prisma.StringFilter<"Resume"> | string
   jobRole?: Prisma.EnumJobRoleFilter<"Resume"> | $Enums.JobRole
   fileUrl?: Prisma.StringFilter<"Resume"> | string
+  publicId?: Prisma.StringNullableFilter<"Resume"> | string | null
   fileName?: Prisma.StringFilter<"Resume"> | string
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
@@ -206,6 +214,7 @@ export type ResumeOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   jobRole?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  publicId?: Prisma.SortOrderInput | Prisma.SortOrder
   fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -221,6 +230,7 @@ export type ResumeWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"Resume"> | string
   jobRole?: Prisma.EnumJobRoleFilter<"Resume"> | $Enums.JobRole
   fileUrl?: Prisma.StringFilter<"Resume"> | string
+  publicId?: Prisma.StringNullableFilter<"Resume"> | string | null
   fileName?: Prisma.StringFilter<"Resume"> | string
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
@@ -232,6 +242,7 @@ export type ResumeOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   jobRole?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  publicId?: Prisma.SortOrderInput | Prisma.SortOrder
   fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -248,6 +259,7 @@ export type ResumeScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"Resume"> | string
   jobRole?: Prisma.EnumJobRoleWithAggregatesFilter<"Resume"> | $Enums.JobRole
   fileUrl?: Prisma.StringWithAggregatesFilter<"Resume"> | string
+  publicId?: Prisma.StringNullableWithAggregatesFilter<"Resume"> | string | null
   fileName?: Prisma.StringWithAggregatesFilter<"Resume"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Resume"> | Date | string
@@ -257,6 +269,7 @@ export type ResumeCreateInput = {
   id?: string
   jobRole: $Enums.JobRole
   fileUrl: string
+  publicId?: string | null
   fileName: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -268,6 +281,7 @@ export type ResumeUncheckedCreateInput = {
   userId: string
   jobRole: $Enums.JobRole
   fileUrl: string
+  publicId?: string | null
   fileName: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -277,6 +291,7 @@ export type ResumeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -288,6 +303,7 @@ export type ResumeUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -298,6 +314,7 @@ export type ResumeCreateManyInput = {
   userId: string
   jobRole: $Enums.JobRole
   fileUrl: string
+  publicId?: string | null
   fileName: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -307,6 +324,7 @@ export type ResumeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -317,6 +335,7 @@ export type ResumeUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -342,6 +361,7 @@ export type ResumeCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   jobRole?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  publicId?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -352,6 +372,7 @@ export type ResumeMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   jobRole?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  publicId?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -362,6 +383,7 @@ export type ResumeMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   jobRole?: Prisma.SortOrder
   fileUrl?: Prisma.SortOrder
+  publicId?: Prisma.SortOrder
   fileName?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -413,6 +435,7 @@ export type ResumeCreateWithoutUserInput = {
   id?: string
   jobRole: $Enums.JobRole
   fileUrl: string
+  publicId?: string | null
   fileName: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -422,6 +445,7 @@ export type ResumeUncheckedCreateWithoutUserInput = {
   id?: string
   jobRole: $Enums.JobRole
   fileUrl: string
+  publicId?: string | null
   fileName: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -461,6 +485,7 @@ export type ResumeScalarWhereInput = {
   userId?: Prisma.StringFilter<"Resume"> | string
   jobRole?: Prisma.EnumJobRoleFilter<"Resume"> | $Enums.JobRole
   fileUrl?: Prisma.StringFilter<"Resume"> | string
+  publicId?: Prisma.StringNullableFilter<"Resume"> | string | null
   fileName?: Prisma.StringFilter<"Resume"> | string
   createdAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Resume"> | Date | string
@@ -470,6 +495,7 @@ export type ResumeCreateManyUserInput = {
   id?: string
   jobRole: $Enums.JobRole
   fileUrl: string
+  publicId?: string | null
   fileName: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -479,6 +505,7 @@ export type ResumeUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -488,6 +515,7 @@ export type ResumeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -497,6 +525,7 @@ export type ResumeUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   jobRole?: Prisma.EnumJobRoleFieldUpdateOperationsInput | $Enums.JobRole
   fileUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  publicId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileName?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -509,6 +538,7 @@ export type ResumeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   userId?: boolean
   jobRole?: boolean
   fileUrl?: boolean
+  publicId?: boolean
   fileName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -520,6 +550,7 @@ export type ResumeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   userId?: boolean
   jobRole?: boolean
   fileUrl?: boolean
+  publicId?: boolean
   fileName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -531,6 +562,7 @@ export type ResumeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   userId?: boolean
   jobRole?: boolean
   fileUrl?: boolean
+  publicId?: boolean
   fileName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -542,12 +574,13 @@ export type ResumeSelectScalar = {
   userId?: boolean
   jobRole?: boolean
   fileUrl?: boolean
+  publicId?: boolean
   fileName?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ResumeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "jobRole" | "fileUrl" | "fileName" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
+export type ResumeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "jobRole" | "fileUrl" | "publicId" | "fileName" | "createdAt" | "updatedAt", ExtArgs["result"]["resume"]>
 export type ResumeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
@@ -568,6 +601,7 @@ export type $ResumePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     userId: string
     jobRole: $Enums.JobRole
     fileUrl: string
+    publicId: string | null
     fileName: string
     createdAt: Date
     updatedAt: Date
@@ -999,6 +1033,7 @@ export interface ResumeFieldRefs {
   readonly userId: Prisma.FieldRef<"Resume", 'String'>
   readonly jobRole: Prisma.FieldRef<"Resume", 'JobRole'>
   readonly fileUrl: Prisma.FieldRef<"Resume", 'String'>
+  readonly publicId: Prisma.FieldRef<"Resume", 'String'>
   readonly fileName: Prisma.FieldRef<"Resume", 'String'>
   readonly createdAt: Prisma.FieldRef<"Resume", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Resume", 'DateTime'>

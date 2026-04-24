@@ -66,5 +66,7 @@ export const getJobsSchema = z.object({
     search: z.string().optional(),
     startDate: z.string().optional(),
     endDate: z.string().optional(),
+    page: z.string().optional(),
+    limit: z.string().optional(),
   }),
 });

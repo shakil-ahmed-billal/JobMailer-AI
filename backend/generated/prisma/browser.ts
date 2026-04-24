@@ -57,3 +57,8 @@ export type Email = Prisma.EmailModel
  * 
  */
 export type Task = Prisma.TaskModel
+/**
+ * Model TopCompany
+ * 
+ */
+export type TopCompany = Prisma.TopCompanyModel

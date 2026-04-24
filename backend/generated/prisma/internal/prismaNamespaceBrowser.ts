@@ -58,7 +58,8 @@ export const ModelName = {
   Job: 'Job',
   Resume: 'Resume',
   Email: 'Email',
-  Task: 'Task'
+  Task: 'Task',
+  TopCompany: 'TopCompany'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -175,6 +176,7 @@ export const ResumeScalarFieldEnum = {
   userId: 'userId',
   jobRole: 'jobRole',
   fileUrl: 'fileUrl',
+  publicId: 'publicId',
   fileName: 'fileName',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -213,6 +215,20 @@ export const TaskScalarFieldEnum = {
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+export const TopCompanyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  company: 'company',
+  webLink: 'webLink',
+  location: 'location',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TopCompanyScalarFieldEnum = (typeof TopCompanyScalarFieldEnum)[keyof typeof TopCompanyScalarFieldEnum]
 
 
 export const SortOrder = {

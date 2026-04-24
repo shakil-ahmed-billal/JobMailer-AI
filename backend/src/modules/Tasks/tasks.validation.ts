@@ -41,5 +41,7 @@ export const getTasksSchema = z.object({
   query: z.object({
     jobId: z.string().uuid().optional(),
     submitStatus: z.nativeEnum(TaskStatus).optional(),
+    page: z.string().optional(),
+    limit: z.string().optional(),
   }),
 });

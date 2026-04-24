@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -87,6 +87,28 @@ export function TaskForm({
       taskLink: task?.taskLink || "",
     },
   });
+
+  useEffect(() => {
+    if (task && open) {
+      form.reset({
+        title: task.title,
+        description: task.description || "",
+        jobId: task.jobId,
+        deadline: new Date(task.deadline),
+        submitStatus: (task.submitStatus as any) || "PENDING",
+        taskLink: task.taskLink || "",
+      });
+    } else if (!task && open) {
+      form.reset({
+        title: "",
+        description: "",
+        jobId: "",
+        deadline: undefined,
+        submitStatus: "PENDING",
+        taskLink: "",
+      });
+    }
+  }, [task, open, form]);
 
   async function onSubmit(data: TaskFormValues) {
     setIsLoading(true);

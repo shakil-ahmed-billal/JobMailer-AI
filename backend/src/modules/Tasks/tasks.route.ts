@@ -22,6 +22,11 @@ router.get("/upcoming", TasksController.getUpcomingTasks);
 router.post("/", validateRequest(createTaskSchema), TasksController.createTask);
 router.get("/", validateRequest(getTasksSchema), TasksController.getTasks);
 router.get("/:id", validateRequest(getTaskSchema), TasksController.getTaskById);
+router.get(
+  "/job/:id",
+  validateRequest(getTaskSchema),
+  TasksController.getTasksByJobId,
+);
 router.put(
   "/:id",
   validateRequest(updateTaskSchema),

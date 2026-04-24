@@ -6,7 +6,3 @@ export const geminiConfig = {
   model: "gemini-2.0-flash",
   maxTokens: 1000,
 };
-
-if (!geminiConfig.apiKey) {
-  console.warn("⚠️  GEMINI_API_KEY not found in environment variables");
-}

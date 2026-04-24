@@ -9,6 +9,7 @@ const router = Router();
 router.use(authenticate);
 
 router.get("/profile", UsersController.getProfile);
+router.get("/activity", UsersController.getRecentActivity);
 router.put(
   "/profile",
   validateRequest(updateProfileSchema),
