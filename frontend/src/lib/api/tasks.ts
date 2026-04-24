@@ -1,4 +1,4 @@
-import { Task } from "@/types";
+import { ApiResponse, Task } from "@/types";
 import { apiClient } from "./client";
 
 export const tasksApi = {
