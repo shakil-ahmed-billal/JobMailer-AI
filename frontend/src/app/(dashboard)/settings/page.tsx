@@ -124,6 +124,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <CardTitle>Profile Information</CardTitle>
+                
                 <CardDescription>
                   Update your personal details and bio
                 </CardDescription>
