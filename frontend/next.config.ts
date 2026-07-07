@@ -5,7 +5,12 @@ const nextConfig: NextConfig = {
   reactCompiler: true,
 
   async rewrites() {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    let backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    // Remove trailing slash if present to avoid double-slash issues in proxy
+    if (backendUrl.endsWith("/")) {
+      backendUrl = backendUrl.slice(0, -1);
+    }
+    
     return [
       {
         source: "/api/auth/:path*",
