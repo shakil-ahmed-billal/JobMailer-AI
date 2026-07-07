@@ -171,7 +171,7 @@ async function generateContentWithFallback(prompt: string, initialProvider: AIPr
         if (!apiKey) throw new Error("Groq API key missing");
         const client = new OpenAI({ apiKey, baseURL: "https://api.groq.com/openai/v1" });
         const completion = await client.chat.completions.create({
-          model: "llama3-8b-8192", // Use a default groq model
+          model: "llama-3.1-8b-instant", // Use a default groq model
           messages: [{ role: "system", content: "You are an expert at writing professional job application emails and replies." }, { role: "user", content: prompt }],
           temperature: 0.7,
         });
