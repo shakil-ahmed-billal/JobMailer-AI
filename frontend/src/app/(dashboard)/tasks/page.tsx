@@ -21,7 +21,7 @@ export default function TasksPage() {
     setLoading(true);
     try {
       const data = await tasksApi.getAll();
-      setTasks(Array.isArray(data) ? data : ((data as any)?.data ?? []));
+      setTasks(data?.data ?? []);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load tasks");

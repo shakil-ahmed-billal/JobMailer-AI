@@ -277,6 +277,7 @@ export type UserWhereInput = {
   emails?: Prisma.EmailListRelationFilter
   resumes?: Prisma.ResumeListRelationFilter
   topCompanies?: Prisma.TopCompanyListRelationFilter
+  settings?: Prisma.XOR<Prisma.UserSettingsNullableScalarRelationFilter, Prisma.UserSettingsWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -303,6 +304,7 @@ export type UserOrderByWithRelationInput = {
   emails?: Prisma.EmailOrderByRelationAggregateInput
   resumes?: Prisma.ResumeOrderByRelationAggregateInput
   topCompanies?: Prisma.TopCompanyOrderByRelationAggregateInput
+  settings?: Prisma.UserSettingsOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -332,6 +334,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   emails?: Prisma.EmailListRelationFilter
   resumes?: Prisma.ResumeListRelationFilter
   topCompanies?: Prisma.TopCompanyListRelationFilter
+  settings?: Prisma.XOR<Prisma.UserSettingsNullableScalarRelationFilter, Prisma.UserSettingsWhereInput> | null
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -402,6 +405,7 @@ export type UserCreateInput = {
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -428,6 +432,7 @@ export type UserUncheckedCreateInput = {
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -454,6 +459,7 @@ export type UserUpdateInput = {
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -480,6 +486,7 @@ export type UserUncheckedUpdateInput = {
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -715,6 +722,20 @@ export type UserUpdateOneRequiredWithoutTopCompaniesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTopCompaniesInput, Prisma.UserUpdateWithoutTopCompaniesInput>, Prisma.UserUncheckedUpdateWithoutTopCompaniesInput>
 }
 
+export type UserCreateNestedOneWithoutSettingsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSettingsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutSettingsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSettingsInput
+  upsert?: Prisma.UserUpsertWithoutSettingsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSettingsInput, Prisma.UserUpdateWithoutSettingsInput>, Prisma.UserUncheckedUpdateWithoutSettingsInput>
+}
+
 export type UserCreateWithoutSessionsInput = {
   id: string
   name: string
@@ -738,6 +759,7 @@ export type UserCreateWithoutSessionsInput = {
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -763,6 +785,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -804,6 +827,7 @@ export type UserUpdateWithoutSessionsInput = {
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -829,6 +853,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -854,6 +879,7 @@ export type UserCreateWithoutAccountsInput = {
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -879,6 +905,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -920,6 +947,7 @@ export type UserUpdateWithoutAccountsInput = {
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -945,6 +973,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutJobsInput = {
@@ -970,6 +999,7 @@ export type UserCreateWithoutJobsInput = {
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutJobsInput = {
@@ -995,6 +1025,7 @@ export type UserUncheckedCreateWithoutJobsInput = {
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutJobsInput = {
@@ -1036,6 +1067,7 @@ export type UserUpdateWithoutJobsInput = {
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutJobsInput = {
@@ -1061,6 +1093,7 @@ export type UserUncheckedUpdateWithoutJobsInput = {
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutResumesInput = {
@@ -1086,6 +1119,7 @@ export type UserCreateWithoutResumesInput = {
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutResumesInput = {
@@ -1111,6 +1145,7 @@ export type UserUncheckedCreateWithoutResumesInput = {
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutResumesInput = {
@@ -1152,6 +1187,7 @@ export type UserUpdateWithoutResumesInput = {
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutResumesInput = {
@@ -1177,6 +1213,7 @@ export type UserUncheckedUpdateWithoutResumesInput = {
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutEmailsInput = {
@@ -1202,6 +1239,7 @@ export type UserCreateWithoutEmailsInput = {
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutEmailsInput = {
@@ -1227,6 +1265,7 @@ export type UserUncheckedCreateWithoutEmailsInput = {
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutEmailsInput = {
@@ -1268,6 +1307,7 @@ export type UserUpdateWithoutEmailsInput = {
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutEmailsInput = {
@@ -1293,6 +1333,7 @@ export type UserUncheckedUpdateWithoutEmailsInput = {
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -1318,6 +1359,7 @@ export type UserCreateWithoutTasksInput = {
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -1343,6 +1385,7 @@ export type UserUncheckedCreateWithoutTasksInput = {
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
   topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -1384,6 +1427,7 @@ export type UserUpdateWithoutTasksInput = {
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -1409,6 +1453,7 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
   topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTopCompaniesInput = {
@@ -1434,6 +1479,7 @@ export type UserCreateWithoutTopCompaniesInput = {
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTopCompaniesInput = {
@@ -1459,6 +1505,7 @@ export type UserUncheckedCreateWithoutTopCompaniesInput = {
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
   emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
   resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTopCompaniesInput = {
@@ -1500,6 +1547,7 @@ export type UserUpdateWithoutTopCompaniesInput = {
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTopCompaniesInput = {
@@ -1525,6 +1573,127 @@ export type UserUncheckedUpdateWithoutTopCompaniesInput = {
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
   emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
   resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput
+}
+
+export type UserCreateWithoutSettingsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  profileBio?: string | null
+  resumeLink?: string | null
+  linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  jobs?: Prisma.JobCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  emails?: Prisma.EmailCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeCreateNestedManyWithoutUserInput
+  topCompanies?: Prisma.TopCompanyCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutSettingsInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  profileBio?: string | null
+  resumeLink?: string | null
+  linkedinLink?: string | null
+  portfolioLink?: string | null
+  resumeContent?: string | null
+  skills?: string | null
+  experience?: string | null
+  education?: string | null
+  certifications?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  jobs?: Prisma.JobUncheckedCreateNestedManyWithoutUserInput
+  tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  emails?: Prisma.EmailUncheckedCreateNestedManyWithoutUserInput
+  resumes?: Prisma.ResumeUncheckedCreateNestedManyWithoutUserInput
+  topCompanies?: Prisma.TopCompanyUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutSettingsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
+}
+
+export type UserUpsertWithoutSettingsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSettingsInput, Prisma.UserUncheckedUpdateWithoutSettingsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSettingsInput, Prisma.UserUncheckedCreateWithoutSettingsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutSettingsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSettingsInput, Prisma.UserUncheckedUpdateWithoutSettingsInput>
+}
+
+export type UserUpdateWithoutSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  jobs?: Prisma.JobUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  emails?: Prisma.EmailUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUpdateManyWithoutUserNestedInput
+  topCompanies?: Prisma.TopCompanyUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutSettingsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  profileBio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  linkedinLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  portfolioLink?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  resumeContent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  skills?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  experience?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  education?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  certifications?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  jobs?: Prisma.JobUncheckedUpdateManyWithoutUserNestedInput
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  emails?: Prisma.EmailUncheckedUpdateManyWithoutUserNestedInput
+  resumes?: Prisma.ResumeUncheckedUpdateManyWithoutUserNestedInput
+  topCompanies?: Prisma.TopCompanyUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1636,6 +1805,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   emails?: boolean | Prisma.User$emailsArgs<ExtArgs>
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   topCompanies?: boolean | Prisma.User$topCompaniesArgs<ExtArgs>
+  settings?: boolean | Prisma.User$settingsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1705,6 +1875,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   emails?: boolean | Prisma.User$emailsArgs<ExtArgs>
   resumes?: boolean | Prisma.User$resumesArgs<ExtArgs>
   topCompanies?: boolean | Prisma.User$topCompaniesArgs<ExtArgs>
+  settings?: boolean | Prisma.User$settingsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1720,6 +1891,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     emails: Prisma.$EmailPayload<ExtArgs>[]
     resumes: Prisma.$ResumePayload<ExtArgs>[]
     topCompanies: Prisma.$TopCompanyPayload<ExtArgs>[]
+    settings: Prisma.$UserSettingsPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2139,6 +2311,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   emails<T extends Prisma.User$emailsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$emailsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmailPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   resumes<T extends Prisma.User$resumesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   topCompanies<T extends Prisma.User$topCompaniesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$topCompaniesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TopCompanyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  settings<T extends Prisma.User$settingsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$settingsArgs<ExtArgs>>): Prisma.Prisma__UserSettingsClient<runtime.Types.Result.GetResult<Prisma.$UserSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2737,6 +2910,25 @@ export type User$topCompaniesArgs<ExtArgs extends runtime.Types.Extensions.Inter
   take?: number
   skip?: number
   distinct?: Prisma.TopCompanyScalarFieldEnum | Prisma.TopCompanyScalarFieldEnum[]
+}
+
+/**
+ * User.settings
+ */
+export type User$settingsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserSettings
+   */
+  select?: Prisma.UserSettingsSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserSettings
+   */
+  omit?: Prisma.UserSettingsOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserSettingsInclude<ExtArgs> | null
+  where?: Prisma.UserSettingsWhereInput
 }
 
 /**

@@ -392,7 +392,8 @@ export const ModelName = {
   Resume: 'Resume',
   Email: 'Email',
   Task: 'Task',
-  TopCompany: 'TopCompany'
+  TopCompany: 'TopCompany',
+  UserSettings: 'UserSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "session" | "account" | "verification" | "job" | "resume" | "email" | "task" | "topCompany"
+    modelProps: "user" | "session" | "account" | "verification" | "job" | "resume" | "email" | "task" | "topCompany" | "userSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1078,6 +1079,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    UserSettings: {
+      payload: Prisma.$UserSettingsPayload<ExtArgs>
+      fields: Prisma.UserSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.UserSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.UserSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.UserSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.UserSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.UserSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>
+        }
+        update: {
+          args: Prisma.UserSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.UserSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserSettings>
+        }
+        groupBy: {
+          args: Prisma.UserSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1270,6 +1345,28 @@ export const TopCompanyScalarFieldEnum = {
 export type TopCompanyScalarFieldEnum = (typeof TopCompanyScalarFieldEnum)[keyof typeof TopCompanyScalarFieldEnum]
 
 
+export const UserSettingsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  openaiApiKey: 'openaiApiKey',
+  geminiApiKey: 'geminiApiKey',
+  groqApiKey: 'groqApiKey',
+  openrouterApiKey: 'openrouterApiKey',
+  cloudinaryCloudName: 'cloudinaryCloudName',
+  cloudinaryApiKey: 'cloudinaryApiKey',
+  cloudinaryApiSecret: 'cloudinaryApiSecret',
+  smtpHost: 'smtpHost',
+  smtpPort: 'smtpPort',
+  smtpSecure: 'smtpSecure',
+  smtpUser: 'smtpUser',
+  smtpPassword: 'smtpPassword',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserSettingsScalarFieldEnum = (typeof UserSettingsScalarFieldEnum)[keyof typeof UserSettingsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1460,6 +1557,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1564,6 +1675,7 @@ export type GlobalOmitConfig = {
   email?: Prisma.EmailOmit
   task?: Prisma.TaskOmit
   topCompany?: Prisma.TopCompanyOmit
+  userSettings?: Prisma.UserSettingsOmit
 }
 
 /* Types for Logging */

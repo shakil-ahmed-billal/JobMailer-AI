@@ -59,6 +59,8 @@ enum TaskStatus {
 enum AIProvider {
   OPENAI
   GEMINI
+  GROQ
+  OPENROUTER
 }
 
 // ============= Models =============
@@ -87,6 +89,7 @@ model User {
   emails          Email[]
   resumes         Resume[]
   topCompanies    TopCompany[]
+  settings        UserSettings?
 
   @@unique([email])
   @@map("user")
@@ -249,4 +252,30 @@ model TopCompany {
 
   @@index([userId])
   @@map("top_company")
+}
+
+model UserSettings {
+  id                  String   @id @default(uuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  openaiApiKey        String?
+  geminiApiKey        String?
+  groqApiKey          String?
+  openrouterApiKey    String?
+  
+  cloudinaryCloudName String?
+  cloudinaryApiKey    String?
+  cloudinaryApiSecret String?
+
+  smtpHost            String?
+  smtpPort            Int?
+  smtpSecure          Boolean? @default(false)
+  smtpUser            String?
+  smtpPassword        String?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  @@map("user_settings")
 }

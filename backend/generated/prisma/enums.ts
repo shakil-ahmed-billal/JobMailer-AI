@@ -80,7 +80,9 @@ export type TaskStatus = (typeof TaskStatus)[keyof typeof TaskStatus]
 
 export const AIProvider = {
   OPENAI: 'OPENAI',
-  GEMINI: 'GEMINI'
+  GEMINI: 'GEMINI',
+  GROQ: 'GROQ',
+  OPENROUTER: 'OPENROUTER'
 } as const
 
 export type AIProvider = (typeof AIProvider)[keyof typeof AIProvider]

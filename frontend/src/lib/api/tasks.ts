@@ -1,13 +1,13 @@
-import { ApiResponse, Task } from "@/types";
+import { ApiResponse, PaginatedResponse, Task } from "@/types";
 import { apiClient } from "./client";
 
 export const tasksApi = {
   getAll: async (jobId?: string) => {
     const params = jobId ? { jobId } : {};
-    const response = await apiClient.get<Task[]>("/tasks", {
+    const response = await apiClient.get<ApiResponse<PaginatedResponse<Task>>>("/tasks", {
       params,
     });
-    return response.data;
+    return response.data.data;
   },
 
   create: async (data: Partial<Task>) => {

@@ -62,3 +62,8 @@ export type Task = Prisma.TaskModel
  * 
  */
 export type TopCompany = Prisma.TopCompanyModel
+/**
+ * Model UserSettings
+ * 
+ */
+export type UserSettings = Prisma.UserSettingsModel

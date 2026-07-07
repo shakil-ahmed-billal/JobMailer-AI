@@ -16,7 +16,7 @@ const generateApplicationEmail = catchAsync(
       return sendResponse(res, {
         statusCode: 400,
         success: false,
-        message: "Invalid AI provider. Must be OPENAI or GEMINI",
+        message: "Invalid AI provider. Must be OPENAI, GEMINI, GROQ, or OPENROUTER",
       });
     }
 
@@ -48,6 +48,7 @@ const generateApplicationEmail = catchAsync(
 
     try {
       const result = await EmailsService.generateApplicationEmail({
+        userId,
         jobData: {
           companyName: job.companyName,
           jobTitle: job.jobTitle,
@@ -95,7 +96,7 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
     return sendResponse(res, {
       statusCode: 400,
       success: false,
-      message: "Invalid AI provider. Must be OPENAI or GEMINI",
+      message: "Invalid AI provider. Must be OPENAI, GEMINI, GROQ, or OPENROUTER",
     });
   }
 
@@ -125,6 +126,7 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
 
   try {
     const result = await EmailsService.generateReplyEmail({
+      userId,
       originalEmail: {
         subject: originalEmail.subject,
         content: originalEmail.content,
@@ -168,7 +170,7 @@ const sendEmail = catchAsync(async (req: Request, res: Response) => {
     return sendResponse(res, {
       statusCode: 400,
       success: false,
-      message: "Invalid AI provider. Must be OPENAI or GEMINI",
+      message: "Invalid AI provider. Must be OPENAI, GEMINI, GROQ, or OPENROUTER",
     });
   }
 

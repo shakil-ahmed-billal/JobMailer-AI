@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
 import config from "../config";
+import { prisma } from "../lib/prisma";
 
 cloudinary.config({
   cloud_name: config.cloudinary.cloud_name,
@@ -31,18 +32,52 @@ export const uploadToCloudinary = async (
   });
 };
 
-export const deleteFromCloudinary = async (publicId: string): Promise<any> => {
+export const deleteFromCloudinary = async (publicId: string, userId?: string): Promise<any> => {
+  let cloud_name, api_key, api_secret;
+
+  if (userId) {
+    const settings = await prisma.userSettings.findUnique({ where: { userId } });
+    if (settings?.cloudinaryCloudName && settings?.cloudinaryApiKey && settings?.cloudinaryApiSecret) {
+      cloud_name = settings.cloudinaryCloudName;
+      api_key = settings.cloudinaryApiKey;
+      api_secret = settings.cloudinaryApiSecret;
+    }
+  }
+
+  const options = {
+    ...(cloud_name && { cloud_name }),
+    ...(api_key && { api_key }),
+    ...(api_secret && { api_secret }),
+  };
+
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.destroy(publicId, (error, result) => {
+    cloudinary.uploader.destroy(publicId, options, (error, result) => {
       if (error) return reject(error);
       resolve(result);
     });
   });
 };
 
-export const fetchFileBuffer = async (publicId: string): Promise<Buffer> => {
+export const fetchFileBuffer = async (publicId: string, userId?: string): Promise<Buffer> => {
   try {
-    const metadata = await cloudinary.api.resource(publicId);
+    let cloud_name, api_key, api_secret;
+
+    if (userId) {
+      const settings = await prisma.userSettings.findUnique({ where: { userId } });
+      if (settings?.cloudinaryCloudName && settings?.cloudinaryApiKey && settings?.cloudinaryApiSecret) {
+        cloud_name = settings.cloudinaryCloudName;
+        api_key = settings.cloudinaryApiKey;
+        api_secret = settings.cloudinaryApiSecret;
+      }
+    }
+
+    const options = {
+      ...(cloud_name && { cloud_name }),
+      ...(api_key && { api_key }),
+      ...(api_secret && { api_secret }),
+    };
+
+    const metadata = await cloudinary.api.resource(publicId, options);
 
     const expiresAt = Math.floor(Date.now() / 1000) + 3600;
     const url = (cloudinary.utils as any).private_download_url(
@@ -52,6 +87,7 @@ export const fetchFileBuffer = async (publicId: string): Promise<Buffer> => {
         resource_type: metadata.resource_type || "image",
         type: metadata.type || "upload",
         expires_at: expiresAt,
+        ...options,
       },
     );
 

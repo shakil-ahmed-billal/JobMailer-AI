@@ -28,7 +28,7 @@ const createResume = catchAsync(async (req: Request, res: Response) => {
   if (!parsed.success) {
     if (req.file) {
       // If validation fails, we should delete the already uploaded file
-      await CloudinaryUtils.deleteFromCloudinary(req.file.filename);
+      await CloudinaryUtils.deleteFromCloudinary(req.file.filename, userId);
     }
     return sendResponse(res, {
       statusCode: 400,
@@ -77,7 +77,7 @@ const updateResume = catchAsync(async (req: Request, res: Response) => {
   const parsed = updateResumeBodySchema.safeParse(req.body);
   if (!parsed.success) {
     if (req.file) {
-      await CloudinaryUtils.deleteFromCloudinary(req.file.filename);
+      await CloudinaryUtils.deleteFromCloudinary(req.file.filename, userId);
     }
     return sendResponse(res, {
       statusCode: 400,
@@ -144,7 +144,7 @@ const downloadResumeFile = catchAsync(async (req: Request, res: Response) => {
       throw new Error("Resume public ID not found");
     }
 
-    const buffer = await CloudinaryUtils.fetchFileBuffer(publicId);
+    const buffer = await CloudinaryUtils.fetchFileBuffer(publicId, userId);
 
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
