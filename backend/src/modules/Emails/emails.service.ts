@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import OpenAI from "openai";
+import nodemailer from "nodemailer";
 import {
   AIProvider,
   EmailSendStatus,
@@ -17,6 +18,7 @@ const genAI = geminiConfig.apiKey
   : null;
 
 interface GenerateApplicationEmailInput {
+  userId: string;
   jobData: {
     companyName: string;
     jobTitle: string;
@@ -40,6 +42,7 @@ interface GenerateApplicationEmailInput {
 }
 
 interface GenerateReplyEmailInput {
+  userId: string;
   originalEmail: {
     subject: string;
     content: string;
@@ -132,49 +135,65 @@ SUBJECT: [Your subject line]
 [Email body]`;
 }
 
-async function generateWithOpenAI(prompt: string): Promise<string> {
-  const completion = await openai.chat.completions.create({
-    model: openaiConfig.model,
-    messages: [
-      {
-        role: "system",
-        content:
-          "You are an expert at writing professional job application emails and replies.",
-      },
-      {
-        role: "user",
-        content: prompt,
-      },
-    ],
-    max_tokens: openaiConfig.maxTokens,
-    temperature: 0.7,
-  });
+async function generateContentWithFallback(prompt: string, initialProvider: AIProvider, userId: string): Promise<string> {
+  const settings = await prisma.userSettings.findUnique({ where: { userId } });
+  
+  const providersToTry = [initialProvider];
+  if (initialProvider !== AIProvider.GEMINI) providersToTry.push(AIProvider.GEMINI);
+  if (initialProvider !== AIProvider.GROQ) providersToTry.push(AIProvider.GROQ);
+  if (initialProvider !== AIProvider.OPENROUTER) providersToTry.push(AIProvider.OPENROUTER);
+  if (initialProvider !== AIProvider.OPENAI) providersToTry.push(AIProvider.OPENAI);
 
-  return completion.choices[0].message.content || "";
-}
+  let lastError: any;
 
-async function generateWithGemini(prompt: string): Promise<string> {
-  if (!genAI) {
-    throw new Error("Gemini API key not configured");
+  for (const provider of providersToTry) {
+    try {
+      if (provider === AIProvider.OPENAI) {
+        const apiKey = settings?.openaiApiKey || openaiConfig.apiKey;
+        if (!apiKey) throw new Error("OpenAI API key missing");
+        const client = new OpenAI({ apiKey });
+        const completion = await client.chat.completions.create({
+          model: openaiConfig.model,
+          messages: [{ role: "system", content: "You are an expert at writing professional job application emails and replies." }, { role: "user", content: prompt }],
+          temperature: 0.7,
+        });
+        return completion.choices[0].message.content || "";
+      } else if (provider === AIProvider.GEMINI) {
+        const apiKey = settings?.geminiApiKey || geminiConfig.apiKey;
+        if (!apiKey) throw new Error("Gemini API key missing");
+        const genAIClient = new GoogleGenerativeAI(apiKey);
+        const model = genAIClient.getGenerativeModel({ model: geminiConfig.model });
+        const result = await model.generateContent({ contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7 } });
+        const response = await result.response;
+        return response.text();
+      } else if (provider === AIProvider.GROQ) {
+        const apiKey = settings?.groqApiKey;
+        if (!apiKey) throw new Error("Groq API key missing");
+        const client = new OpenAI({ apiKey, baseURL: "https://api.groq.com/openai/v1" });
+        const completion = await client.chat.completions.create({
+          model: "llama3-8b-8192", // Use a default groq model
+          messages: [{ role: "system", content: "You are an expert at writing professional job application emails and replies." }, { role: "user", content: prompt }],
+          temperature: 0.7,
+        });
+        return completion.choices[0].message.content || "";
+      } else if (provider === AIProvider.OPENROUTER) {
+        const apiKey = settings?.openrouterApiKey;
+        if (!apiKey) throw new Error("OpenRouter API key missing");
+        const client = new OpenAI({ apiKey, baseURL: "https://openrouter.ai/api/v1" });
+        const completion = await client.chat.completions.create({
+          model: "google/gemini-2.5-flash", // default fallback OpenRouter model
+          messages: [{ role: "system", content: "You are an expert at writing professional job application emails and replies." }, { role: "user", content: prompt }],
+          temperature: 0.7,
+        });
+        return completion.choices[0].message.content || "";
+      }
+    } catch (error: any) {
+      console.error(`${provider} failed:`, error.message);
+      lastError = error;
+    }
   }
 
-  const model = genAI.getGenerativeModel({ model: geminiConfig.model });
-
-  const result = await model.generateContent({
-    contents: [
-      {
-        role: "user",
-        parts: [{ text: prompt }],
-      },
-    ],
-    generationConfig: {
-      maxOutputTokens: geminiConfig.maxTokens,
-      temperature: 0.7,
-    },
-  });
-
-  const response = await result.response;
-  return response.text();
+  throw new Error(`All AI providers failed. Last error: ${lastError?.message}`);
 }
 
 function parseEmailResponse(response: string): {
@@ -195,50 +214,28 @@ function parseEmailResponse(response: string): {
 const generateApplicationEmail = async (
   input: GenerateApplicationEmailInput,
 ) => {
-  const { aiProvider } = input;
+  const { aiProvider, userId } = input;
   const prompt = buildApplicationPrompt(input);
 
   try {
-    let response: string;
-
-    if (aiProvider === AIProvider.OPENAI) {
-      response = await generateWithOpenAI(prompt);
-    } else if (aiProvider === AIProvider.GEMINI) {
-      response = await generateWithGemini(prompt);
-    } else {
-      throw new Error(`Unsupported AI provider: ${aiProvider}`);
-    }
-
+    const response = await generateContentWithFallback(prompt, aiProvider, userId);
     const { subject, content } = parseEmailResponse(response);
-
     return { subject, content };
   } catch (error: any) {
-    const providerName = aiProvider === AIProvider.OPENAI ? "OpenAI" : "Gemini";
-    throw new Error(`${providerName} generation failed: ${error.message}`);
+    throw new Error(`Email generation failed: ${error.message}`);
   }
 };
 
 const generateReplyEmail = async (input: GenerateReplyEmailInput) => {
-  const { aiProvider } = input;
+  const { aiProvider, userId } = input;
   const prompt = buildReplyPrompt(input);
 
   try {
-    let response: string;
-
-    if (aiProvider === AIProvider.OPENAI) {
-      response = await generateWithOpenAI(prompt);
-    } else if (aiProvider === AIProvider.GEMINI) {
-      response = await generateWithGemini(prompt);
-    } else {
-      throw new Error(`Unsupported AI provider: ${aiProvider}`);
-    }
-
+    const response = await generateContentWithFallback(prompt, aiProvider, userId);
     const { subject, content } = parseEmailResponse(response);
-
     return { subject, content };
   } catch (error: any) {
-    const providerName = aiProvider === AIProvider.OPENAI ? "OpenAI" : "Gemini";
-    throw new Error(`${providerName} generation failed: ${error.message}`);
+    throw new Error(`Email generation failed: ${error.message}`);
   }
 };
 
@@ -276,7 +273,7 @@ const sendEmail = async (
 
           if (attachment.publicId) {
             // Use fetchFileBuffer which uses private_download_url (confirmed to work)
-            buffer = await CloudinaryUtils.fetchFileBuffer(attachment.publicId);
+            buffer = await CloudinaryUtils.fetchFileBuffer(attachment.publicId, userId);
           } else {
             // Fallback: direct URL fetch (works only for truly public files)
             const response = await fetch(attachment.path);
@@ -299,9 +296,28 @@ const sendEmail = async (
       }
     }
 
+    // Fetch user settings for custom SMTP
+    const settings = await prisma.userSettings.findUnique({ where: { userId } });
+    
+    let transporter = emailTransporter;
+    let fromAddress = `"${user.name}" <${process.env.SMTP_USER}>`;
+
+    if (settings?.smtpHost && settings?.smtpUser && settings?.smtpPassword) {
+      transporter = nodemailer.createTransport({
+        host: settings.smtpHost,
+        port: settings.smtpPort || 587,
+        secure: settings.smtpSecure || false,
+        auth: {
+          user: settings.smtpUser,
+          pass: settings.smtpPassword,
+        },
+      });
+      fromAddress = `"${user.name}" <${settings.smtpUser}>`;
+    }
+
     // Send email via SMTP
-    await emailTransporter.sendMail({
-      from: `"${user.name}" <${process.env.SMTP_USER}>`,
+    await transporter.sendMail({
+      from: fromAddress,
       to,
       subject,
       text: content,
@@ -357,26 +373,54 @@ const sendEmail = async (
 
 const getEmails = async (
   userId: string,
-  filters: { emailType?: EmailType; jobId?: string } = {},
+  filters: {
+    emailType?: EmailType;
+    jobId?: string;
+    page?: string;
+    limit?: string;
+  } = {},
 ) => {
+  const { emailType, jobId, page = "1", limit = "10" } = filters;
+  const validPage = Math.max(1, Number(page) || 1);
+  const validLimit = Math.max(1, Number(limit) || 10);
+  const skip = (validPage - 1) * validLimit;
+  const take = validLimit;
+
   const where: any = { userId };
 
-  if (filters.emailType) where.emailType = filters.emailType;
-  if (filters.jobId) where.jobId = filters.jobId;
+  if (emailType) where.emailType = emailType;
+  if (jobId) where.jobId = jobId;
 
-  return await prisma.email.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    include: {
-      job: {
-        select: {
-          id: true,
-          companyName: true,
-          jobTitle: true,
+  const [emails, total] = await Promise.all([
+    prisma.email.findMany({
+      where,
+      skip,
+      take,
+      orderBy: { createdAt: "desc" },
+      include: {
+        job: {
+          select: {
+            id: true,
+            companyName: true,
+            jobTitle: true,
+            companyEmail: true,
+            location: true,
+          },
         },
       },
+    }),
+    prisma.email.count({ where }),
+  ]);
+
+  return {
+    data: emails,
+    meta: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / Number(limit)),
     },
-  });
+  };
 };
 
 const getEmailById = async (userId: string, emailId: string) => {
@@ -398,10 +442,20 @@ const getEmailById = async (userId: string, emailId: string) => {
   });
 };
 
+const deleteEmail = async (userId: string, emailId: string) => {
+  return await prisma.email.delete({
+    where: {
+      id: emailId,
+      userId,
+    },
+  });
+};
+
 export const EmailsService = {
   generateApplicationEmail,
   generateReplyEmail,
   sendEmail,
   getEmails,
   getEmailById,
+  deleteEmail,
 };

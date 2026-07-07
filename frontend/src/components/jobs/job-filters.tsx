@@ -1,13 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -16,7 +9,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { JobFilters as FilterType } from "@/lib/api/jobs";
 import { JOB_ROLE_OPTIONS } from "@/lib/job-roles";
 
@@ -57,16 +57,22 @@ export function JobFilters({ filters, onFilterChange }: JobFiltersProps) {
           className="w-full md:w-[300px]"
         />
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-[180px] justify-between">
+            <Button
+              variant="outline"
+              className="w-full sm:w-[180px] justify-between"
+            >
               {selectedRoles.length
                 ? `Job Roles (${selectedRoles.length})`
                 : "Job Roles"}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-[260px]">
+          <DropdownMenuContent
+            align="end"
+            className="w-[calc(100vw-2rem)] sm:w-[260px]"
+          >
             <DropdownMenuItem
               onClick={() => setSelectedRoles([])}
               disabled={selectedRoles.length === 0}
@@ -86,36 +92,38 @@ export function JobFilters({ filters, onFilterChange }: JobFiltersProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Select
-          value={filters.status || "ALL"}
-          onValueChange={(value) => handleChange("status", value)}
-        >
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">All Status</SelectItem>
-            <SelectItem value="DRAFT">Draft</SelectItem>
-            <SelectItem value="APPLIED">Applied</SelectItem>
-            <SelectItem value="INTERVIEW">Interview</SelectItem>
-            <SelectItem value="OFFER">Offer</SelectItem>
-            <SelectItem value="REJECTED">Rejected</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex gap-2 flex-1 sm:flex-none">
+          <Select
+            value={filters.status || "ALL"}
+            onValueChange={(value) => handleChange("status", value)}
+          >
+            <SelectTrigger className="w-full sm:w-[140px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Status</SelectItem>
+              <SelectItem value="DRAFT">Draft</SelectItem>
+              <SelectItem value="APPLIED">Applied</SelectItem>
+              <SelectItem value="INTERVIEW">Interview</SelectItem>
+              <SelectItem value="OFFER">Offer</SelectItem>
+              <SelectItem value="REJECTED">Rejected</SelectItem>
+            </SelectContent>
+          </Select>
 
-        <Select
-          value={filters.applyStatus || "ALL"}
-          onValueChange={(value) => handleChange("applyStatus", value)}
-        >
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Apply Status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ALL">All Application</SelectItem>
-            <SelectItem value="NOT_APPLIED">Not Applied</SelectItem>
-            <SelectItem value="APPLIED">Applied</SelectItem>
-          </SelectContent>
-        </Select>
+          <Select
+            value={filters.applyStatus || "ALL"}
+            onValueChange={(value) => handleChange("applyStatus", value)}
+          >
+            <SelectTrigger className="w-full sm:w-[140px]">
+              <SelectValue placeholder="Apply Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ALL">All Application</SelectItem>
+              <SelectItem value="NOT_APPLIED">Not Applied</SelectItem>
+              <SelectItem value="APPLIED">Applied</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   );

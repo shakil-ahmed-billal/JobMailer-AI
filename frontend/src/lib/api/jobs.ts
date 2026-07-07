@@ -1,4 +1,4 @@
-import { ApiResponse, Job } from "@/types";
+import { ApiResponse, Job, PaginatedResponse } from "@/types";
 import { apiClient } from "./client";
 
 export interface JobFilters {
@@ -14,9 +14,12 @@ export interface JobFilters {
 export const jobsApi = {
   getAll: async (filters?: JobFilters, page = 1, limit = 10) => {
     const params = { ...filters, page, limit };
-    const response = await apiClient.get<ApiResponse<Job[]>>("/jobs", {
-      params,
-    });
+    const response = await apiClient.get<ApiResponse<PaginatedResponse<Job>>>(
+      "/jobs",
+      {
+        params,
+      },
+    );
     return response.data.data;
   },
 
@@ -59,5 +62,29 @@ export const jobsApi = {
         interviewCount: 0,
       };
     }
+  },
+  getPublicJobs: async (userId: string, filters?: JobFilters, page = 1, limit = 10) => {
+    const params = { ...filters, page, limit };
+    const response = await apiClient.get<ApiResponse<{
+      user: {
+        id: string;
+        name: string;
+        email: string;
+        image?: string;
+        profileBio?: string;
+        linkedinLink?: string;
+        portfolioLink?: string;
+      };
+      data: Job[];
+      meta: {
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+      };
+    }>>(`/jobs/public/${userId}`, {
+      params,
+    });
+    return response.data.data;
   },
 };

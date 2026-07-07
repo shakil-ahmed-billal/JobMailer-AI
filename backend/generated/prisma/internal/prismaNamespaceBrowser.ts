@@ -58,7 +58,9 @@ export const ModelName = {
   Job: 'Job',
   Resume: 'Resume',
   Email: 'Email',
-  Task: 'Task'
+  Task: 'Task',
+  TopCompany: 'TopCompany',
+  UserSettings: 'UserSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -214,6 +216,42 @@ export const TaskScalarFieldEnum = {
 } as const
 
 export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
+
+
+export const TopCompanyScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  company: 'company',
+  webLink: 'webLink',
+  location: 'location',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type TopCompanyScalarFieldEnum = (typeof TopCompanyScalarFieldEnum)[keyof typeof TopCompanyScalarFieldEnum]
+
+
+export const UserSettingsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  openaiApiKey: 'openaiApiKey',
+  geminiApiKey: 'geminiApiKey',
+  groqApiKey: 'groqApiKey',
+  openrouterApiKey: 'openrouterApiKey',
+  cloudinaryCloudName: 'cloudinaryCloudName',
+  cloudinaryApiKey: 'cloudinaryApiKey',
+  cloudinaryApiSecret: 'cloudinaryApiSecret',
+  smtpHost: 'smtpHost',
+  smtpPort: 'smtpPort',
+  smtpSecure: 'smtpSecure',
+  smtpUser: 'smtpUser',
+  smtpPassword: 'smtpPassword',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserSettingsScalarFieldEnum = (typeof UserSettingsScalarFieldEnum)[keyof typeof UserSettingsScalarFieldEnum]
 
 
 export const SortOrder = {

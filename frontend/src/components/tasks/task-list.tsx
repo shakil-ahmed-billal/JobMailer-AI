@@ -22,9 +22,11 @@ import {
   AlertCircle,
   CheckCircle2,
   Edit,
+  Eye,
   MoreHorizontal,
   Trash2,
 } from "lucide-react";
+import Link from "next/link";
 
 interface TaskListProps {
   tasks: Task[];
@@ -78,7 +80,12 @@ export function TaskList({
                         task.submitStatus === "PENDING") ? (
                       <AlertCircle className="h-4 w-4 text-red-500" />
                     ) : null}
-                    {task.title}
+                    <Link
+                      href={`/tasks/${task.id}`}
+                      className="hover:text-violet-600 transition-colors"
+                    >
+                      {task.title}
+                    </Link>
                   </div>
                 </TableCell>
                 <TableCell>
@@ -114,6 +121,12 @@ export function TaskList({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link href={`/tasks/${task.id}`}>
+                          <Eye className="mr-2 h-4 w-4" />
+                          View Details
+                        </Link>
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => onEdit(task)}>
                         <Edit className="mr-2 h-4 w-4" />
                         Edit

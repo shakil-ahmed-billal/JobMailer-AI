@@ -43,4 +43,10 @@ router.get(
   EmailsController.getEmailById,
 );
 
+router.delete(
+  "/:id",
+  validateRequest(getEmailSchema),
+  EmailsController.deleteEmail,
+);
+
 export default router;

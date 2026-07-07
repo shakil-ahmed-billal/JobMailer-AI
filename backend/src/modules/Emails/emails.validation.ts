@@ -30,6 +30,8 @@ export const getEmailsSchema = z.object({
   query: z.object({
     emailType: z.nativeEnum(EmailType).optional(),
     jobId: z.string().uuid().optional(),
+    page: z.string().optional(),
+    limit: z.string().optional(),
   }),
 });
 

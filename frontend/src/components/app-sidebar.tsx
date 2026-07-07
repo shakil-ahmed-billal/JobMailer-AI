@@ -2,6 +2,7 @@
 
 import {
   Briefcase,
+  Building2,
   CheckSquare,
   FileText,
   FileUp,
@@ -37,6 +38,11 @@ const data = {
       title: "Jobs",
       url: "/jobs",
       icon: Briefcase,
+    },
+    {
+      title: "Top Companies",
+      url: "/top-companies",
+      icon: Building2,
     },
     {
       title: "Resume Manager",

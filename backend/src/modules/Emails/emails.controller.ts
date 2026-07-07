@@ -16,7 +16,7 @@ const generateApplicationEmail = catchAsync(
       return sendResponse(res, {
         statusCode: 400,
         success: false,
-        message: "Invalid AI provider. Must be OPENAI or GEMINI",
+        message: "Invalid AI provider. Must be OPENAI, GEMINI, GROQ, or OPENROUTER",
       });
     }
 
@@ -48,6 +48,7 @@ const generateApplicationEmail = catchAsync(
 
     try {
       const result = await EmailsService.generateApplicationEmail({
+        userId,
         jobData: {
           companyName: job.companyName,
           jobTitle: job.jobTitle,
@@ -95,7 +96,7 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
     return sendResponse(res, {
       statusCode: 400,
       success: false,
-      message: "Invalid AI provider. Must be OPENAI or GEMINI",
+      message: "Invalid AI provider. Must be OPENAI, GEMINI, GROQ, or OPENROUTER",
     });
   }
 
@@ -125,6 +126,7 @@ const generateReplyEmail = catchAsync(async (req: Request, res: Response) => {
 
   try {
     const result = await EmailsService.generateReplyEmail({
+      userId,
       originalEmail: {
         subject: originalEmail.subject,
         content: originalEmail.content,
@@ -168,7 +170,7 @@ const sendEmail = catchAsync(async (req: Request, res: Response) => {
     return sendResponse(res, {
       statusCode: 400,
       success: false,
-      message: "Invalid AI provider. Must be OPENAI or GEMINI",
+      message: "Invalid AI provider. Must be OPENAI, GEMINI, GROQ, or OPENROUTER",
     });
   }
 
@@ -269,10 +271,25 @@ const getEmailById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteEmail = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const { id } = req.params;
+
+  const result = await EmailsService.deleteEmail(userId, id as string);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Email deleted successfully",
+    data: result,
+  });
+});
+
 export const EmailsController = {
   generateApplicationEmail,
   generateReplyEmail,
   sendEmail,
   getEmails,
   getEmailById,
+  deleteEmail,
 };

@@ -62,6 +62,8 @@ export interface Job {
   applyDate?: string | null;
   createdAt: string;
   updatedAt: string;
+  tasks?: Task[];
+  emails?: Email[];
 }
 
 export interface Resume {
@@ -99,6 +101,17 @@ export interface Task {
   createdAt: string;
   updatedAt: string;
   job?: Job; // Optional relation for display
+}
+
+export interface TopCompany {
+  id: string;
+  userId: string;
+  name: string;
+  company?: string | null;
+  webLink?: string | null;
+  location?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PaginatedResponse<T> {

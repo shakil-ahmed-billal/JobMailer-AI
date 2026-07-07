@@ -1,30 +1,26 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { formatDistanceToNow } from "date-fns";
 
-export function RecentActivity() {
-  // Mock data for now, replace with API call
-  const activities = [
-    {
-      id: "1",
-      user: { name: "You", image: "/avatars/01.png" },
-      action: "applied to",
-      target: "Software Engineer at Google",
-      time: "2 hours ago",
-    },
-    {
-      id: "2",
-      user: { name: "AI", image: "/avatars/02.png" },
-      action: "generated email for",
-      target: "Frontend Dev at Meta",
-      time: "4 hours ago",
-    },
-    {
-      id: "3",
-      user: { name: "System", image: "/avatars/03.png" },
-      action: "updated status for",
-      target: "Netflix Application",
-      time: "Yesterday",
-    },
-  ];
+interface Activity {
+  id: string;
+  user: { name: string; image: string };
+  action: string;
+  target: string;
+  time: string;
+}
+
+interface RecentActivityProps {
+  activities?: Activity[];
+}
+
+export function RecentActivity({ activities = [] }: RecentActivityProps) {
+  if (!activities || activities.length === 0) {
+    return (
+      <div className="text-sm text-muted-foreground text-center py-4">
+        No recent activity.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -42,7 +38,11 @@ export function RecentActivity() {
               </span>{" "}
               {activity.target}
             </p>
-            <p className="text-sm text-muted-foreground">{activity.time}</p>
+            <p className="text-sm text-muted-foreground">
+              {formatDistanceToNow(new Date(activity.time), {
+                addSuffix: true,
+              })}
+            </p>
           </div>
         </div>
       ))}

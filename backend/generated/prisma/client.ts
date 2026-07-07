@@ -79,3 +79,13 @@ export type Email = Prisma.EmailModel
  * 
  */
 export type Task = Prisma.TaskModel
+/**
+ * Model TopCompany
+ * 
+ */
+export type TopCompany = Prisma.TopCompanyModel
+/**
+ * Model UserSettings
+ * 
+ */
+export type UserSettings = Prisma.UserSettingsModel

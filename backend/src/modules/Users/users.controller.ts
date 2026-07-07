@@ -27,7 +27,20 @@ const getProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getRecentActivity = catchAsync(async (req: Request, res: Response) => {
+  const userId = (req as any).user.id;
+  const result = await UsersService.getRecentActivity(userId);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Recent activity retrieved successfully",
+    data: result,
+  });
+});
+
 export const UsersController = {
   updateProfile,
   getProfile,
+  getRecentActivity,
 };

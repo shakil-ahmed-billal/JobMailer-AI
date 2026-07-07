@@ -1,6 +1,7 @@
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { cloudinaryUpload } from "../utils/cloudinary";
+import { prisma } from "../lib/prisma";
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinaryUpload,
@@ -25,11 +26,26 @@ const storage = new CloudinaryStorage({
 
     const folder = extension === "pdf" ? "pdfs" : "images";
 
+    const userId = req.user?.id;
+    let cloud_name, api_key, api_secret;
+
+    if (userId) {
+      const settings = await prisma.userSettings.findUnique({ where: { userId } });
+      if (settings?.cloudinaryCloudName && settings?.cloudinaryApiKey && settings?.cloudinaryApiSecret) {
+        cloud_name = settings.cloudinaryCloudName;
+        api_key = settings.cloudinaryApiKey;
+        api_secret = settings.cloudinaryApiSecret;
+      }
+    }
+
     return {
       folder: `job-mailer/${folder}`,
       public_id: uniqueName,
       resource_type: "auto",
       access_mode: "public",
+      ...(cloud_name && { cloud_name }),
+      ...(api_key && { api_key }),
+      ...(api_secret && { api_secret }),
     };
   },
 });

@@ -21,7 +21,7 @@ export default function TasksPage() {
     setLoading(true);
     try {
       const data = await tasksApi.getAll();
-      setTasks(Array.isArray(data) ? data : ((data as any)?.data ?? []));
+      setTasks(data?.data ?? []);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load tasks");
@@ -32,8 +32,15 @@ export default function TasksPage() {
 
   const fetchJobs = async () => {
     try {
-      const data = await jobsApi.getAll();
-      setJobs(data || []);
+      const response = await jobsApi.getAll();
+      // Handle both paginated and non-paginated (array) responses
+      if (Array.isArray(response)) {
+        setJobs(response);
+      } else if (response && typeof response === "object") {
+        setJobs(response.data || []);
+      } else {
+        setJobs([]);
+      }
     } catch (error) {
       console.error("Failed to load jobs for task form");
     }
@@ -72,11 +79,14 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Tasks</h2>
-        <div className="flex items-center space-x-2">
+    <div className="flex-1 space-y-4 p-4 sm:p-6 md:p-8 pt-3 sm:pt-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">
+          Tasks
+        </h2>
+        <div className="flex items-center space-x-2 w-full sm:w-auto">
           <Button
+            className="w-full sm:w-auto"
             onClick={() => {
               setSelectedTask(undefined);
               setIsFormOpen(true);

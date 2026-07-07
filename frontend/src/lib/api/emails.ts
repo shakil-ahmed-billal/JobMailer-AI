@@ -1,9 +1,11 @@
-import { ApiResponse, AIProvider, Email, EmailType } from "@/types";
+import { AIProvider, ApiResponse, Email, EmailType } from "@/types";
 import { apiClient } from "./client";
 
 export const emailsApi = {
-  getAll: async () => {
-    const response = await apiClient.get<ApiResponse<Email[]>>("/emails");
+  getAll: async (filters: { jobId?: string; emailType?: EmailType } = {}) => {
+    const response = await apiClient.get<ApiResponse<Email[]>>("/emails", {
+      params: filters,
+    });
     return response.data.data;
   },
 
@@ -44,5 +46,10 @@ export const emailsApi = {
       data,
     );
     return response.data.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await apiClient.delete<ApiResponse<void>>(`/emails/${id}`);
+    return response.data;
   },
 };

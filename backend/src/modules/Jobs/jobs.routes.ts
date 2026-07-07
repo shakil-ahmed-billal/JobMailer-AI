@@ -12,7 +12,10 @@ import {
 
 const router = Router();
 
-// All routes require authentication
+// Public route (no authentication)
+router.get("/public/:userId", JobsController.getPublicJobs);
+
+// All routes below require authentication
 router.use(authenticate);
 
 // Job stats for dashboard

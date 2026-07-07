@@ -38,7 +38,7 @@ const createResume = async (input: CreateResumeInput) => {
   });
   if (existing) {
     // If it exists, we should delete the newly uploaded file to keep Cloudinary clean
-    await CloudinaryUtils.deleteFromCloudinary(publicId);
+    await CloudinaryUtils.deleteFromCloudinary(publicId, userId);
 
     const err: any = new Error(
       "Resume already exists for this role. Please replace it instead.",
@@ -60,7 +60,7 @@ const createResume = async (input: CreateResumeInput) => {
     });
   } catch (dbError) {
     // Rollback: Delete from Cloudinary if DB fails
-    await CloudinaryUtils.deleteFromCloudinary(publicId);
+    await CloudinaryUtils.deleteFromCloudinary(publicId, userId);
     throw dbError;
   }
 };
@@ -72,7 +72,7 @@ const updateResume = async (input: UpdateResumeInput) => {
   if (!resume) {
     // If record not found, delete the newly uploaded file
     if (publicId) {
-      await CloudinaryUtils.deleteFromCloudinary(publicId);
+      await CloudinaryUtils.deleteFromCloudinary(publicId, userId);
     }
     const err: any = new Error("Resume not found");
     err.statusCode = 404;
@@ -97,14 +97,14 @@ const updateResume = async (input: UpdateResumeInput) => {
 
     // If successful and we uploaded a new file, delete the old one from Cloudinary
     if (publicId && resume.publicId && publicId !== resume.publicId) {
-      await CloudinaryUtils.deleteFromCloudinary(resume.publicId);
+      await CloudinaryUtils.deleteFromCloudinary(resume.publicId, userId);
     }
 
     return updated;
   } catch (e: any) {
     // Rollback: If DB update fails, delete the new file from Cloudinary (if we uploaded one)
     if (publicId) {
-      await CloudinaryUtils.deleteFromCloudinary(publicId);
+      await CloudinaryUtils.deleteFromCloudinary(publicId, userId);
     }
 
     // Unique constraint: one resume per role per user
@@ -132,7 +132,7 @@ const deleteResume = async (userId: string, id: string) => {
 
   // Delete from Cloudinary
   if (resume.publicId) {
-    await CloudinaryUtils.deleteFromCloudinary(resume.publicId);
+    await CloudinaryUtils.deleteFromCloudinary(resume.publicId, userId);
   }
 
   await prisma.resume.delete({ where: { id } });

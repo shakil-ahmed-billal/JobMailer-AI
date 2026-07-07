@@ -8,7 +8,15 @@ export const usersApi = {
   },
 
   updateProfile: async (data: Partial<User>) => {
-    const response = await apiClient.put<ApiResponse<User>>("/users/profile", data);
+    const response = await apiClient.put<ApiResponse<User>>(
+      "/users/profile",
+      data,
+    );
+    return response.data.data;
+  },
+
+  getRecentActivity: async () => {
+    const response = await apiClient.get<ApiResponse<any[]>>("/users/activity");
     return response.data.data;
   },
 };
